@@ -1,6 +1,8 @@
 <?php
 
+use App\Enums\AccountStatus;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AccountController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -17,11 +19,13 @@ use Inertia\Inertia;
 */
 
 Route::get('/test', function () {
-    $res = \App\Enums\ItemStatus::justKeys();
+    $out = AccountStatus::from('active')->text();
 
-    dd($res);
+    dd($out);
 });
 
+Route::get('/account/store', [AccountController::class, 'store']);
+Route::get('/account/details/{id}', [AccountController::class, 'details']);
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
