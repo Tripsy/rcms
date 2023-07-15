@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use App\Enums\ItemStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Item extends Model
+class ItemData extends Model
 {
     use HasFactory;
 
@@ -16,8 +15,7 @@ class Item extends Model
      * @var array
      */
     protected $fillable = [
-        'account_id',
-        'description',
+        'email',
         'status',
     ];
 
@@ -27,6 +25,6 @@ class Item extends Model
      * @var array
      */
     protected $casts = [
-        'status' => ItemStatus::class,
+        'status' => AccountStatus::class,
     ];
 }

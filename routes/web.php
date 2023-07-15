@@ -17,7 +17,9 @@ use Inertia\Inertia;
 */
 
 Route::get('/test', function () {
-    dd('test');
+    $res = \App\Enums\ItemStatus::justKeys();
+
+    dd($res);
 });
 
 
