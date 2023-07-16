@@ -19,7 +19,7 @@ class AccountController extends Controller
         $this->commandBus = $commandBus;
     }
 
-    public function details(int $account_id, AccountQuery $query): array
+    public function show(int $account_id, AccountQuery $query): array
     {
         return $query->getData($account_id);
     }
