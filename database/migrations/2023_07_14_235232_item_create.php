@@ -21,7 +21,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('account_id', false, true);
             $table->text('description')->nullable();
-            $table->enum('status', ItemStatus::justKeys())->default('pending');
+            $table->enum('status', ItemStatus::justKeys())->default(ItemStatus::DRAFT->name);
 
             $table->dateTime('created_at');
             $table->bigInteger('created_by',false, true)->nullable();

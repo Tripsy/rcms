@@ -18,7 +18,7 @@ return new class extends Migration
             $table->collation = 'utf8mb4_general_ci';
             $table->id();
             $table->string('name');
-            $table->enum('status', AccountStatus::justKeys())->default('active');
+            $table->enum('status', AccountStatus::justKeys())->default(AccountStatus::ACTIVE->name);
             $table->dateTime('created_at');
             $table->bigInteger('created_by',false, true)->nullable();
             $table->dateTime('updated_at')->nullable();
