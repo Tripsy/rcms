@@ -1,8 +1,8 @@
 <?php
 
 use App\Enums\AccountStatus;
+use App\Http\Controllers\Account\AccountController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\AccountController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,8 +24,7 @@ Route::get('/test', function () {
     dd($out);
 });
 
-Route::get('/account/store', [AccountController::class, 'store']);
-Route::get('/account/details/{id}', [AccountController::class, 'details']);
+Route::get('/account/show/{id}', [AccountController::class, 'show']);
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
