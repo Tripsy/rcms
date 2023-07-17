@@ -23,13 +23,13 @@ class BaseRequest extends FormRequest
         if ($this->wantsJson()) {
             $response = response()->json([
                 'success' => false,
-                'message' => 'Ops! Some errors occurred',
+                'message' => __('message.failed'),
                 'errors' => $validator->errors()
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         } else {
             $response = redirect()
                 ->route('guest.login')
-                ->with('message', 'Ops! Some errors occurred')
+                ->with('message', __('message.failed'))
                 ->withErrors($validator);
         }
 

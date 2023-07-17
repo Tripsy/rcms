@@ -53,7 +53,7 @@ class ApiAccountController extends Controller
 
             $jsonData = [
                 'success' => true,
-                'message' => 'All good!', //TODO custom error based on language
+                'message' => __('message.success'),
                 'data' => [
                     'id' => $account->id,
                     'email' => $account->email,
@@ -63,8 +63,8 @@ class ApiAccountController extends Controller
         } catch (ModelNotFoundException $exception) {
             $jsonData = [
                 'success' => false,
-                'message' => 'Ops! Some errors occurred',
-                'errors' => $exception->getMessage() //TODO custom error based on language
+                'message' => __('message.failed'),
+                'errors' => $exception->getMessage()
             ];
             $responseStatus = Response::HTTP_INTERNAL_SERVER_ERROR ;
         }

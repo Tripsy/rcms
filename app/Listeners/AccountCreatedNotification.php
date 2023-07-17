@@ -20,7 +20,7 @@ class AccountCreatedNotification
      */
     public function handle(AccountCreated $event): void
     {
-        Log::channel('test')->info('Account #{id} created with success.', [
+        Log::channel('test')->info(__('message.account.create'), [
             'id' => $event->account->id
         ]);
     }
