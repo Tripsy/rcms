@@ -1,13 +1,11 @@
 <?php
 
-declare(strict_types=1);
-
-namespace App\Http\Controllers\Account;
+namespace App\Http\Controllers\Item;
 
 use App\Http\Controllers\Controller;
-use App\Queries\AccountQuery;
+use Illuminate\Http\Request;
 
-class AccountController extends Controller
+class ItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,9 +26,9 @@ class AccountController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(int $account_id, AccountQuery $query): array
+    public function show(string $id)
     {
-        return $query->getData($account_id);
+        //
     }
 
     /**

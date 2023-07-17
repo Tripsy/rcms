@@ -126,6 +126,19 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+
+        /**
+         * Custom channels
+         *
+        */
+
+        'test' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/test.log'),
+            'level' => env('LOG_LEVEL', 'info'),
+            'replace_placeholders' => true,
+        ],
     ],
 
 ];

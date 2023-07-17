@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DefaultOption;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,13 +11,21 @@ class ItemData extends Model
     use HasFactory;
 
     /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'item_data';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'email',
-        'status',
+        'label',
+        'content',
+        'is_active',
     ];
 
     /**
@@ -25,6 +34,6 @@ class ItemData extends Model
      * @var array
      */
     protected $casts = [
-        'status' => AccountStatus::class,
+        'is_active' => DefaultOption::class,
     ];
 }

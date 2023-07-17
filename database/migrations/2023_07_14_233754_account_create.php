@@ -17,8 +17,8 @@ return new class extends Migration
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
             $table->id();
-            $table->string('name');
-            $table->enum('status', AccountStatus::justKeys())->default(AccountStatus::ACTIVE->name);
+            $table->string('email');
+            $table->enum('status', AccountStatus::justKeys())->default(AccountStatus::ACTIVE->value);
             $table->dateTime('created_at');
             $table->bigInteger('created_by',false, true)->nullable();
             $table->dateTime('updated_at')->nullable();

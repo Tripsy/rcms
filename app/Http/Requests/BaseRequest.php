@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpFoundation\Response;
 
 class BaseRequest extends FormRequest
 {
@@ -17,14 +18,14 @@ class BaseRequest extends FormRequest
      */
     protected function failedValidation($validator): void
     {
-        //TODO
+        //TODO handle the else part
 
         if ($this->wantsJson()) {
             $response = response()->json([
                 'success' => false,
                 'message' => 'Ops! Some errors occurred',
                 'errors' => $validator->errors()
-            ]);
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         } else {
             $response = redirect()
                 ->route('guest.login')

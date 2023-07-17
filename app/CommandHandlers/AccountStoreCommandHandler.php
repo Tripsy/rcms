@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\CommandHandlers;
 
-use App\Commands\AccountCreateCommand;
+use App\Commands\AccountStoreCommand;
+use App\Events\AccountCreated;
 use App\Repositories\AccountRepository;
+use Illuminate\Support\Facades\Event;
 
-class AccountCreateCommandHandler
+class AccountStoreCommandHandler
 {
     private AccountRepository $accountRepository;
 
@@ -16,11 +18,9 @@ class AccountCreateCommandHandler
         $this->accountRepository = $accountRepository;
     }
 
-    public function handle(AccountCreateCommand $command): void
+    public function handle(AccountStoreCommand $command): void
     {
-        // Handle the creation of a new user using the command data
-        // For example, create a new user in the database
-        $account = $this->accountRepository->create([
+        $this->accountRepository->create([
             'email' => $command->getEmail(),
             'status' => $command->getStatus(),
         ]);

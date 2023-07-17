@@ -6,7 +6,7 @@ namespace App\Commands;
 
 use App\Enums\AccountStatus;
 
-class AccountCreateCommand
+class AccountStoreCommand
 {
     private string $email;
     private AccountStatus $status;
