@@ -1,8 +1,10 @@
 <?php
 
 use App\Enums\AccountStatus;
+use App\Enums\ItemStatus;
 use App\Http\Controllers\Account\AccountController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Item;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -19,9 +21,13 @@ use Inertia\Inertia;
 */
 
 Route::get('/test', function () {
-    $out = AccountStatus::from('active')->text();
+//    $items = Item::all();
+    $item = Item::query()
+        ->uuid('99abffb3-7973-42cf-a7ac-ce484ef714f0')
+        ->first();
 
-    dd($out);
+    dump($item->user);
+    dd($item);
 });
 
 Route::get('/account/show/{id}', [AccountController::class, 'show']);

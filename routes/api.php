@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Account\ApiAccountController;
+use App\Http\Controllers\Item\ApiItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,12 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['middleware' => ['force.json']], function () {
-    Route::get('/account/store', [ApiAccountController::class, 'store']);
+Route::group([
+    'middleware' => [
+        'force.json',
+        'auth:sanctum'
+    ]
+], function () {
+    Route::post('/account/store', [ApiAccountController::class, 'store']);
+    Route::post('/item/store', [ApiItemController::class, 'store']);
 });
