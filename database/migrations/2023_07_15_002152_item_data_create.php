@@ -17,15 +17,15 @@ return new class extends Migration
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
             $table->id();
-            $table->bigInteger('item_id', false, true);
+            $table->uuid();
             $table->char('label', 64);
             $table->text('content');
-            $table->enum('is_active', DefaultOption::justKeys())->default('yes');
+            $table->enum('is_active', DefaultOption::justKeys())->default(DefaultOption::YES->value);
             $table->dateTime('created_at');
             $table->bigInteger('created_by',false, true)->nullable();
 
-            $table->foreign('item_id')->references('id')->on('item')->onUpdate('no action')->onDelete('cascade');
-            $table->index(['item_id', 'label', 'is_active']);
+            $table->foreign('uuid')->references('uuid')->on('item')->onUpdate('no action')->onDelete('cascade');
+            $table->index(['uuid', 'label', 'is_active']);
             $table->foreign('created_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
         });
     }

@@ -19,8 +19,9 @@ return new class extends Migration
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
             $table->id();
+            $table->uuid()->unique();
             $table->bigInteger('account_id', false, true);
-            $table->text('description')->nullable();
+            $table->text('description');
             $table->enum('status', ItemStatus::justKeys())->default(ItemStatus::DRAFT->value);
 
             $table->dateTime('created_at');
