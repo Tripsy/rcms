@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\AccountStatus;
 use App\Events\AccountCreated;
+use App\Models\Traits\StatusScopeTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 class Account extends Model
 {
     use HasFactory;
+    use StatusScopeTrait;
 
     /**
      * The table associated with the model.

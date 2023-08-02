@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use App\Enums\ItemStatus;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Traits\StatusScopeTrait;
+use App\Models\Traits\UuidScopeTrait;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Item extends Model
+class Item extends BaseModel
 {
-    use HasFactory;
+    use UuidScopeTrait;
+    use StatusScopeTrait;
 
     /**
      * The table associated with the model.
@@ -23,6 +25,7 @@ class Item extends Model
      * @var array
      */
     protected $fillable = [
+        'uuid',
         'account_id',
         'description',
         'status',
@@ -36,4 +39,20 @@ class Item extends Model
     protected $casts = [
         'status' => ItemStatus::class,
     ];
+
+//    /**
+//     * The "booted" method of the model.
+//     */
+//    protected static function booted(): void
+//    {
+//        static::addGlobalScope(new ActiveScope);
+//    }
+
+//    /**
+//     * Get the user that owns the phone.
+//     */
+//    public function user(): BelongsTo
+//    {
+//        return $this->belongsTo(User::class);
+//    }
 }
