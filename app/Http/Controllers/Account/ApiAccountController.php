@@ -7,15 +7,9 @@ use App\Commands\AccountStoreCommand;
 use App\Enums\AccountStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AccountStoreRequest;
-use App\Listeners\AccountCreatedNotification;
-use App\Models\Account;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Event;
 use Symfony\Component\HttpFoundation\Response;
-
-//https://laravel.com/docs/10.x/controllers#basic-controllers
 
 class ApiAccountController extends Controller
 {
@@ -48,28 +42,13 @@ class ApiAccountController extends Controller
 
         $this->commandBus->execute($command);
 
-        try {
-            $account = Account::email($validated['email'])->firstOrFail();
-
-            $jsonData = [
-                'success' => true,
-                'message' => __('message.success'),
-                'data' => [
-                    'id' => $account->id,
-                    'email' => $account->email,
-                ]
-            ];
-            $responseStatus = Response::HTTP_CREATED;
-        } catch (ModelNotFoundException $exception) {
-            $jsonData = [
-                'success' => false,
-                'message' => __('message.failed'),
-                'errors' => $exception->getMessage()
-            ];
-            $responseStatus = Response::HTTP_INTERNAL_SERVER_ERROR ;
-        }
-
-        return response()->json($jsonData, $responseStatus);
+        return response()->json([
+            'success' => true,
+            'message' => __('message.success'),
+            'data' => [
+                'email' => $validated['email'],
+            ]
+        ], Response::HTTP_CREATED);
     }
 
     /**

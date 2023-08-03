@@ -5,22 +5,20 @@ declare(strict_types=1);
 namespace App\CommandHandlers;
 
 use App\Commands\AccountStoreCommand;
-use App\Events\AccountCreated;
 use App\Repositories\AccountRepository;
-use Illuminate\Support\Facades\Event;
 
 class AccountStoreCommandHandler
 {
-    private AccountRepository $accountRepository;
+    private AccountRepository $repository;
 
-    public function __construct(AccountRepository $accountRepository)
+    public function __construct(AccountRepository $repository)
     {
-        $this->accountRepository = $accountRepository;
+        $this->repository = $repository;
     }
 
     public function handle(AccountStoreCommand $command): void
     {
-        $this->accountRepository->create([
+        $this->repository->create([
             'email' => $command->getEmail(),
             'status' => $command->getStatus(),
         ]);

@@ -13,14 +13,14 @@ class AccountRepository
         return Account::create($data);
     }
 
-    public function update(Account $account, array $data): bool
+    public function update(Account $model, array $data): bool
     {
-        return $account->update($data);
+        return $model->update($data);
     }
 
-    public function delete(Account $account): bool
+    public function delete(Account $model): bool
     {
-        return $account->delete();
+        return $model->delete();
     }
 
     public function findById(int $id): ?Account
