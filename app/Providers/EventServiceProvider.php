@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Item;
+use App\Models\ItemData;
+use App\Observers\CreatedByObserver;
+use App\Observers\UpdatedByObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -20,6 +24,22 @@ class EventServiceProvider extends ServiceProvider
 //        AccountStore::class => [
 //            AccountStoreResponse::class,
 //        ],
+    ];
+
+    /**
+     * The model observers for your application.
+     *
+     * @var array
+     */
+    protected $observers = [
+        Item::class => [
+            CreatedByObserver::class,
+            UpdatedByObserver::class,
+        ],
+        ItemData::class => [
+            CreatedByObserver::class,
+            UpdatedByObserver::class,
+        ],
     ];
 
     /**
