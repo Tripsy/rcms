@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Interfaces\AccountRepositoryInterface;
 use App\Models\Account;
 
-class AccountRepository
+class AccountRepository implements AccountRepositoryInterface
 {
     public function create(array $data): Account
     {
@@ -23,18 +24,13 @@ class AccountRepository
         return $model->delete();
     }
 
-    public function findById(int $id): ?Account
-    {
-        return Account::find($id);
-    }
-
-    public function findByEmail(string $email): ?Account
-    {
-        return Account::where('email', $email)->first();
-    }
-
-    public function getAll(): array
-    {
-        return Account::all()->toArray();
-    }
+//    public function findById(int $id): ?Account
+//    {
+//        return Account::find($id);
+//    }
+//
+//    public function findByEmail(string $email): ?Account
+//    {
+//        return Account::where('email', $email)->first();
+//    }
 }

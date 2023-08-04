@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Enums\DefaultOption;
+use App\Interfaces\ItemDataRepositoryInterface;
 use App\Models\ItemData;
 
-class ItemDataRepository
+class ItemDataRepository implements ItemDataRepositoryInterface
 {
     public function create(array $data): ItemData
     {
@@ -21,23 +22,13 @@ class ItemDataRepository
         return ItemData::create($data);
     }
 
-//    public function update(ItemData $model, array $data): bool
-//    {
-//        return $model->update($data);
-//    }
-
     public function delete(ItemData $model): bool
     {
         return $model->delete();
     }
 
-    public function findById(int $id): ?ItemData
-    {
-        return ItemData::find($id);
-    }
-
-    public function getAll(): array
-    {
-        return ItemData::all()->toArray();
-    }
+//    public function findById(int $id): ?ItemData
+//    {
+//        return ItemData::find($id);
+//    }
 }

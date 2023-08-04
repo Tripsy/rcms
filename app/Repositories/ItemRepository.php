@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Interfaces\ItemRepositoryInterface;
 use App\Models\Item;
 
-class ItemRepository
+class ItemRepository implements ItemRepositoryInterface
 {
     public function create(array $data): Item
     {
@@ -23,13 +24,15 @@ class ItemRepository
         return $model->delete();
     }
 
-    public function findById(int $id): ?Item
-    {
-        return Item::find($id);
-    }
-
     public function getAll(): array
     {
         return Item::all()->toArray();
+    }
+
+    public function findByUuid(string $uuid): ?Item
+    {
+        return Item::query()
+            ->where('uuid', $uuid)
+            ->firstOrFail();
     }
 }
