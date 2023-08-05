@@ -16,8 +16,17 @@ return [
     'failed' => 'Ops! Some errors occurred',
     'success' => 'All good!',
 
+    'exception' => [
+        'query' => 'Query error encountered',
+        'pdo' => 'PDO error encountered'
+    ],
+
     'account' => [
         'create' => 'Account #{id} created with success.'
-    ]
+    ],
+
+    'item' => [
+        'not_found' => 'Item #:uuid does not exist'
+    ],
 
 ];

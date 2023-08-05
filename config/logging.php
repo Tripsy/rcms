@@ -139,6 +139,12 @@ return [
             'level' => env('LOG_LEVEL', 'info'),
             'replace_placeholders' => true,
         ],
-    ],
 
+        'mysql' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/mysql.log'),
+            'level' => env('LOG_LEVEL', 'error'),
+            'replace_placeholders' => false,
+        ],
+    ],
 ];
