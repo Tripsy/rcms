@@ -26,7 +26,8 @@ return [
     ],
 
     'item' => [
-        'not_found' => 'Item #:uuid does not exist'
+        'not_found' => 'Item #:uuid does not exist',
+        'cannot_create_data' => 'Cannot create data item. Item #:uuid does not exist',
     ],
 
 ];
