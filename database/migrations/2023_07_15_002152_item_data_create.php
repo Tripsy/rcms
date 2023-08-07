@@ -16,11 +16,14 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
+
             $table->id();
+
             $table->uuid();
             $table->char('label', 64);
             $table->text('content');
             $table->enum('is_active', DefaultOption::justKeys())->default(DefaultOption::YES->value);
+
             $table->dateTime('created_at');
             $table->bigInteger('created_by',false, true)->nullable();
             $table->dateTime('updated_at')->nullable();

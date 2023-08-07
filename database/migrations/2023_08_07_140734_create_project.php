@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\ProjectStatus;
+use App\Enums\CommonStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,11 +18,14 @@ return new class extends Migration
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
+
             $table->id();
+
             $table->text('name');
             $table->char('authority_name', 255)->index();
             $table->char('authority_key', 255);
-            $table->enum('status', ProjectStatus::justKeys())->default(ProjectStatus::INACTIVE->value);
+
+            $table->enum('status', CommonStatus::justKeys())->default(CommonStatus::INACTIVE->value);
 
             $table->dateTime('created_at');
             $table->bigInteger('created_by',false, true)->nullable();
