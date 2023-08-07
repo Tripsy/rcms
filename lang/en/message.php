@@ -17,12 +17,15 @@ return [
     'success' => 'All good!',
 
     'exception' => [
+        'method_not_supported' => 'Method (eg: :method) is not supported on this route',
+        'unauthenticated' => 'Failed to authenticate your connection',
+        'not_found' => 'Record not found',
         'query' => 'Query error encountered',
         'pdo' => 'PDO error encountered'
     ],
 
     'account' => [
-        'create' => 'Account #{id} created with success.'
+        'create' => 'Account #:id created with success.'
     ],
 
     'item' => [

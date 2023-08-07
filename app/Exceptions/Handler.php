@@ -2,13 +2,18 @@
 
 namespace App\Exceptions;
 
+use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use PDOException;
 use Symfony\Component\HttpFoundation\Response;
-use Throwable;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -28,30 +33,91 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
+        $this->renderable(function (MethodNotAllowedHttpException $e, Request $request) {
+            if ($request->expectsJson()) {
+                Log::channel('test')->error($e->getMessage());
+
+                return $this->standardJsonResponseError($request, $e, __('message.exception.method_not_supported', [
+                    'method' => $request->method()
+                ]), $e->getStatusCode());
+            }
+        });
+
+        $this->renderable(function (NotFoundHttpException $e, Request $request) {
+            if ($request->expectsJson()) {
+                Log::channel('mysql')->error($e->getMessage());
+
+                return $this->standardJsonResponseError($request, $e, __('message.exception.not_found'), Response::HTTP_NOT_FOUND);
+            }
+        });
+
+        $this->renderable(function (QueryException $e, Request $request) {
+            if ($request->expectsJson()) {
+                Log::channel('mysql')->error($e->getMessage());
+
+                return $this->standardJsonResponseError($request, $e, __('message.exception.query'));
+            }
+        });
+
+        $this->renderable(function (PDOException $e, Request $request) {
+            if ($request->expectsJson()) {
+                Log::channel('mysql')->error($e->getMessage());
+
+                return $this->standardJsonResponseError($request, $e, __('message.exception.pdo'));
+            }
+        });
+
+        $this->renderable(function (JobException $e, Request $request) {
+            if ($request->expectsJson()) {
+                Log::channel('test')->error($e->getMessage());
+
+                return $this->standardJsonResponseError($request, $e, $e->getMessage());
+            }
+        });
     }
 
     /**
-     * Render an exception into an HTTP response.
+     * Return common response for requests which expects JSON
      *
-     * @param $request
-     * @param Throwable $e
-     * @return JsonResponse|RedirectResponse|\Illuminate\Http\Response|Response|void
-     * @throws Throwable
+     * @param Request $request
+     * @param Exception $e
+     * @param string $message
+     * @param int $fallBackCode
+     * @return JsonResponse
      */
-    public function render($request, Throwable $e)
+    private function standardJsonResponseError(Request $request, Exception $e, string $message, int $fallBackCode = Response::HTTP_UNPROCESSABLE_ENTITY): JsonResponse
     {
-        switch (true) {
-            case $e instanceof JobException:
-            case $e instanceof QueryException:
-            case $e instanceof PDOException:
-                if ($request->wantsJson()) {
-                    return app(JsonHandler::class)->render($request, $e);
-                }
-                break;
-            default:
-                break;
+        $responseData = [
+            'success' => false,
+            'message' => $message,
+            'request' => $request->all()
+        ];
+
+        if (app()->environment() == 'local') {
+            $responseData['debug'] = [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ];
         }
 
-        parent::render($request, $e);
+        return response()->json($responseData, returnValidHttpResponseCode($e->getCode(), $fallBackCode));
     }
+
+    /**
+     * Convert an authentication exception into a response.
+     *
+     *
+     * @param Request $request
+     * @param AuthenticationException $exception
+     * @return RedirectResponse|JsonResponse
+     */
+    protected function unauthenticated($request, AuthenticationException $exception): JsonResponse|RedirectResponse
+    {
+        return $this->shouldReturnJson($request, $exception)
+//                    ? response()->json(['message' => $exception->getMessage()], 401)
+                    ? $this->standardJsonResponseError($request, $exception, __('message.exception.unauthenticated'))
+                    : redirect()->guest($exception->redirectTo() ?? route('login'));
+    }
+
 }
