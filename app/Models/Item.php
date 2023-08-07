@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Enums\ItemStatus;
 use App\Models\Traits\StatusScopeTrait;
 use App\Models\Traits\UuidScopeTrait;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Item extends BaseModel
 {

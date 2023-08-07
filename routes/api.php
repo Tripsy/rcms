@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Account\ApiAccountController;
-use App\Http\Controllers\Item\ApiItemController;
+use App\Http\Controllers\Item\ApiConsumerItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +26,8 @@ Route::group([
         'auth:sanctum'
     ]
 ], function () {
-    Route::post('/account/store', [ApiAccountController::class, 'store']);
-    Route::post('/item/store', [ApiItemController::class, 'store']);
+    Route::post('/account/new', [ApiAccountController::class, 'store']);
+    Route::post('/item/new', [ApiConsumerItemController::class, 'store']);
+    Route::put('/item/{uuid}', [ApiConsumerItemController::class, 'update']);
+    Route::get('/item/{uuid}', [ApiConsumerItemController::class, 'show']);
 });

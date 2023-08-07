@@ -32,7 +32,7 @@ class ItemRepository implements ItemRepositoryInterface
     public function findByUuid(string $uuid): ?Item
     {
         return Item::query()
-            ->where('uuid', $uuid)
+            ->uuid($uuid)
             ->firstOrFail();
     }
 }

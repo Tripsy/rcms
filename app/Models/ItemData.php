@@ -21,13 +21,6 @@ class ItemData extends Model
     protected $table = 'item_data';
 
     /**
-     * The name of the "updated at" column.
-     *
-     * @var string
-     */
-    const UPDATED_AT = null;
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array

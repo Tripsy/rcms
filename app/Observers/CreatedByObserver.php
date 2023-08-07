@@ -10,7 +10,7 @@ class CreatedByObserver
 
     public function __construct()
     {
-        $this->user_id = auth()->id();
+        $this->user_id = 1; //auth()->id(); //TODO
     }
 
     /**

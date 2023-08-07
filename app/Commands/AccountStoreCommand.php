@@ -15,8 +15,6 @@ class AccountStoreCommand
     {
         $this->email = $email;
         $this->status = $status;
-        //$this->created_by = $created_by;
-        //TODO
     }
 
     public function getEmail(): string

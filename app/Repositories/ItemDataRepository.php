@@ -12,12 +12,19 @@ class ItemDataRepository implements ItemDataRepositoryInterface
 {
     public function create(array $data): ItemData
     {
-        ItemData::query()
+        $itemData = ItemData::query()
             ->uuid($data['uuid'])
             ->label($data['label'])
-            ->update([
-                'is_active' => DefaultOption::NO->value,
-            ]);
+            ->isActive()
+            ->first();
+
+        if ($itemData) {
+            if ($itemData->content === $data['content']) {
+                return $itemData;
+            } else {
+                $this->setAsInactive($itemData);
+            }
+        }
 
         return ItemData::create($data);
     }
@@ -27,8 +34,10 @@ class ItemDataRepository implements ItemDataRepositoryInterface
         return $model->delete();
     }
 
-//    public function findById(int $id): ?ItemData
-//    {
-//        return ItemData::find($id);
-//    }
+    public function setAsInactive(ItemData $model): bool
+    {
+        return $model->update([
+            'is_active' => DefaultOption::NO
+        ]);
+    }
 }

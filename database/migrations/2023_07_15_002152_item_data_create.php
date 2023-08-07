@@ -23,10 +23,13 @@ return new class extends Migration
             $table->enum('is_active', DefaultOption::justKeys())->default(DefaultOption::YES->value);
             $table->dateTime('created_at');
             $table->bigInteger('created_by',false, true)->nullable();
+            $table->dateTime('updated_at')->nullable();
+            $table->bigInteger('updated_by',false, true)->nullable();
 
             $table->foreign('uuid')->references('uuid')->on('item')->onUpdate('no action')->onDelete('cascade');
             $table->index(['uuid', 'label', 'is_active']);
             $table->foreign('created_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
+            $table->foreign('updated_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
         });
     }
 
