@@ -2,22 +2,22 @@
 
 namespace App\Events;
 
-use App\Models\Account;
+use App\Models\Project;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class AccountCreated
+class ProjectCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public Account $account;
+    public Project $project;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(Account $account)
+    public function __construct(Project $project)
     {
-        $this->account = $account;
+        $this->project = $project;
     }
 }

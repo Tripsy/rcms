@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\ItemStatus;
+use App\Enums\ProjectStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,22 +14,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('item', function (Blueprint $table) {
+        Schema::create('project', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
             $table->id();
-            $table->uuid()->unique();
-            $table->bigInteger('project_id', false, true);
-            $table->text('description');
-            $table->enum('status', ItemStatus::justKeys())->default(ItemStatus::DRAFT->value);
+            $table->text('name');
+            $table->char('authority_name', 255)->index();
+            $table->char('authority_key', 255);
+            $table->enum('status', ProjectStatus::justKeys())->default(ProjectStatus::INACTIVE->value);
 
             $table->dateTime('created_at');
             $table->bigInteger('created_by',false, true)->nullable();
             $table->dateTime('updated_at')->nullable();
             $table->bigInteger('updated_by',false, true)->nullable();
 
-            $table->foreign('project_id')->references('id')->on('project')->onUpdate('no action')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
             $table->foreign('updated_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
         });
@@ -37,11 +36,9 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {
-        Schema::dropIfExists('item');
+        Schema::dropIfExists('project');
     }
 };

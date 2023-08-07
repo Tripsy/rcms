@@ -56,7 +56,7 @@ class ItemStore
     {
         $itemRepository->create([
             'uuid' => $this->command->getUuid(),
-            'account_id' => $this->command->getAccountId(),
+            'project_id' => $this->command->getProjectId(),
             'description' => $this->command->getDescription(),
             'status' => $this->command->getStatus(),
         ]);

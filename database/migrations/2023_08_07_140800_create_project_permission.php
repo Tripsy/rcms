@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\AccountStatus;
+use App\Enums\ProjectPermissionRole;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,18 +12,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('account', function (Blueprint $table) {
+        Schema::create('project_permission', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
             $table->id();
-            $table->string('email');
-            $table->enum('status', AccountStatus::justKeys())->default(AccountStatus::ACTIVE->value);
+            $table->bigInteger('project_id', false, true);
+            $table->bigInteger('user_id', false, true);
+            $table->enum('role', ProjectPermissionRole::justKeys())->default(ProjectPermissionRole::OPERATOR->value);
+
             $table->dateTime('created_at');
             $table->bigInteger('created_by',false, true)->nullable();
             $table->dateTime('updated_at')->nullable();
             $table->bigInteger('updated_by',false, true)->nullable();
 
+            $table->foreign('project_id')->references('id')->on('project')->onUpdate('no action')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('user')->onUpdate('no action')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
             $table->foreign('updated_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
         });
@@ -34,6 +38,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('account');
+        Schema::dropIfExists('project_permission');
     }
 };

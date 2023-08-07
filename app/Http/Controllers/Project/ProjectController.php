@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Account;
+namespace App\Http\Controllers\Project;
 
 use App\Http\Controllers\Controller;
-use App\Queries\AccountQuery;
+use App\Queries\ProjectQuery;
 
-class AccountController extends Controller
+class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,9 +28,9 @@ class AccountController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(int $account_id, AccountQuery $query): array
+    public function show(ProjectQuery $query, int $project_id): array
     {
-        return $query->getData($account_id);
+        return $query->getData($project_id);
     }
 
     /**

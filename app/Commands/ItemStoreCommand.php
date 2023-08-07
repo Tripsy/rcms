@@ -9,14 +9,14 @@ use App\Enums\ItemStatus;
 class ItemStoreCommand
 {
     private string $uuid;
-    private int $account_id;
+    private int $project_id;
     private string $description;
     private ItemStatus $status;
 
-    public function __construct(string $uuid, int $account_id, string $description, ItemStatus $status)
+    public function __construct(string $uuid, int $project_id, string $description, ItemStatus $status)
     {
         $this->uuid = $uuid;
-        $this->account_id = $account_id;
+        $this->project_id = $project_id;
         $this->description = $description;
         $this->status = $status;
     }
@@ -26,9 +26,9 @@ class ItemStoreCommand
         return $this->uuid;
     }
 
-    public function getAccountId(): int
+    public function getProjectId(): int
     {
-        return $this->account_id;
+        return $this->project_id;
     }
 
     public function getDescription(): string

@@ -2,12 +2,10 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\AccountStatus;
-use App\Models\Account;
-use Illuminate\Validation\Rule;
+use App\Enums\ProjectStatus;
 use Illuminate\Validation\Rules\Enum;
 
-class AccountStoreRequest extends BaseRequest
+class ProjectStoreRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +23,9 @@ class AccountStoreRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'email' => ['email', 'required', Rule::unique(Account::class)],
-            'status' => new Enum(AccountStatus::class)
+            'name' => ['string', 'required'],
+            'authority_name' => ['string', 'required'],
+            'status' => new Enum(ProjectStatus::class)
         ];
     }
 }

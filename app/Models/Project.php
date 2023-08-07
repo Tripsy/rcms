@@ -2,16 +2,12 @@
 
 namespace App\Models;
 
-use App\Enums\AccountStatus;
-use App\Events\AccountCreated;
+use App\Enums\ProjectStatus;
+use App\Events\ProjectCreated;
 use App\Models\Traits\StatusScopeTrait;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 
-class Account extends Model
+class Project extends BaseModel
 {
-    use HasFactory;
     use StatusScopeTrait;
 
     /**
@@ -19,7 +15,7 @@ class Account extends Model
      *
      * @var string
      */
-    protected $table = 'account';
+    protected $table = 'project';
 
     /**
      * The attributes that are mass assignable.
@@ -27,7 +23,9 @@ class Account extends Model
      * @var array
      */
     protected $fillable = [
-        'email',
+        'name',
+        'authority_name',
+        'authority_key',
         'status',
     ];
 
@@ -37,7 +35,7 @@ class Account extends Model
      * @var array
      */
     protected $casts = [
-        'status' => AccountStatus::class,
+        'status' => ProjectStatus::class,
     ];
 
     /**
@@ -46,14 +44,6 @@ class Account extends Model
      * @var array
      */
     protected $dispatchesEvents = [
-        'created' => AccountCreated::class,
+        'created' => ProjectCreated::class,
     ];
-
-    /**
-     * Query by email.
-     */
-    public function scopeEmail(Builder $query, string $email): void
-    {
-        $query->where('email', $email);
-    }
 }

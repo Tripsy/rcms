@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\ItemStatus;
-use App\Models\Account;
+use App\Models\Project;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 
@@ -25,7 +25,7 @@ class ItemStoreRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'account_id' => ['int', 'required', Rule::exists(Account::class, 'id')],
+            'project_id' => ['int', 'required', Rule::exists(Project::class, 'id')],
             'status' => ['sometimes', new Enum(ItemStatus::class)],
             'description' => ['present', 'string'],
             'data.*.label' => ['required', 'string', 'max:64'],
