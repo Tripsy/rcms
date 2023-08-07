@@ -4,6 +4,10 @@ namespace App\Providers;
 
 use App\Models\Item;
 use App\Models\ItemData;
+use App\Models\ItemType;
+use App\Models\ItemTypeLabel;
+use App\Models\Project;
+use App\Models\ProjectPermission;
 use App\Observers\CreatedByObserver;
 use App\Observers\UpdatedByObserver;
 use Illuminate\Auth\Events\Registered;
@@ -21,9 +25,6 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-//        AccountStore::class => [
-//            AccountStoreResponse::class,
-//        ],
     ];
 
     /**
@@ -37,6 +38,22 @@ class EventServiceProvider extends ServiceProvider
             UpdatedByObserver::class,
         ],
         ItemData::class => [
+            CreatedByObserver::class,
+            UpdatedByObserver::class,
+        ],
+        Project::class => [
+            CreatedByObserver::class,
+            UpdatedByObserver::class,
+        ],
+        ProjectPermission::class => [
+            CreatedByObserver::class,
+            UpdatedByObserver::class,
+        ],
+        ItemType::class => [
+            CreatedByObserver::class,
+            UpdatedByObserver::class,
+        ],
+        ItemTypeLabel::class => [
             CreatedByObserver::class,
             UpdatedByObserver::class,
         ],

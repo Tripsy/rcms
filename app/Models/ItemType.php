@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use App\Enums\CommonStatus;
-use App\Enums\ProjectPermissionRole;
 use App\Models\Traits\StatusScopeTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ProjectPermission extends BaseModel
+class ItemType extends BaseModel
 {
     use StatusScopeTrait;
 
@@ -16,7 +16,7 @@ class ProjectPermission extends BaseModel
      *
      * @var string
      */
-    protected $table = 'project_permission';
+    protected $table = 'item_type';
 
     /**
      * The attributes that are mass assignable.
@@ -24,11 +24,10 @@ class ProjectPermission extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'uuid',
         'project_id',
-        'user_id',
-        'role',
-        'status'
+        'name',
+        'notes',
+        'status',
     ];
 
     /**
@@ -37,12 +36,11 @@ class ProjectPermission extends BaseModel
      * @var array
      */
     protected $casts = [
-        'role' => ProjectPermissionRole::class,
         'status' => CommonStatus::class,
     ];
 
     /**
-     * Get the project that owns the permission.
+     * Get the project that owns this item type.
      */
     public function project(): BelongsTo
     {
@@ -50,10 +48,10 @@ class ProjectPermission extends BaseModel
     }
 
     /**
-     * Get the user that owns the permission.
+     * Get the item type labels for this item type.
      */
-    public function user(): BelongsTo
+    public function itemTypeLabels(): HasMany
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(ItemTypeLabel::class);
     }
 }

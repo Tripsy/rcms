@@ -2,9 +2,10 @@
 
 namespace App\Models;
 
-use App\Enums\ProjectStatus;
+use App\Enums\CommonStatus;
 use App\Events\ProjectCreated;
 use App\Models\Traits\StatusScopeTrait;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends BaseModel
 {
@@ -35,7 +36,7 @@ class Project extends BaseModel
      * @var array
      */
     protected $casts = [
-        'status' => ProjectStatus::class,
+        'status' => CommonStatus::class,
     ];
 
     /**
@@ -44,6 +45,22 @@ class Project extends BaseModel
      * @var array
      */
     protected $dispatchesEvents = [
-        'created' => ProjectCreated::class,
+        'created' => ProjectCreated::class, //can also be modeled as a model Observer //TODO
     ];
+
+    /**
+     * Get the item type for this project.
+     */
+    public function itemTypes(): HasMany
+    {
+        return $this->hasMany(ItemType::class);
+    }
+
+    /**
+     * Get the permissions for this project.
+     */
+    public function permissions(): HasMany
+    {
+        return $this->hasMany(ProjectPermission::class);
+    }
 }

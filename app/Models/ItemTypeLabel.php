@@ -2,15 +2,14 @@
 
 namespace App\Models;
 
-use App\Enums\ItemStatus;
+use App\Enums\CommonStatus;
+use App\Enums\DefaultOption;
+use App\Enums\ProjectLabelType;
 use App\Models\Traits\StatusScopeTrait;
-use App\Models\Traits\UuidScopeTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Item extends BaseModel
+class ItemTypeLabel extends BaseModel
 {
-    use UuidScopeTrait;
     use StatusScopeTrait;
 
     /**
@@ -18,7 +17,7 @@ class Item extends BaseModel
      *
      * @var string
      */
-    protected $table = 'item';
+    protected $table = 'item_type_label';
 
     /**
      * The attributes that are mass assignable.
@@ -26,9 +25,14 @@ class Item extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'uuid',
         'item_type_id',
-        'description',
+        'label_key',
+        'label_name',
+        'label_info',
+        'label_type',
+        'label_options',
+        'is_required',
+        'is_html',
         'status',
     ];
 
@@ -38,22 +42,18 @@ class Item extends BaseModel
      * @var array
      */
     protected $casts = [
-        'status' => ItemStatus::class,
+        'label_type' => ProjectLabelType::class,
+        'label_options' => 'array',
+        'is_required' => DefaultOption::class,
+        'is_html' => DefaultOption::class,
+        'status' => CommonStatus::class,
     ];
 
     /**
-     * Get the item type that owns the item.
+     * Get the item type that owns this item type label.
      */
     public function itemType(): BelongsTo
     {
         return $this->belongsTo(ItemType::class);
-    }
-
-    /**
-     * Get the data for the item.
-     */
-    public function itemData(): HasMany
-    {
-        return $this->hasMany(ItemData::class, 'uuid', 'uuid');
     }
 }

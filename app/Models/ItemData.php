@@ -7,6 +7,7 @@ use App\Models\Traits\UuidScopeTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ItemData extends Model
 {
@@ -40,6 +41,14 @@ class ItemData extends Model
     protected $casts = [
         'is_active' => DefaultOption::class,
     ];
+
+    /**
+     * Get the item that owns this item data.
+     */
+    public function item(): BelongsTo
+    {
+        return $this->belongsTo(Item::class, 'uuid', 'uuid');
+    }
 
     /**
      * Scope a query to select items with selected label
