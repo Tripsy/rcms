@@ -9,7 +9,6 @@ use App\Enums\ItemStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ItemStoreRequest;
 use App\Http\Requests\ItemUpdateRequest;
-use App\Interfaces\ItemRepositoryInterface;
 use App\Jobs\ItemDataStore;
 use App\Jobs\ItemStore;
 use App\Jobs\ItemUpdate;
@@ -33,7 +32,7 @@ class ApiConsumerItemController extends Controller
      */
     public function index()
     {
-        //
+        //https://laravel.com/docs/10.x/eloquent-resources
     }
 
     /**
@@ -67,7 +66,7 @@ class ApiConsumerItemController extends Controller
             'message' => __('message.success'),
             'data' => [
                 'uuid' => $commandItem->getUuid(),
-                'description' => $validated['description'],
+                'description' => $commandItem->getDescription(),
                 'data' => $validated['data'],
             ]
         ], Response::HTTP_CREATED);
@@ -134,7 +133,7 @@ class ApiConsumerItemController extends Controller
             'message' => __('message.success'),
             'data' => [
                 'uuid' => $uuid,
-                'description' => $validated['description'],
+                'description' => $commandItem->getDescription(),
                 'data' => $validated['data'],
             ]
         ], Response::HTTP_OK);

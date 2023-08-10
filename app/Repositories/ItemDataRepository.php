@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Enums\DefaultOption;
-use App\Interfaces\ItemDataRepositoryInterface;
 use App\Models\ItemData;
+use App\Repositories\Interfaces\ItemDataRepositoryInterface;
 
 class ItemDataRepository implements ItemDataRepositoryInterface
 {

@@ -7,6 +7,7 @@ use App\Models\Traits\StatusScopeTrait;
 use App\Models\Traits\UuidScopeTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Item extends BaseModel
 {
@@ -55,5 +56,13 @@ class Item extends BaseModel
     public function itemData(): HasMany
     {
         return $this->hasMany(ItemData::class, 'uuid', 'uuid');
+    }
+
+    /**
+     * Get the project that holds this item
+     */
+    public function project(): HasOneThrough
+    {
+        return $this->hasOneThrough(Project::class, ItemType::class);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use App\Interfaces\ItemDataRepositoryInterface;
-use App\Interfaces\ItemRepositoryInterface;
-use App\Interfaces\ProjectRepositoryInterface;
+use App\Repositories\Interfaces\ItemDataRepositoryInterface;
+use App\Repositories\Interfaces\ItemRepositoryInterface;
+use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use App\Repositories\ItemDataRepository;
 use App\Repositories\ItemRepository;
 use App\Repositories\ProjectRepository;

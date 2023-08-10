@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Interfaces\ItemRepositoryInterface;
 use App\Models\Item;
+use App\Repositories\Interfaces\ItemRepositoryInterface;
 
 class ItemRepository implements ItemRepositoryInterface
 {
