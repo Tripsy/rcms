@@ -14,6 +14,7 @@ use App\Models\Project;
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApiProjectController extends Controller
@@ -32,10 +33,13 @@ class ApiProjectController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
      * @throws ControllerException
      */
     public function store(ProjectStoreRequest $request, ProjectRepositoryInterface $projectRepository): JsonResponse
     {
+        Gate::authorize('create', Project::class);
+
         $validated = $request->validated();
 
         $commandProject = new ProjectStoreCommand(
@@ -77,6 +81,8 @@ class ApiProjectController extends Controller
      */
     public function update(ProjectUpdateRequest $request, Project $project): JsonResponse
     {
+        Gate::authorize('update', $project);
+
         $validated = $request->validated();
 
         $commandProject = new ProjectUpdateCommand(

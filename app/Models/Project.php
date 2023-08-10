@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\CommonStatus;
+use App\Enums\ProjectPermissionRole;
 use App\Events\ProjectCreated;
 use App\Models\Traits\IdScopeTrait;
 use App\Models\Traits\StatusScopeTrait;
@@ -64,5 +65,35 @@ class Project extends BaseModel
     public function permissions(): HasMany
     {
         return $this->hasMany(ProjectPermission::class);
+    }
+
+    /**
+     * Check if user has permission (active) with specified role on the project
+     *
+     * @param User $user
+     * @param ProjectPermissionRole $role
+     * @return bool
+     */
+    public function hasRole(User $user, ProjectPermissionRole $role): bool
+    {
+        return $this->permissions()
+                    ->where('user_id', $user->id)
+                    ->where('role', $role)
+                    ->where('status', CommonStatus::ACTIVE)
+                    ->exists();
+    }
+
+    /**
+     * Check if user has permission (active) set on the project
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function hasPermission(User $user): bool
+    {
+        return $this->permissions()
+                    ->where('user_id', $user->id)
+                    ->where('status', CommonStatus::ACTIVE)
+                    ->exists();
     }
 }

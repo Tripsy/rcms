@@ -23,6 +23,7 @@ return [
         'not_found' => 'Record not found',
         'query' => 'Query error encountered',
         'pdo' => 'PDO error encountered',
+        'access_denied' => 'Access Denied: You do not have permission to perform this action'
     ],
 
     'account' => [
@@ -37,6 +38,6 @@ return [
     'project' => [
         'not_found' => 'Project #:id does not exist',
         'store_fail' => 'Failed to create project!',
-        'already_exist' => 'Project already exist'
+        'already_exist' => 'Project already exist',
     ],
 ];

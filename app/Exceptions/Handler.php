@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use BadMethodCallException;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use PDOException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -77,6 +79,12 @@ class Handler extends ExceptionHandler
             }
         });
 
+        $this->renderable(function (AccessDeniedHttpException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return $this->standardJsonResponseError($request, $e, $e->getMessage(), Response::HTTP_FORBIDDEN);
+            }
+        });
+
         $this->renderable(function (JobException $e, Request $request) {
             if ($request->expectsJson()) {
                 Log::channel('test')->error($e->getMessage());
@@ -120,8 +128,9 @@ class Handler extends ExceptionHandler
         if (app()->environment() == 'local') {
             $responseData['debug'] = [
                 'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
+                'exception' => $e::class
+//                'file' => $e->getFile(),
+//                'line' => $e->getLine(),
             ];
         }
 
