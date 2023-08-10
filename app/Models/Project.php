@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\Enums\CommonStatus;
 use App\Events\ProjectCreated;
+use App\Models\Traits\IdScopeTrait;
 use App\Models\Traits\StatusScopeTrait;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends BaseModel
 {
+    use IdScopeTrait;
     use StatusScopeTrait;
 
     /**
