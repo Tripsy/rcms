@@ -21,9 +21,9 @@ return new class extends Migration
 
             $table->id();
 
-            $table->text('name');
+            $table->char('name', 255);
             $table->char('authority_name', 255)->index();
-            $table->char('authority_key', 255);
+            $table->char('authority_key', 32);
 
             $table->enum('status', CommonStatus::justKeys())->default(CommonStatus::INACTIVE->value);
 
@@ -31,6 +31,8 @@ return new class extends Migration
             $table->bigInteger('created_by',false, true)->nullable();
             $table->dateTime('updated_at')->nullable();
             $table->bigInteger('updated_by',false, true)->nullable();
+
+            $table->index(['authority_name', 'name']);
 
             $table->foreign('created_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
             $table->foreign('updated_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');

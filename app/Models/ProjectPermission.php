@@ -24,7 +24,6 @@ class ProjectPermission extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'uuid',
         'project_id',
         'user_id',
         'role',

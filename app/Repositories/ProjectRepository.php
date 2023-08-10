@@ -9,7 +9,7 @@ use App\Models\Project;
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Database\Eloquent\Model;
 
-class ProjectDataRepository implements ProjectRepositoryInterface
+class ProjectRepository implements ProjectRepositoryInterface
 {
     public function create(array $data): Project
     {
