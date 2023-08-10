@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
-use App\Interfaces\ProjectRepositoryInterface;
+use App\Enums\CommonStatus;
 use App\Models\Project;
+use App\Repositories\Interfaces\ProjectRepositoryInterface;
+use Illuminate\Database\Eloquent\Model;
 
-class ProjectRepository implements ProjectRepositoryInterface
+class ProjectDataRepository implements ProjectRepositoryInterface
 {
     public function create(array $data): Project
     {
@@ -22,5 +24,33 @@ class ProjectRepository implements ProjectRepositoryInterface
     public function delete(Project $model): bool
     {
         return $model->delete();
+    }
+
+    public function findByAuthority(string $authority_name, string $authority_key): Model
+    {
+        return Project::query()
+            ->where('authority_name', $authority_name)
+            ->where('authority_key', $authority_key)
+            ->firstOrFail();
+    }
+
+    public function isUnique(string $authority_name, string $name): bool
+    {
+        return !Project::query()
+            ->where('authority_name', $authority_name)
+            ->where('name', $name)
+            ->first();
+    }
+
+    public function showData(int $project_id): array
+    {
+        $project = $this->findById($project_id);
+
+        return [
+            'name' => $project->name,
+            'authority_name' => $project->authority_name,
+            'authority_key' => $project->authority_key,
+            'status' => CommonStatus::from($project->status)->text(),
+        ];
     }
 }
