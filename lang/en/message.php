@@ -18,14 +18,15 @@ return [
 
     'exception' => [
         'method_not_supported' => 'Method (eg: :method) is not supported on this route',
+        'class_method_not_found' => 'Method (eg: :method) not defined in class :class',
         'unauthenticated' => 'Failed to authenticate your connection',
         'not_found' => 'Record not found',
         'query' => 'Query error encountered',
-        'pdo' => 'PDO error encountered'
+        'pdo' => 'PDO error encountered',
     ],
 
     'account' => [
-        'create' => 'Account #:id created with success.'
+        'create' => 'Project #:id created with success.'
     ],
 
     'item' => [
@@ -33,4 +34,8 @@ return [
         'cannot_create_data' => 'Cannot create data item. Item #:uuid does not exist',
     ],
 
+    'project' => [
+        'store_fail' => 'Failed to create project!',
+        'already_exist' => 'Project already exist'
+    ],
 ];

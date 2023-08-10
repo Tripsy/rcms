@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use BadMethodCallException;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\QueryException;
@@ -10,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use PDOException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -43,6 +45,14 @@ class Handler extends ExceptionHandler
             }
         });
 
+        $this->renderable(function (BadMethodCallException $e, Request $request) {
+            if ($request->expectsJson()) {
+                Log::channel('test')->error($e->getMessage());
+
+                return $this->standardJsonResponseError($request, $e, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        });
+
         $this->renderable(function (NotFoundHttpException $e, Request $request) {
             if ($request->expectsJson()) {
                 Log::channel('mysql')->error($e->getMessage());
@@ -68,6 +78,20 @@ class Handler extends ExceptionHandler
         });
 
         $this->renderable(function (JobException $e, Request $request) {
+            if ($request->expectsJson()) {
+                Log::channel('test')->error($e->getMessage());
+
+                return $this->standardJsonResponseError($request, $e, $e->getMessage());
+            }
+        });
+
+        $this->renderable(function (ValidationException $e, Request $request) {
+            if ($request->expectsJson()) {
+                return $this->standardJsonResponseError($request, $e, $e->getMessage());
+            }
+        });
+
+        $this->renderable(function (ControllerException $e, Request $request) {
             if ($request->expectsJson()) {
                 Log::channel('test')->error($e->getMessage());
 
