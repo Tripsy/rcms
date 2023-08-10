@@ -12,7 +12,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-        //
+        //https://laravel.com/docs/10.x/eloquent-resources
     }
 
     /**

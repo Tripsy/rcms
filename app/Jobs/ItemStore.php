@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\Commands\ItemStoreCommand;
-use App\Interfaces\ItemRepositoryInterface;
+use App\Repositories\Interfaces\ItemRepositoryInterface;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Foundation\Bus\Dispatchable;

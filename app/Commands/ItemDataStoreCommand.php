@@ -4,8 +4,14 @@ declare(strict_types=1);
 
 namespace App\Commands;
 
+use App\Commands\Traits\AttributesCommandTrait;
+use App\Commands\Traits\GetUuidCommandTrait;
+
 class ItemDataStoreCommand
 {
+    use AttributesCommandTrait;
+    use GetUuidCommandTrait;
+
     private string $uuid;
     private string $label;
     private string $content;
@@ -15,11 +21,6 @@ class ItemDataStoreCommand
         $this->uuid = $uuid;
         $this->label = $label;
         $this->content = $content;
-    }
-
-    public function getUuid(): string
-    {
-        return $this->uuid;
     }
 
     public function getLabel(): string

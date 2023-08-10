@@ -2,10 +2,9 @@
 
 namespace App\Jobs;
 
-use App\Commands\ItemStoreCommand;
 use App\Commands\ItemUpdateCommand;
 use App\Exceptions\JobException;
-use App\Interfaces\ItemRepositoryInterface;
+use App\Repositories\Interfaces\ItemRepositoryInterface;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

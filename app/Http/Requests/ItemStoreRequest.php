@@ -4,10 +4,11 @@ namespace App\Http\Requests;
 
 use App\Enums\ItemStatus;
 use App\Models\Project;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 
-class ItemStoreRequest extends BaseRequest
+class ItemStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -4,8 +4,8 @@ namespace App\Jobs;
 
 use App\Commands\ItemDataStoreCommand;
 use App\Exceptions\JobException;
-use App\Interfaces\ItemDataRepositoryInterface;
-use App\Interfaces\ItemRepositoryInterface;
+use App\Repositories\Interfaces\ItemDataRepositoryInterface;
+use App\Repositories\Interfaces\ItemRepositoryInterface;
 use Exception;
 use Illuminate\Bus\Queueable;
 use Illuminate\Database\Eloquent\ModelNotFoundException;

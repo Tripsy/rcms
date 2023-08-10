@@ -4,10 +4,17 @@ declare(strict_types=1);
 
 namespace App\Commands;
 
+use App\Commands\Traits\AttributesCommandTrait;
+use App\Commands\Traits\GetStatusCommandTrait;
+use App\Commands\Traits\GetUuidCommandTrait;
 use App\Enums\ItemStatus;
 
 class ItemStoreCommand
 {
+    use AttributesCommandTrait;
+    use GetUuidCommandTrait;
+    use GetStatusCommandTrait;
+
     private string $uuid;
     private int $project_id;
     private string $description;
@@ -21,11 +28,6 @@ class ItemStoreCommand
         $this->status = $status;
     }
 
-    public function getUuid(): string
-    {
-        return $this->uuid;
-    }
-
     public function getProjectId(): int
     {
         return $this->project_id;
@@ -34,10 +36,5 @@ class ItemStoreCommand
     public function getDescription(): string
     {
         return $this->description;
-    }
-
-    public function getStatus(): ItemStatus
-    {
-        return $this->status;
     }
 }
