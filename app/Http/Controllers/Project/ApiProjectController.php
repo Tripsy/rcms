@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Project;
 
 use App\Commands\ProjectStoreCommand;
+use App\Commands\ProjectUpdateCommand;
 use App\Exceptions\ControllerException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectStoreRequest;
+use App\Http\Requests\ProjectUpdateRequest;
 use App\Jobs\ProjectStore;
+use App\Jobs\ProjectUpdate;
+use App\Models\Project;
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ApiProjectController extends Controller
@@ -72,36 +75,23 @@ class ApiProjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, int $id): JsonResponse
+    public function update(ProjectUpdateRequest $request, Project $project): JsonResponse
     {
-//        $validated = $request->validated();
-//
-//        $commandItem = new ItemUpdateCommand(
-//            $uuid,
-//            $validated['description']
-//        );
-//
-//        ItemUpdate::dispatchSync($commandItem);
-//
-//        foreach($validated['data'] as $itemData) {
-//            $commandItemData = new ItemDataStoreCommand(
-//                $commandItem->getUuid(),
-//                $itemData['label'],
-//                $itemData['content'],
-//            );
-//
-//            ItemDataStore::dispatchSync($commandItemData);
-//        }
-//
-//        return response()->json([
-//            'success' => true,
-//            'message' => __('message.success'),
-//            'data' => [
-//                'uuid' => $uuid,
-//                'description' => $commandItem->getDescription(),
-//                'data' => $validated['data'],
-//            ]
-//        ], Response::HTTP_OK);
+        $validated = $request->validated();
+
+        $commandProject = new ProjectUpdateCommand(
+            $project->id,
+            $validated['name'],
+            $validated['authority_name']
+        );
+
+        ProjectUpdate::dispatchSync($commandProject, $project);
+
+        return response()->json([
+            'success' => true,
+            'message' => __('message.success'),
+            'data' => $commandProject->attributes()
+        ], Response::HTTP_OK);
     }
 
     /**

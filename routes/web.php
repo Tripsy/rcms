@@ -1,10 +1,9 @@
 <?php
 
-use App\Enums\AccountStatus;
-use App\Enums\ItemStatus;
-use App\Http\Controllers\Account\AccountController;
+use App\Commands\ProjectStoreCommand;
 use App\Http\Controllers\ProfileController;
-use App\Models\Item;
+use App\Http\Controllers\Project\ProjectController;
+use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -20,17 +19,33 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/test', function () {
+Route::get('/test', function (ProjectRepositoryInterface $projectRepository) {
 //    $items = Item::all();
-    $item = Item::query()
-        ->uuid('99abffb3-7973-42cf-a7ac-ce484ef714f0')
-        ->first();
+//    $item = Item::query()
+//        ->uuid('99abffb3-7973-42cf-a7ac-ce484ef714f0')
+//        ->first();
+//
+//        try {
+//            $item = $itemRepository->findByUuid('99abffb3-7973-42cf-a7ac-ce484ef714f0');
+//        } catch (ModelNotFoundException $exception) {
+//            return response("Item not found", ResponseAlias::HTTP_NOT_FOUND);
+//        }
+//
+//
+//    dd('what');
 
-    dump($item->user);
-    dd($item);
+        $commandProject = new ProjectStoreCommand(
+            'test1',
+            'authority_name1',
+            'status1',
+        );
+
+
+    dump($commandProject->attributes());
+
 });
 
-Route::get('/account/show/{id}', [AccountController::class, 'show']);
+Route::get('/account/show/{id}', [ProjectController::class, 'show']);
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [

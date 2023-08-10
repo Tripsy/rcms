@@ -35,6 +35,7 @@ return [
     ],
 
     'project' => [
+        'not_found' => 'Project #:id does not exist',
         'store_fail' => 'Failed to create project!',
         'already_exist' => 'Project already exist'
     ],

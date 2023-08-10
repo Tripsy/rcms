@@ -31,6 +31,6 @@ Route::group([
     Route::get('/item/{uuid}', [ApiConsumerItemController::class, 'show']);
 
     Route::post('/project/new', [ApiProjectController::class, 'store']);
-    Route::put('/project/{id}', [ApiProjectController::class, 'update']);
-    Route::get('/project/{id}', [ApiProjectController::class, 'show']);
+    Route::put('/project/{project}', [ApiProjectController::class, 'update']);
+    Route::get('/project/{project}', [ApiProjectController::class, 'show']);
 });

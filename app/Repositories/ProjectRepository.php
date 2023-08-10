@@ -34,17 +34,29 @@ class ProjectRepository implements ProjectRepositoryInterface
             ->firstOrFail();
     }
 
-    public function isUnique(string $authority_name, string $name): bool
+    public function findById(int $id): ?Project
     {
-        return !Project::query()
-            ->where('authority_name', $authority_name)
-            ->where('name', $name)
-            ->first();
+        return Project::query()
+            ->id($id)
+            ->firstOrFail();
     }
 
-    public function showData(int $project_id): array
+    public function isUnique(string $authority_name, string $name, int $id = null): bool
     {
-        $project = $this->findById($project_id);
+        $project = Project::query()
+            ->where('authority_name', $authority_name)
+            ->where('name', $name);
+
+        if ($id) {
+            $project->where('id', '<>', $id);
+        }
+
+        return !$project->first();
+    }
+
+    public function showData(int $id): array
+    {
+        $project = $this->findById($id);
 
         return [
             'name' => $project->name,
