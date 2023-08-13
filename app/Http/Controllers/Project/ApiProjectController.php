@@ -8,8 +8,8 @@ use App\Exceptions\ControllerException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectStoreRequest;
 use App\Http\Requests\ProjectUpdateRequest;
-use App\Jobs\ProjectStore;
-use App\Jobs\ProjectUpdate;
+use App\Actions\ProjectStore;
+use App\Actions\ProjectUpdate;
 use App\Models\Project;
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -48,7 +48,7 @@ class ApiProjectController extends Controller
             $validated['status'] ?? '',
         );
 
-        ProjectStore::dispatchSync($commandProject);
+        ProjectStore::run($commandProject);
 
         try {
             $project = $projectRepository->findByAuthority($commandProject->getAuthorityName(), $commandProject->getAuthorityKey());
@@ -91,7 +91,7 @@ class ApiProjectController extends Controller
             $validated['authority_name']
         );
 
-        ProjectUpdate::dispatchSync($commandProject, $project);
+        ProjectUpdate::run($commandProject, $project);
 
         return response()->json([
             'success' => true,

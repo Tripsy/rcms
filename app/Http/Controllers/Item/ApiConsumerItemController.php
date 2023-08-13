@@ -9,9 +9,9 @@ use App\Enums\ItemStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ItemStoreRequest;
 use App\Http\Requests\ItemUpdateRequest;
-use App\Jobs\ItemDataStore;
-use App\Jobs\ItemStore;
-use App\Jobs\ItemUpdate;
+use App\Actions\ItemDataStore;
+use App\Actions\ItemStore;
+use App\Actions\ItemUpdate;
 use App\Models\Item;
 use App\Models\ItemData;
 use Illuminate\Http\JsonResponse;
@@ -49,7 +49,7 @@ class ApiConsumerItemController extends Controller
             empty($validated['status']) === false ? ItemStatus::from($validated['status']) : ItemStatus::DRAFT
         );
 
-        ItemStore::dispatchSync($commandItem);
+        ItemStore::run($commandItem);
 
         foreach($validated['data'] as $itemData) {
             $commandItemData = new ItemDataStoreCommand(
@@ -58,7 +58,7 @@ class ApiConsumerItemController extends Controller
                 $itemData['content'],
             );
 
-            ItemDataStore::dispatchSync($commandItemData);
+            ItemDataStore::run($commandItemData);
         }
 
         return response()->json([
@@ -116,7 +116,7 @@ class ApiConsumerItemController extends Controller
             $validated['description']
         );
 
-        ItemUpdate::dispatchSync($commandItem);
+        ItemUpdate::run($commandItem);
 
         foreach($validated['data'] as $itemData) {
             $commandItemData = new ItemDataStoreCommand(
@@ -125,7 +125,7 @@ class ApiConsumerItemController extends Controller
                 $itemData['content'],
             );
 
-            ItemDataStore::dispatchSync($commandItemData);
+            ItemDataStore::run($commandItemData);
         }
 
         return response()->json([
