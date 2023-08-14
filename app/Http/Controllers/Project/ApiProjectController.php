@@ -4,14 +4,17 @@ namespace App\Http\Controllers\Project;
 
 use App\Commands\ProjectStoreCommand;
 use App\Commands\ProjectUpdateCommand;
+use App\Enums\CommonStatus;
 use App\Exceptions\ControllerException;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ProjectIndexRequest;
 use App\Http\Requests\ProjectStoreRequest;
 use App\Http\Requests\ProjectUpdateRequest;
 use App\Actions\ProjectStore;
 use App\Actions\ProjectUpdate;
 use App\Models\Project;
 use App\Repositories\Interfaces\ProjectRepositoryInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
@@ -26,9 +29,45 @@ class ApiProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(ProjectIndexRequest $request): JsonResponse
     {
-        //
+        //add filter
+
+        Gate::authorize('index', Project::class);
+
+        $validated = $request->validated();
+
+        $projectsQuery = Project::query()
+            ->whereHas('permissions', function (Builder $query) {
+//                $query->where('status', CommonStatus::ACTIVE);
+            });
+
+        if ($validated['filter']['authority_name']) {
+            $projectsQuery->where('authority_name', $validated['filter']['authority_name']);
+        }
+
+        $projectsQuery
+            ->with('createdBy:id,name,email');
+
+        $projectsQuery
+            ->with('updatedBy:id,name,email');
+
+        $projectsQuery
+            ->skip($validated['page'] * $validated['limit'] - $validated['limit'])
+            ->take($validated['limit'])
+            ->get();
+
+        $projects = $projectsQuery->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => __('message.success'),
+            'data' => [
+                'results' => $projects,
+                'limit' => $validated['limit'],
+                'page' => $validated['page']
+            ]
+        ], Response::HTTP_OK);
     }
 
     /**
@@ -45,6 +84,7 @@ class ApiProjectController extends Controller
         $commandProject = new ProjectStoreCommand(
             $validated['name'],
             $validated['authority_name'],
+            $validated['authority_key'],
             $validated['status'] ?? '',
         );
 
@@ -88,7 +128,8 @@ class ApiProjectController extends Controller
         $commandProject = new ProjectUpdateCommand(
             $project->id,
             $validated['name'],
-            $validated['authority_name']
+            $validated['authority_name'],
+            $validated['authority_key']
         );
 
         ProjectUpdate::run($commandProject, $project);
@@ -103,8 +144,15 @@ class ApiProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Project $project): JsonResponse
     {
-        //
+        Gate::authorize('delete', $project);
+
+        $project->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => __('message.success'),
+        ], Response::HTTP_OK);
     }
 }

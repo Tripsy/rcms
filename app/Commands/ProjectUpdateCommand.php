@@ -17,16 +17,23 @@ class ProjectUpdateCommand
     private int $id;
     private string $name;
     private string $authority_name;
+    private string $authority_key;
 
-    public function __construct(int $id, string $name, string $authority_name)
+    public function __construct(int $id, string $name, string $authority_name, string $authority_key)
     {
         $this->id = $id;
         $this->name = $name;
         $this->authority_name = $authority_name;
+        $this->authority_key = $authority_key;
     }
 
     public function getAuthorityName(): string
     {
         return $this->authority_name;
+    }
+
+    public function getAuthorityKey(): string
+    {
+        return $this->authority_key;
     }
 }

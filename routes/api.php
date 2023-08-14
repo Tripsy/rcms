@@ -30,7 +30,10 @@ Route::group([
     Route::put('/item/{uuid}', [ApiConsumerItemController::class, 'update']);
     Route::get('/item/{uuid}', [ApiConsumerItemController::class, 'show']);
 
+    Route::get('/project', [ApiProjectController::class, 'index']);
+    Route::get('/project/{project}', [ApiProjectController::class, 'show']);
     Route::post('/project/new', [ApiProjectController::class, 'store']);
     Route::put('/project/{project}', [ApiProjectController::class, 'update']);
     Route::get('/project/{project}', [ApiProjectController::class, 'show']);
+    Route::delete('/project/{project}', [ApiProjectController::class, 'destroy']);
 });

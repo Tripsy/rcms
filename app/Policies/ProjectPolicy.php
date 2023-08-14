@@ -35,6 +35,14 @@ class ProjectPolicy
     }
 
     /**
+     * Determine whether the user can list the model.
+     */
+    public function index(User $user): Response
+    {
+        return Response::allow();
+    }
+
+    /**
      * Determine whether the user can view the model.
      */
     public function view(User $user, Project $project): Response

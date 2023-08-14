@@ -8,7 +8,6 @@ use App\Commands\Traits\AttributesCommandTrait;
 use App\Commands\Traits\GetNameCommandTrait;
 use App\Commands\Traits\GetStatusCommandTrait;
 use App\Enums\CommonStatus;
-use Illuminate\Support\Str;
 
 class ProjectStoreCommand
 {
@@ -21,11 +20,11 @@ class ProjectStoreCommand
     private string $authority_key;
     private CommonStatus $status;
 
-    public function __construct(string $name, string $authority_name, string $status)
+    public function __construct(string $name, string $authority_name, string $authority_key, string $status)
     {
         $this->name = $name;
         $this->authority_name = $authority_name;
-        $this->authority_key = Str::random(32);
+        $this->authority_key = $authority_key;
         $this->status = CommonStatus::tryFrom($status) ?? CommonStatus::ACTIVE;
     }
 
