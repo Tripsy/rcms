@@ -26,7 +26,7 @@ class ItemStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'project_id' => ['int', 'required', Rule::exists(Project::class, 'id')],
+            'project_id' => ['required', 'int', Rule::exists(Project::class, 'id')],
             'status' => ['sometimes', new Enum(ItemStatus::class)],
             'description' => ['present', 'string'],
             'data.*.label' => ['required', 'string', 'max:64'],
