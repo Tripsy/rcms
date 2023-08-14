@@ -134,7 +134,7 @@ class Handler extends ExceptionHandler
             ];
         }
 
-        return response()->json($responseData, returnValidHttpResponseCode($e->getCode(), $fallBackCode));
+        return response()->json($responseData, returnValidHttpResponseCode((int) $e->getCode(), $fallBackCode));
     }
 
     /**
