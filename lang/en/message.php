@@ -20,7 +20,8 @@ return [
         'method_not_supported' => 'Method (eg: :method) is not supported on this route',
         'class_method_not_found' => 'Method (eg: :method) not defined in class :class',
         'unauthenticated' => 'Failed to authenticate your connection',
-        'not_found' => 'Record not found',
+        'model_not_found' => 'Record not found',
+        'not_found' => 'Not found',
         'query' => 'Query error encountered',
         'pdo' => 'PDO error encountered',
         'access_denied' => 'Access Denied: You do not have permission to perform this action'

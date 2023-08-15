@@ -22,28 +22,26 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ApiProjectController extends Controller
 {
-    public function __construct()
-    {
-    }
-
     /**
      * Display a listing of the resource.
      */
     public function index(ProjectIndexRequest $request): JsonResponse
     {
-        //add filter
-
         Gate::authorize('index', Project::class);
 
         $validated = $request->validated();
 
         $projectsQuery = Project::query()
             ->whereHas('permissions', function (Builder $query) {
-//                $query->where('status', CommonStatus::ACTIVE);
+                $query->where('status', CommonStatus::ACTIVE);
             });
 
         if ($validated['filter']['authority_name']) {
             $projectsQuery->where('authority_name', $validated['filter']['authority_name']);
+        }
+
+        if ($validated['filter']['status']) {
+            $projectsQuery->where('status', $validated['filter']['status']);
         }
 
         $projectsQuery
@@ -111,9 +109,19 @@ class ApiProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Project $project): JsonResponse
     {
-        //
+        Gate::authorize('view', $project);
+
+        $project
+            ->load('createdBy:id,name,email')
+            ->load('updatedBy:id,name,email');
+
+        return response()->json([
+            'success' => true,
+            'message' => __('message.success'),
+            'data' => $project
+        ], Response::HTTP_OK);
     }
 
     /**

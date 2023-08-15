@@ -65,4 +65,13 @@ class ProjectRepository implements ProjectRepositoryInterface
             'status' => CommonStatus::from($project->status)->text(),
         ];
     }
+
+//    public function returnApiModel(int $id): Model
+//    {
+//        return Project::query()
+//            ->with('createdBy:id,name,email')
+//            ->with('updatedBy:id,name,email')
+//            ->id($id)
+//            ->firstOrFail();
+//    }
 }

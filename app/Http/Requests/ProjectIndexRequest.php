@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\CommonStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class ProjectIndexRequest extends FormRequest
 {
@@ -25,7 +27,8 @@ class ProjectIndexRequest extends FormRequest
             'page' => $this->page ?? 1,
             'limit' => $this->limit ?? 5,
             'filter' => [
-                'authority_name' => $this->filter['authority_name'] ?? ''
+                'authority_name' => $this->filter['authority_name'] ?? '',
+                'status' => $this->filter['status'] ?? '',
             ]
         ]);
     }
@@ -41,6 +44,7 @@ class ProjectIndexRequest extends FormRequest
             'page' => ['required', 'numeric'],
             'limit' => ['required', 'numeric', 'max:15'],
             'filter.authority_name' => ['sometimes', 'nullable', 'string'],
+            'filter.status' => ['sometimes', new Enum(CommonStatus::class)],
         ];
     }
 }
