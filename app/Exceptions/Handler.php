@@ -6,18 +6,25 @@ use BadMethodCallException;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
+use Illuminate\Database\RecordsNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Exceptions\BackedEnumCaseNotFoundException;
+use Illuminate\Session\TokenMismatchException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use PDOException;
+use Symfony\Component\HttpFoundation\Exception\SuspiciousOperationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -33,10 +40,33 @@ class Handler extends ExceptionHandler
     ];
 
     /**
+     * Overwrite the base class method to change of
+     *      ModelNotFoundException to NotFoundHttpException
+     *      RecordsNotFoundException to NotFoundHttpException
+     *
+     * @param Throwable $e
+     * @return Throwable
+     */
+    protected function prepareException(Throwable $e): Throwable
+    {
+        if ($e instanceof ModelNotFoundException) {
+            return $e;
+        }
+
+        if ($e instanceof RecordsNotFoundException) {
+            return $e;
+        }
+
+        return parent::prepareException($e);
+    }
+
+    /**
      * Register the exception handling callbacks for the application.
      */
     public function register(): void
     {
+//        $this->stopIgnoring(ModelNotFoundException::class); //this does update $this->internalDontReport but the exception is still not reported
+
         $this->renderable(function (MethodNotAllowedHttpException $e, Request $request) {
             if ($request->expectsJson()) {
                 Log::channel('test')->error($e->getMessage());
@@ -55,10 +85,16 @@ class Handler extends ExceptionHandler
             }
         });
 
-        $this->renderable(function (NotFoundHttpException $e, Request $request) {
+        $this->renderable(function (ModelNotFoundException $e, Request $request) {
             if ($request->expectsJson()) {
                 Log::channel('mysql')->error($e->getMessage());
 
+                return $this->standardJsonResponseError($request, $e, __('message.exception.model_not_found'), Response::HTTP_NOT_FOUND);
+            }
+        });
+
+        $this->renderable(function (NotFoundHttpException $e, Request $request) {
+            if ($request->expectsJson()) {
                 return $this->standardJsonResponseError($request, $e, __('message.exception.not_found'), Response::HTTP_NOT_FOUND);
             }
         });
