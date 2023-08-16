@@ -4,7 +4,7 @@ namespace App\Actions;
 
 use App\Actions\Traits\AsAction;
 use App\Commands\ItemDataStoreCommand;
-use App\Exceptions\JobException;
+use App\Exceptions\ActionException;
 use App\Repositories\Interfaces\ItemDataRepositoryInterface;
 use App\Repositories\Interfaces\ItemRepositoryInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -38,7 +38,7 @@ class ItemDataStore
                 'uuid' => $command->getUuid()
             ]);
 
-            throw new JobException($message, Response::HTTP_UNPROCESSABLE_ENTITY); this has to go away
+            throw new ActionException($message, Response::HTTP_UNPROCESSABLE_ENTITY); this has to go away
         }
     }
 }

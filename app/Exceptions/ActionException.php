@@ -4,7 +4,7 @@ namespace App\Exceptions;
 
 use Exception;
 
-class JobException extends Exception
+class ActionException extends Exception
 {
     //
 }

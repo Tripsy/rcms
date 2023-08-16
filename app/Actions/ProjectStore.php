@@ -4,22 +4,22 @@ namespace App\Actions;
 
 use App\Actions\Traits\AsAction;
 use App\Commands\ProjectStoreCommand;
-use App\Repositories\Interfaces\ProjectRepositoryInterface;
+use App\Queries\ProjectCreateQuery;
 
 class ProjectStore
 {
     use AsAction;
 
-    private ProjectRepositoryInterface $projectRepository;
+    private ProjectCreateQuery $projectCreateQuery;
 
-    public function __construct(ProjectRepositoryInterface $projectRepository)
+    public function __construct(ProjectCreateQuery $projectCreateQuery)
     {
-        $this->projectRepository = $projectRepository;
+        $this->projectCreateQuery = $projectCreateQuery;
     }
 
-    public function handle(ProjectStoreCommand $command): void
+    public function handle(ProjectStoreCommand $command, ): void
     {
-        $this->projectRepository->create([
+        $this->projectCreateQuery->create([
             'name' => $command->getName(),
             'authority_name' => $command->getAuthorityName(),
             'authority_key' => $command->getAuthorityKey(),

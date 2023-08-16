@@ -1,27 +1,38 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions;
 
 use App\Actions\Traits\AsAction;
-use App\Commands\ProjectStoreCommand;
-use App\Repositories\Interfaces\ProjectRepositoryInterface;
+use App\Commands\ProjectUpdateCommand;
+use App\Exceptions\ActionException;
+use App\Queries\ProjectUpdateQuery;
 
 class ProjectUpdate
 {
     use AsAction;
 
-    private ProjectRepositoryInterface $projectRepository;
+    private ProjectUpdateQuery $projectUpdateQuery;
 
-    public function __construct(ProjectRepositoryInterface $projectRepository)
+    public function __construct(ProjectUpdateQuery $projectUpdateQuery)
     {
-        $this->projectRepository = $projectRepository;
+        $this->projectUpdateQuery = $projectUpdateQuery;
     }
 
-    public function handle(ProjectStoreCommand $command): void
+    /**
+     * @param ProjectUpdateCommand $command
+     * @return void
+     * @throws ActionException
+     */
+    public function handle(ProjectUpdateCommand $command): void
     {
-        $this->projectRepository->create([
-            'name' => $command->getName(),
-            'authority_name' => $command->getAuthorityName(),
-        ]);
+        $this->projectUpdateQuery
+            ->filterById($command->getId())
+            ->update([
+                'name' => $command->getName(),
+                'authority_name' => $command->getAuthorityName(),
+                'authority_key' => $command->getAuthorityKey(),
+            ]);
     }
 }

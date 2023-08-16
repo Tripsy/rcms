@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Project\ApiProjectController;
 use App\Http\Controllers\Item\ApiConsumerItemController;
+use App\Http\Controllers\Project\ApiProjectStatusController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,4 +37,5 @@ Route::group([
     Route::post('/project/new', [ApiProjectController::class, 'store']);
     Route::put('/project/{project}', [ApiProjectController::class, 'update'])->where('project', '[0-9]+');
     Route::delete('/project/{project}', [ApiProjectController::class, 'destroy'])->where('project', '[0-9]+');
+    Route::patch('/project/{project}/{status}', ApiProjectStatusController::class)->where('project', '[0-9]+');
 });

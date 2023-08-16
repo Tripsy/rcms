@@ -19,7 +19,7 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/test', function (ProjectRepositoryInterface $projectRepository) {
+Route::get('/test', function (\App\Queries\ProjectDeleteQuery $projectDeleteQuery) {
 //    $items = Item::all();
 //    $item = Item::query()
 //        ->uuid('99abffb3-7973-42cf-a7ac-ce484ef714f0')
@@ -34,14 +34,7 @@ Route::get('/test', function (ProjectRepositoryInterface $projectRepository) {
 //
 //    dd('what');
 
-        $commandProject = new ProjectStoreCommand(
-            'test1',
-            'authority_name1',
-            'status1',
-        );
-
-
-    dump($commandProject->attributes());
+      $projectDeleteQuery->delete();
 
 });
 

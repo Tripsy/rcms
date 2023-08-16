@@ -30,7 +30,7 @@ class ItemUpdate
                 'uuid' => $this->command->getUuid()
             ]);
 
-            throw new JobException($message, Response::HTTP_NOT_FOUND); //this has to go away
+            throw new ActionException($message, Response::HTTP_NOT_FOUND); //this has to go away
         }
     }
 }

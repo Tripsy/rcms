@@ -116,7 +116,7 @@ class Handler extends ExceptionHandler
             }
         });
 
-        $this->renderable(function (JobException $e, Request $request) {
+        $this->renderable(function (ActionException $e, Request $request) {
             if ($request->expectsJson()) {
                 Log::channel('test')->error($e->getMessage());
 

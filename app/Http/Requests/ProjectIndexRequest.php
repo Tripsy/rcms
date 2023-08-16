@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\CommonStatus;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
@@ -36,13 +37,13 @@ class ProjectIndexRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
         return [
-            'page' => ['required', 'numeric'],
-            'limit' => ['required', 'numeric', 'max:15'],
+            'page' => ['required', 'integer'],
+            'limit' => ['required', 'integer', 'max:15'],
             'filter.authority_name' => ['sometimes', 'nullable', 'string'],
             'filter.status' => ['sometimes', new Enum(CommonStatus::class)],
         ];
