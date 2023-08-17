@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Project;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Interfaces\ProjectRepositoryInterface;
+use App\Models\Project;
+use App\Queries\ProjectReadQuery;
 
 class ProjectController extends Controller
 {
@@ -28,9 +29,9 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ProjectRepositoryInterface $projectRepository, int $project_id): array
+    public function show(Project $project, ProjectReadQuery $query): array
     {
-        return $projectRepository->showData($project_id);
+//        return projectReadQuery->showData($project_id);
     }
 
     /**

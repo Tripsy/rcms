@@ -3,10 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Enums\CommonStatus;
-use App\Repositories\Interfaces\ProjectRepositoryInterface;
+use App\Queries\ProjectReadQuery;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
-use Illuminate\Validation\Validator;
 
 class ProjectStoreRequest extends FormRequest
 {
@@ -36,12 +35,17 @@ class ProjectStoreRequest extends FormRequest
     /**
      * Get the "after" validation callables for the request.
      */
-    public function after(ProjectRepositoryInterface $projectRepository): array
+    public function after(ProjectReadQuery $query): array
     {
         return [
-            function (Validator $validator) use ($projectRepository) {
-                if ($projectRepository->isUnique($validator->safe()->authority_name, $validator->safe()->name) === false) {
-                    $validator->errors()->add(
+            function () use ($query) {
+                $project = $query
+                    ->filterByAuthorityName($this->validator->safe()->authority_name)
+                    ->filterByName($this->validator->safe()->name)
+                    ->isUnique();
+
+                if ($project === false) {
+                    $this->validator->errors()->add(
                         'other',
                         __('message.project.already_exist')
                     );

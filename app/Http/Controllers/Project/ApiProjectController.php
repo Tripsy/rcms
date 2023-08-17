@@ -16,9 +16,7 @@ use App\Http\Requests\ProjectUpdateRequest;
 use App\Actions\ProjectStore;
 use App\Actions\ProjectUpdate;
 use App\Models\Project;
-use App\Queries\ProjectFirstQuery;
-use App\Queries\ProjectGetQuery;
-use App\Repositories\Interfaces\ProjectRepositoryInterface;
+use App\Queries\ProjectReadQuery;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
@@ -29,7 +27,7 @@ class ApiProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(ProjectIndexRequest $request, ProjectGetQuery $projects): JsonResponse
+    public function index(ProjectIndexRequest $request, ProjectReadQuery $query): JsonResponse
     {
         Gate::authorize('index', Project::class);
 
@@ -37,7 +35,7 @@ class ApiProjectController extends Controller
         $validated['page'] = (int) $validated['page'];
         $validated['limit'] = (int) $validated['limit'];
 
-        $projects = $projects
+        $projects = $query
             ->whereHasPermission()
             ->filterByAuthorityName($validated['filter']['authority_name'])
             ->filterByStatus($validated['filter']['status'])
@@ -62,23 +60,26 @@ class ApiProjectController extends Controller
      *
      * @throws ControllerException
      */
-    public function store(ProjectStoreRequest $request, ProjectRepositoryInterface $projectRepository): JsonResponse
+    public function store(ProjectStoreRequest $request, ProjectReadQuery $query): JsonResponse
     {
         Gate::authorize('create', Project::class);
 
         $validated = $request->validated();
 
-        $commandProject = new ProjectStoreCommand(
+        $command = new ProjectStoreCommand(
             $validated['name'],
             $validated['authority_name'],
             $validated['authority_key'],
             $validated['status'] ?? '',
         );
 
-        ProjectStore::run($commandProject);
+        ProjectStore::run($command);
 
         try {
-            $project = $projectRepository->findByAuthority($commandProject->getAuthorityName(), $commandProject->getAuthorityKey());
+            $project = $query
+                ->filterByAuthorityName($command->getAuthorityName())
+                ->filterByName($command->getName())
+                ->firstOrFail();
         } catch (ModelNotFoundException) {
             throw new ControllerException(__('message.project.store_fail'), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -90,7 +91,7 @@ class ApiProjectController extends Controller
                 [
                     'id' => $project->id,
                 ],
-                $commandProject->attributes()
+                $command->attributes()
             )
         ], Response::HTTP_CREATED);
     }
@@ -98,11 +99,11 @@ class ApiProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project, ProjectFirstQuery $projectFirstQuery): JsonResponse
+    public function show(Project $project, ProjectReadQuery $query): JsonResponse
     {
         Gate::authorize('view', $project);
 
-        $project = $projectFirstQuery
+        $project = $query
             ->filterById($project->id)
             ->withCreatedBy()
             ->withUpdatedBy()
@@ -124,19 +125,19 @@ class ApiProjectController extends Controller
 
         $validated = $request->validated();
 
-        $commandProject = new ProjectUpdateCommand(
+        $command = new ProjectUpdateCommand(
             $project->id,
             $validated['name'],
             $validated['authority_name'],
             $validated['authority_key']
         );
 
-        ProjectUpdate::run($commandProject);
+        ProjectUpdate::run($command);
 
         return response()->json([
             'success' => true,
             'message' => __('message.success'),
-            'data' => $commandProject->attributes()
+            'data' => $command->attributes()
         ], Response::HTTP_OK);
     }
 
@@ -147,11 +148,11 @@ class ApiProjectController extends Controller
     {
         Gate::authorize('delete', $project);
 
-        $commandProject = new ProjectDeleteCommand(
+        $command = new ProjectDeleteCommand(
             $project->id
         );
 
-        ProjectDelete::run($commandProject);
+        ProjectDelete::run($command);
 
         return response()->json([
             'success' => true,

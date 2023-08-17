@@ -11,11 +11,11 @@ class ProjectDelete
 {
     use AsAction;
 
-    private ProjectDeleteQuery $projectDeleteQuery;
+    private ProjectDeleteQuery $query;
 
-    public function __construct(ProjectDeleteQuery $projectDeleteQuery)
+    public function __construct(ProjectDeleteQuery $query)
     {
-        $this->projectDeleteQuery = $projectDeleteQuery;
+        $this->query = $query;
     }
 
     /**
@@ -25,8 +25,8 @@ class ProjectDelete
      */
     public function handle(ProjectDeleteCommand $command): void
     {
-        $this->projectDeleteQuery
+        $this->query
             ->filterById($command->getId())
-            ->delete();
+            ->deleteFirst();
     }
 }

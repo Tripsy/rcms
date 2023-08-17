@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests;
 
-use App\Repositories\Interfaces\ProjectRepositoryInterface;
+use App\Queries\ProjectReadQuery;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Validator;
 
 class ProjectUpdateRequest extends FormRequest
 {
@@ -33,12 +32,18 @@ class ProjectUpdateRequest extends FormRequest
     /**
      * Get the "after" validation callables for the request.
      */
-    public function after(ProjectRepositoryInterface $projectRepository): array
+    public function after(ProjectReadQuery $query): array
     {
         return [
-            function (Validator $validator) use ($projectRepository) {
-                if ($projectRepository->isUnique($validator->safe()->authority_name, $validator->safe()->name, $this->route('project')->id) === false) {
-                    $validator->errors()->add(
+            function () use ($query) {
+                $project = $query
+                    ->filterByAuthorityName($this->validator->safe()->authority_name)
+                    ->filterByName( $this->validator->safe()->name)
+                    ->filterById($this->route('project')->id, '<>') //ignore updated entry
+                    ->isUnique();
+
+                if ($project === false) {
+                    $this->validator->errors()->add(
                         'other',
                         __('message.project.already_exist')
                     );

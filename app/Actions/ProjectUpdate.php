@@ -13,11 +13,11 @@ class ProjectUpdate
 {
     use AsAction;
 
-    private ProjectUpdateQuery $projectUpdateQuery;
+    private ProjectUpdateQuery $query;
 
-    public function __construct(ProjectUpdateQuery $projectUpdateQuery)
+    public function __construct(ProjectUpdateQuery $query)
     {
-        $this->projectUpdateQuery = $projectUpdateQuery;
+        $this->query = $query;
     }
 
     /**
@@ -27,9 +27,9 @@ class ProjectUpdate
      */
     public function handle(ProjectUpdateCommand $command): void
     {
-        $this->projectUpdateQuery
+        $this->query
             ->filterById($command->getId())
-            ->update([
+            ->updateFirst([
                 'name' => $command->getName(),
                 'authority_name' => $command->getAuthorityName(),
                 'authority_key' => $command->getAuthorityKey(),
