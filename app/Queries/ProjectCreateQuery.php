@@ -6,10 +6,10 @@ namespace App\Queries;
 
 use App\Models\Project;
 
-class ProjectCreateQuery
+class ProjectCreateQuery extends AbstractCreateQuery
 {
-    public function create(array $data): void
+    public function __construct(Project $model)
     {
-        Project::create($data);
+        $this->model = $model;
     }
 }
