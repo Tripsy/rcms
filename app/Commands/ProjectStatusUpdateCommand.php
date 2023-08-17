@@ -6,12 +6,14 @@ namespace App\Commands;
 
 use App\Commands\Traits\AttributesCommandTrait;
 use App\Commands\Traits\GetIdCommandTrait;
+use App\Commands\Traits\GetStatusCommandTrait;
 use App\Enums\CommonStatus;
 
 class ProjectStatusUpdateCommand
 {
     use AttributesCommandTrait;
     use GetIdCommandTrait;
+    use GetStatusCommandTrait;
 
     private int $id;
     private CommonStatus $status;
