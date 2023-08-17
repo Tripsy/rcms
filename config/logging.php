@@ -140,6 +140,13 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'project' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/project.log'),
+            'level' => env('LOG_LEVEL', 'info'),
+            'replace_placeholders' => true,
+        ],
+
         'mysql' => [
             'driver' => 'single',
             'path' => storage_path('logs/mysql.log'),

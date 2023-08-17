@@ -29,7 +29,7 @@ class ProjectStatusUpdate
     {
         $this->query
             ->filterById($command->getId())
-            ->update([
+            ->updateFirst([
                 'status' => $command->getStatus(),
             ]);
     }

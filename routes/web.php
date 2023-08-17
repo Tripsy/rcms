@@ -1,9 +1,7 @@
 <?php
 
-use App\Commands\ProjectStoreCommand;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Project\ProjectController;
-use App\Repositories\Interfaces\ProjectRepositoryInterface;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -19,7 +17,7 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/test', function (\App\Queries\ProjectDeleteQuery $projectDeleteQuery) {
+Route::get('/test', function (\App\Queries\ProjectUpdateQuery $query) {
 //    $items = Item::all();
 //    $item = Item::query()
 //        ->uuid('99abffb3-7973-42cf-a7ac-ce484ef714f0')
@@ -34,7 +32,11 @@ Route::get('/test', function (\App\Queries\ProjectDeleteQuery $projectDeleteQuer
 //
 //    dd('what');
 
-      $projectDeleteQuery->delete();
+        $query
+            ->filterById(28)
+            ->updateFirst([
+                'name' => 'testing4',
+            ]);
 
 });
 

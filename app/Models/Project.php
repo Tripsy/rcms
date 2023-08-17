@@ -4,9 +4,7 @@ namespace App\Models;
 
 use App\Enums\CommonStatus;
 use App\Enums\ProjectPermissionRole;
-use App\Events\ProjectCreated;
 use App\Models\Traits\CreatedByRelationTrait;
-use App\Models\Traits\IdScopeTrait;
 use App\Models\Traits\StatusScopeTrait;
 use App\Models\Traits\UpdatedByRelationTrait;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -16,7 +14,6 @@ class Project extends BaseModel
 {
     use CreatedByRelationTrait;
     use UpdatedByRelationTrait;
-    use IdScopeTrait;
     use StatusScopeTrait;
 
     /**
@@ -50,10 +47,16 @@ class Project extends BaseModel
     /**
      * The event map for the model.
      *
+     * Eloquent models dispatch several events, allowing you to hook into the following moments in a model's lifecycle: retrieved, creating, created, updating, updated,
+     * saving, saved, deleting, deleted, trashed, forceDeleting, forceDeleted, restoring, restored, and replicating.
+     *
+     * If you are listening for many events on a given model, you may use observers to group all of your listeners into a single class.
+     * Observer classes have method names which reflect the Eloquent events you wish to listen for. Each of these methods receives the affected model as their only argument.
+     *
      * @var array
      */
     protected $dispatchesEvents = [
-        'created' => ProjectCreated::class, //can also be modeled as a model Observer //TODO
+//        'created' => ProjectCreated::class, // replaced by use of app/Observers/ProjectObserver.php
     ];
 
     /**

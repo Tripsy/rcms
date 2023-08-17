@@ -2,14 +2,9 @@
 
 namespace App\Providers;
 
-use App\Models\Item;
-use App\Models\ItemData;
-use App\Models\ItemType;
-use App\Models\ItemTypeLabel;
+use App\Listeners\ProjectSubscriber;
 use App\Models\Project;
-use App\Models\ProjectPermission;
-use App\Observers\CreatedByObserver;
-use App\Observers\UpdatedByObserver;
+use App\Observers\ProjectObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -25,38 +20,57 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+//        ProjectCreated::class => [
+//            ProjectCreatedLog::class,
+////            ProjectCacheRefresh::class,
+//        ],
+    ];
+
+    /**
+     * The subscriber classes to register.
+     *
+     * Event subscribers are classes that may subscribe to multiple events from within the subscriber class itself, allowing you to define several event handlers
+     * within a single class. Subscribers should define a subscribe method, which will be passed an event dispatcher instance. You may call the listen
+     * method on the given dispatcher to register event listeners:
+     *
+     * @var array
+     */
+    protected $subscribe = [
+        ProjectSubscriber::class,
+//        LogSubscriber::class,
     ];
 
     /**
      * The model observers for your application.
      *
+     * If you are listening for many events on a given model, you may use observers to group all of your listeners into a single class.
+     * Observer classes have method names which reflect the Eloquent events you wish to listen for. Each of these methods receives the affected model as their
+     * only argument. The make:observer Artisan command is the easiest way to create a new observer class:
+     *
+     * $ php artisan make:observer UserObserver --model=User
+     *
      * @var array
      */
     protected $observers = [
-        Item::class => [
-            CreatedByObserver::class,
-            UpdatedByObserver::class,
-        ],
-        ItemData::class => [
-            CreatedByObserver::class,
-            UpdatedByObserver::class,
-        ],
+//        Item::class => [
+//            ItemObserver::class,
+//        ],
+//        ItemData::class => [
+//            ItemObserver::class,
+//        ],
         Project::class => [
-            CreatedByObserver::class,
-            UpdatedByObserver::class,
+            ProjectObserver::class,
+//            ItemObserver::class,
         ],
-        ProjectPermission::class => [
-            CreatedByObserver::class,
-            UpdatedByObserver::class,
-        ],
-        ItemType::class => [
-            CreatedByObserver::class,
-            UpdatedByObserver::class,
-        ],
-        ItemTypeLabel::class => [
-            CreatedByObserver::class,
-            UpdatedByObserver::class,
-        ],
+//        ProjectPermission::class => [
+//            ItemObserver::class,
+//        ],
+//        ItemType::class => [
+//            ItemObserver::class,
+//        ],
+//        ItemTypeLabel::class => [
+//            ItemObserver::class,
+//        ],
     ];
 
     /**
@@ -69,9 +83,12 @@ class EventServiceProvider extends ServiceProvider
 
     /**
      * Determine if events and listeners should be automatically discovered.
+     *
+     * https://laravel.com/docs/10.x/events#event-discovery
+     *
      */
     public function shouldDiscoverEvents(): bool
     {
-        return true; //TODO https://laravel.com/docs/10.x/events#event-discovery
+        return false;
     }
 }
