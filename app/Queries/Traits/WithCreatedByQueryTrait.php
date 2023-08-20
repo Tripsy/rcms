@@ -6,6 +6,9 @@ namespace App\Queries\Traits;
 
 trait WithCreatedByQueryTrait
 {
+    /**
+     * When using `with`, you should always include the id column and any relevant foreign key columns in the list of columns you wish to retrieve.
+     */
     public function withCreatedBy(array $fields = ['name']): self
     {
         array_unshift($fields,'id');
