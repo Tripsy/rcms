@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Project\ProjectController;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,7 +18,7 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/test', function (\App\Queries\ProjectUpdateQuery $query) {
+Route::get('/test', function (\App\Repositories\ProjectRepository $r) {
 //    $items = Item::all();
 //    $item = Item::query()
 //        ->uuid('99abffb3-7973-42cf-a7ac-ce484ef714f0')
@@ -32,11 +33,46 @@ Route::get('/test', function (\App\Queries\ProjectUpdateQuery $query) {
 //
 //    dd('what');
 
-        $query
-            ->filterById(28)
-            ->updateFirst([
-                'name' => 'testing4',
-            ]);
+//        $query
+//            ->filterById(28)
+//            ->updateFirst([
+//                'name' => 'testing4',
+//            ]);
+
+    $listTags = $r->getCacheTags('list', [
+        'user' => 1,
+        'authority' => 'key'
+    ]);
+
+    $listKey = $r->getCacheKey([
+          "page" => "1",
+          "limit" => "15",
+          "filter" => [
+            "authority_name" =>"https://play-zone.ro"
+          ]
+    ]);
+
+    $vieTags = $r->getCacheTags('view');
+
+    $viewKey = $r->getCacheKey(22);
+
+    dump($listTags);
+    dump($listKey);
+    dump($vieTags);
+    dump($viewKey);
+
+//    $listCache = cache()->tags($listTags)->remember($listKey, $r::CacheTime, function () {
+//        return 'testListCache';
+//    });
+//    $viewCache = cache()->tags($vieTags)->remember($viewKey, $r::CacheTime, function () {
+//        return 'testViewCache';
+//    });
+    $listCache = cache()->tags($listTags)->get($listKey);
+    $viewCache = cache()->tags($vieTags)->get($viewKey);
+//    cache()->tags(['list', 'view'])->flush();
+
+    dump($listCache);
+    dump($viewCache);
 
 });
 

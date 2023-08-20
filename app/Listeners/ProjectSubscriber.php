@@ -6,13 +6,22 @@ namespace App\Listeners;
 
 use App\Enums\CommonStatus;
 use App\Events\ProjectActivated;
+use App\Events\ProjectCache;
 use App\Events\ProjectCreated;
 use App\Events\ProjectUpdated;
+use App\Repositories\ProjectRepository;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Log;
 
 class ProjectSubscriber
 {
+    private ProjectRepository $repository;
+
+    public function __construct(ProjectRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+
     /**
      * Handle project created event.
      */
@@ -52,7 +61,7 @@ class ProjectSubscriber
     }
 
     /**
-     * Handle project updated event.
+     * Handle project activated event.
      */
     public function handleProjectActivated(ProjectActivated $event): void
     {
@@ -60,6 +69,23 @@ class ProjectSubscriber
             'id_project' => $event->project->id,
             'id_user' => $event->project->updated_by,
         ]));
+    }
+
+    /**
+     * Handle cache on project change event.
+     */
+    public function handleProjectCache(ProjectCache $event): void
+    {
+         $this->repository
+            ->buildCacheTags(['list'])
+            ->flushCacheByTags();
+
+         if (empty($event->project->id) === false) {
+             $this->repository
+                 ->buildCacheTags(['list'])
+                 ->buildCacheKey($event->project->id)
+                 ->removeCacheContent();
+         }
     }
 
     /**
@@ -80,6 +106,11 @@ class ProjectSubscriber
         $events->listen(
             ProjectActivated::class,
             [ProjectSubscriber::class, 'handleProjectActivated']
+        );
+
+        $events->listen(
+            ProjectCache::class,
+            [ProjectSubscriber::class, 'handleProjectCache']
         );
     }
 }

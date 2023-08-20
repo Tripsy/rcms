@@ -17,6 +17,7 @@ use App\Actions\ProjectStore;
 use App\Actions\ProjectUpdate;
 use App\Models\Project;
 use App\Queries\ProjectReadQuery;
+use App\Repositories\ProjectRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
@@ -27,7 +28,7 @@ class ApiProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(ProjectIndexRequest $request, ProjectReadQuery $query): JsonResponse
+    public function index(ProjectIndexRequest $request, ProjectReadQuery $query, ProjectRepository $repository): JsonResponse
     {
         Gate::authorize('index', Project::class);
 
@@ -35,17 +36,20 @@ class ApiProjectController extends Controller
         $validated['page'] = (int) $validated['page'];
         $validated['limit'] = (int) $validated['limit'];
 
-        $projects = $query
-            ->whereHasPermission()
-            ->filterByAuthorityName($validated['filter']['authority_name'])
-            ->filterByStatus($validated['filter']['status'])
-            ->withCreatedBy()
-            ->withUpdatedBy()
-            ->get($validated['page'], $validated['limit']);
+        $projects = $repository->getListCache($validated, function () use ($query, $validated) {
+            return $query
+                ->whereHasPermission()
+                ->filterByAuthorityName($validated['filter']['authority_name'])
+                ->filterByStatus($validated['filter']['status'])
+                ->withCreatedBy()
+                ->withUpdatedBy()
+                ->get($validated['page'], $validated['limit']);
+        });
 
         return response()->json([
             'success' => true,
             'message' => __('message.success'),
+            'is_cached' => $repository->isCached(),
             'data' => [
                 'results' => $projects,
                 'count' => count($projects),
@@ -99,19 +103,22 @@ class ApiProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project, ProjectReadQuery $query): JsonResponse
+    public function show(Project $project, ProjectReadQuery $query, ProjectRepository $repository): JsonResponse
     {
         Gate::authorize('view', $project);
 
-        $project = $query
-            ->filterById($project->id)
-            ->withCreatedBy()
-            ->withUpdatedBy()
-            ->first();
+        $project = $repository->getViewCache($project->id, function () use ($query, $project) {
+            return $query
+                ->filterById($project->id)
+                ->withCreatedBy()
+                ->withUpdatedBy()
+                ->first();
+        });
 
         return response()->json([
             'success' => true,
             'message' => __('message.success'),
+            'is_cached' => $repository->isCached(),
             'data' => $project
         ], Response::HTTP_OK);
     }

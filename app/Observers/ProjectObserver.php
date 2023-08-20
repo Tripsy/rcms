@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Observers;
 
+use App\Events\ProjectCache;
 use App\Events\ProjectCreated;
 use App\Events\ProjectUpdated;
 use App\Models\Project;
@@ -21,6 +22,7 @@ class ProjectObserver
     public function created(Project $project): void
     {
         ProjectCreated::dispatch($project);
+        ProjectCache::dispatch($project);
     }
 
     /**
@@ -33,5 +35,6 @@ class ProjectObserver
     public function updated(Project $project): void
     {
         ProjectUpdated::dispatch($project);
+        ProjectCache::dispatch($project);
     }
 }
