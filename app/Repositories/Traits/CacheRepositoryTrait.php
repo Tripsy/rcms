@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repositories\Traits;
 
+use App\Repositories\ProjectPermissionRepository;
 use App\Repositories\ProjectRepository;
 use Illuminate\Support\Str;
 
@@ -65,7 +66,7 @@ trait CacheRepositoryTrait
     /**
      * Update the flag `refreshCache` to true which as a result will remove the current cache first
      *
-     * @return ProjectRepository|CacheRepositoryTrait
+     * @return ProjectRepository|ProjectPermissionRepository|CacheRepositoryTrait
      */
     public function refreshCache(): self
     {
@@ -124,7 +125,7 @@ trait CacheRepositoryTrait
      * ]
      *
      * @param array $tags
-     * @return ProjectRepository|CacheRepositoryTrait
+     * @return ProjectRepository|ProjectPermissionRepository|CacheRepositoryTrait
      */
     public function buildCacheTags(array $tags = []): self
     {
@@ -145,7 +146,7 @@ trait CacheRepositoryTrait
      * page:1-limit:15-authorityName:play-zone.ro
      *
      * @param mixed $data
-     * @return ProjectRepository|CacheRepositoryTrait
+     * @return ProjectRepository|ProjectPermissionRepository|CacheRepositoryTrait
      */
     public function buildCacheKey(mixed $data): self
     {
@@ -175,7 +176,9 @@ trait CacheRepositoryTrait
             if (is_array($v)) {
                 $this->buildCacheData($v, $cacheData);
             } else {
-                $cacheData[] = Str::camel($k) . ':' . $v;
+                if ($v) {
+                    $cacheData[] = Str::camel($k) . ':' . $v;
+                }
             }
         }
     }

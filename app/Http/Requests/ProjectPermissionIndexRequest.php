@@ -3,11 +3,12 @@
 namespace App\Http\Requests;
 
 use App\Enums\CommonStatus;
+use App\Enums\ProjectPermissionRole;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
-class ProjectIndexRequest extends FormRequest
+class ProjectPermissionIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -28,7 +29,8 @@ class ProjectIndexRequest extends FormRequest
             'page' => (int) $this->page ?? 1,
             'limit' => (int) $this->limit ?? 5,
             'filter' => [
-                'authority_name' => $this->filter['authority_name'] ?? '',
+                'user_name' => $this->filter['user_name'] ?? '',
+                'role' => $this->filter['role'] ?? '',
                 'status' => $this->filter['status'] ?? '',
             ]
         ]);
@@ -44,7 +46,8 @@ class ProjectIndexRequest extends FormRequest
         return [
             'page' => ['required', 'integer'],
             'limit' => ['required', 'integer', 'max:15'],
-            'filter.authority_name' => ['sometimes', 'nullable', 'string'],
+            'filter.user_name' => ['sometimes', 'nullable', 'string'],
+            'filter.role' => ['sometimes', new Enum(ProjectPermissionRole::class)],
             'filter.status' => ['sometimes', new Enum(CommonStatus::class)],
         ];
     }

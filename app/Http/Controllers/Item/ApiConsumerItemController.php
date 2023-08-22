@@ -18,9 +18,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 
-//https://www.restapitutorial.com/lessons/httpmethods.html //TODO
-//https://www.geeksforgeeks.org/restful-routes-in-node-js/ //TODO
-
 class ApiConsumerItemController extends Controller
 {
     public function __construct()

@@ -19,12 +19,12 @@ class ProjectPermissionStoreCommand
     private ProjectPermissionRole $role;
     private CommonStatus $status;
 
-    public function __construct(int $project_id, int $user_id,  ProjectPermissionRole $role, CommonStatus $status)
+    public function __construct(int $project_id, int $user_id,  string $role, string $status)
     {
         $this->project_id = $project_id;
         $this->user_id = $user_id;
-        $this->role = $role;
-        $this->status = $status;
+        $this->role = ProjectPermissionRole::tryFrom($role) ?? ProjectPermissionRole::OPERATOR;
+        $this->status = CommonStatus::tryFrom($status) ?? CommonStatus::ACTIVE;
     }
 
     public function getProjectId(): int

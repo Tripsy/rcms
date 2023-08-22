@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Project;
 
 use App\Actions\ProjectDelete;
+use App\Actions\ProjectPermissionStore;
 use App\Commands\ProjectDeleteCommand;
+use App\Commands\ProjectPermissionStoreCommand;
 use App\Commands\ProjectStoreCommand;
 use App\Commands\ProjectUpdateCommand;
+use App\Enums\CommonStatus;
+use App\Enums\ProjectPermissionRole;
 use App\Exceptions\ControllerException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectIndexRequest;
@@ -33,8 +37,6 @@ class ApiProjectController extends Controller
         Gate::authorize('index', Project::class);
 
         $validated = $request->validated();
-        $validated['page'] = (int) $validated['page'];
-        $validated['limit'] = (int) $validated['limit'];
 
         $projects = $repository->getListCache($validated, function () use ($query, $validated) {
             return $query
@@ -74,7 +76,7 @@ class ApiProjectController extends Controller
             $validated['name'],
             $validated['authority_name'],
             $validated['authority_key'],
-            $validated['status'] ?? '',
+            $validated['status']
         );
 
         ProjectStore::run($command);
@@ -87,6 +89,15 @@ class ApiProjectController extends Controller
         } catch (ModelNotFoundException) {
             throw new ControllerException(__('message.project.store_fail'), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+        $commandPermission = new ProjectPermissionStoreCommand(
+            $project->id,
+            auth()->id(),
+            ProjectPermissionRole::MANAGER->value,
+            CommonStatus::ACTIVE->value,
+        );
+
+        ProjectPermissionStore::run($commandPermission);
 
         return response()->json([
             'success' => true,
@@ -107,7 +118,7 @@ class ApiProjectController extends Controller
     {
         Gate::authorize('view', $project);
 
-        $project = $repository->getViewCache($project->id, function () use ($query, $project) {
+        $data = $repository->getViewCache($project->id, function () use ($query, $project) {
             return $query
                 ->filterById($project->id)
                 ->withCreatedBy()
@@ -119,7 +130,7 @@ class ApiProjectController extends Controller
             'success' => true,
             'message' => __('message.success'),
             'is_cached' => $repository->isCached(),
-            'data' => $project
+            'data' => $data
         ], Response::HTTP_OK);
     }
 

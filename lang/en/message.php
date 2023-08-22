@@ -29,18 +29,20 @@ return [
         'update_without_filter' => 'Cannot perform update operation!'
     ],
 
-    'account' => [
-        'create' => 'Project #:id created with success.'
+    'project' => [
+        'not_found' => 'Project #:id does not exist',
+        'store_fail' => 'Failed to create project!',
+        'already_exist' => 'Project already exist',
+    ],
+
+    'project_permission' => [
+        'not_found' => 'Project permission #:id does not exist',
+        'store_fail' => 'Failed to create project permission!',
+        'already_exist' => 'Project permission already set for selected user',
     ],
 
     'item' => [
         'not_found' => 'Item #:uuid does not exist',
         'cannot_create_data' => 'Cannot create data item. Item #:uuid does not exist',
-    ],
-
-    'project' => [
-        'not_found' => 'Project #:id does not exist',
-        'store_fail' => 'Failed to create project!',
-        'already_exist' => 'Project already exist',
     ],
 ];

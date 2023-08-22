@@ -4,11 +4,15 @@ namespace App\Models;
 
 use App\Enums\CommonStatus;
 use App\Enums\ProjectPermissionRole;
+use App\Models\Traits\CreatedByRelationTrait;
 use App\Models\Traits\StatusScopeTrait;
+use App\Models\Traits\UpdatedByRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProjectPermission extends BaseModel
 {
+    use CreatedByRelationTrait;
+    use UpdatedByRelationTrait;
     use StatusScopeTrait;
 
     /**

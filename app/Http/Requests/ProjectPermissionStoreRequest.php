@@ -3,11 +3,12 @@
 namespace App\Http\Requests;
 
 use App\Enums\CommonStatus;
-use App\Queries\ProjectReadQuery;
+use App\Enums\ProjectPermissionRole;
+use App\Queries\ProjectPermissionReadQuery;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
-class ProjectStoreRequest extends FormRequest
+class ProjectPermissionStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -18,14 +19,25 @@ class ProjectStoreRequest extends FormRequest
     }
 
     /**
-     * Prepare the data for validation.
+     * Get the error messages for the defined validation rules.
      *
-     * @return void
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'user_id.exists' => 'User #:input not found',
+        ];
+    }
+
+    /**
+     * Prepare the data for validation.
      */
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'status' => $this->status ?? '',
+            'user_id' => (int) $this->user_id,
+            'status' => $this->status ?? ''
         ]);
     }
 
@@ -37,9 +49,8 @@ class ProjectStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string'],
-            'authority_name' => ['required', 'string'],
-            'authority_key' => ['required', 'string', 'size:32'],
+            'user_id' => ['required', 'int', 'exists:App\Models\User,id'],
+            'role' => ['sometimes', new Enum(ProjectPermissionRole::class)],
             'status' => ['sometimes', new Enum(CommonStatus::class)],
         ];
     }
@@ -47,19 +58,19 @@ class ProjectStoreRequest extends FormRequest
     /**
      * Get the "after" validation callables for the request.
      */
-    public function after(ProjectReadQuery $query): array
+    public function after(ProjectPermissionReadQuery $query): array
     {
         return [
             function () use ($query) {
                 $project = $query
-                    ->filterByAuthorityName($this->validator->safe()->authority_name)
-                    ->filterByName($this->validator->safe()->name)
+                    ->filterByProjectId($this->route('project')->id)
+                    ->filterByUserId($this->validator->safe()->user_id)
                     ->isUnique();
 
                 if ($project === false) {
                     $this->validator->errors()->add(
                         'other',
-                        __('message.project.already_exist')
+                        __('message.project_permission.already_exist')
                     );
                 }
             }

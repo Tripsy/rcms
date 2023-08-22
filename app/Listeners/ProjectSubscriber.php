@@ -28,14 +28,11 @@ class ProjectSubscriber
     public function handleProjectCreated(ProjectCreated $event): void
     {
         Log::channel('project')->info(__('log.project.created', [
-            'id_project' => $event->project->id,
-            'name' => $event->project->name
-        ]));
-
-        //TODO cache
-//        Log::channel('test')->info(__('log.cache.projects', [
-//            'id_project' => $event->project->id
-//        ]));
+                'project_id' => $event->project->id,
+                'name' => $event->project->name,
+                'created_by' => $event->project->created_by,
+            ])
+        );
     }
 
     /**
@@ -43,9 +40,9 @@ class ProjectSubscriber
      */
     public function handleProjectUpdated(ProjectUpdated $event): void
     {
-        Log::channel('project')->info(
-            __('log.project.updated', [
-                'id_project' => $event->project->id
+        Log::channel('project')->info(__('log.project.updated', [
+                'project_id' => $event->project->id,
+                'updated_by' => $event->project->updated_by,
             ]),
             $event->project->getFillableChanges()
         );
@@ -53,11 +50,6 @@ class ProjectSubscriber
         if ($event->project->wasChanged('status') && $event->project->status == CommonStatus::ACTIVE) {
             ProjectActivated::dispatch($event->project);
         }
-
-        //TODO cache
-//        Log::channel('test')->info(__('log.cache.projects', [
-//            'id_project' => $event->project->id
-//        ]));
     }
 
     /**
@@ -66,9 +58,10 @@ class ProjectSubscriber
     public function handleProjectActivated(ProjectActivated $event): void
     {
         Log::channel('project')->info(__('log.project.activated', [
-            'id_project' => $event->project->id,
-            'id_user' => $event->project->updated_by,
-        ]));
+                'project_id' => $event->project->id,
+                'updated_by' => $event->project->updated_by,
+            ])
+        );
     }
 
     /**

@@ -4,10 +4,11 @@ namespace App\Policies;
 
 use App\Enums\ProjectPermissionRole;
 use App\Models\Project;
+use App\Models\ProjectPermission;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class ProjectPolicy
+class ProjectPermissionPolicy
 {
     /**
      * Perform pre-authorization checks.
@@ -37,9 +38,11 @@ class ProjectPolicy
     /**
      * Determine whether the user can list the model.
      */
-    public function index(User $user): Response
+    public function index(User $user, Project $project): Response
     {
-        return Response::allow();
+        return $project->hasPermission($user)
+                    ? Response::allow()
+                    : Response::deny(__('message.exception.access_denied'));
     }
 
     /**
@@ -57,28 +60,40 @@ class ProjectPolicy
      */
     public function create(User $user, Project $project): Response
     {
-        //TODO limit number of projects created
-
-        return Response::allow();
+        return $project->hasRole($user, ProjectPermissionRole::MANAGER)
+                    ? Response::allow()
+                    : Response::deny(__('message.exception.access_denied'));
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Project $project): Response
+    public function update(User $user, ProjectPermission $projectPermission, Project $project): Response
     {
-        return $project->hasRole($user, ProjectPermissionRole::MANAGER)
-                    ? Response::allow()
-                    : Response::deny(__('message.exception.access_denied'));
+        if ($user->id === $projectPermission->user_id) {
+            return Response::deny(__('message.exception.access_denied'));
+        }
+
+        if ($project->hasRole($user, ProjectPermissionRole::MANAGER) === false) {
+            return Response::deny(__('message.exception.access_denied'));
+        }
+
+        return Response::allow();
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Project $project): Response
+    public function delete(User $user, ProjectPermission $projectPermission, Project $project): Response
     {
-        return $project->hasRole($user, ProjectPermissionRole::MANAGER)
-                    ? Response::allow()
-                    : Response::deny(__('message.exception.access_denied'));
+        if ($user->id === $projectPermission->user_id) {
+            return Response::deny(__('message.exception.access_denied'));
+        }
+
+        if ($project->hasRole($user, ProjectPermissionRole::MANAGER) === false) {
+            return Response::deny(__('message.exception.access_denied'));
+        }
+
+        return Response::allow();
     }
 }

@@ -13,13 +13,15 @@ return [
     |
     */
 
-    'cache' => [
-        'project' => 'Project #:id_project cache refreshed',
-        'projects' => 'Project(s) #:id_project cache refreshed',
-    ],
     'project' => [
-        'created' => 'Project #:id_project with name ":name" created',
-        'updated' => 'Project #:id_project updated',
-        'activated' => 'Project #:id_project activated by user #:id_user',
+        'created' => 'Project #:project_id with name ":name" created by user #:created_by',
+        'updated' => 'Project #:project_id updated by user #:updated_by',
+        'activated' => 'Project #:project_id activated by user #:updated_by',
+    ],
+
+    'project_permission' => [
+        'created' => 'Project permission #:project_permission_id created for user #:user_id',
+        'updated' => 'Project permission #:project_permission_id updated by user #:updated_by',
+        'activated' => 'Project permission #:project_permission_id activated by user #:updated_by',
     ],
 ];

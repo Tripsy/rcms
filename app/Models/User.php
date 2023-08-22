@@ -52,14 +52,3 @@ class User extends Authenticatable
         return false;
     }
 }
-
-//TODO
-//public function roles() {
-//    return $this->belongsToMany(Role::class, 'user_role');
-//}
-//
-// public function isAdministrator() {
-//   return $this->roles()->where('name', 'Administrator')->exists();
-//}
-//
-//Auth::user()->isAdministrator()
