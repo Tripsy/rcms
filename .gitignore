@@ -1,0 +1,54 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Node.js
+node_modules
+
+# Build artifacts
+dist
+dist-ssr
+/public/build
+/bootstrap/ssr
+
+# Local development files
+*.local
+/.vscode/*
+!.vscode/extensions.json
+/.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# PHPUnit
+/.phpunit.cache
+
+# Laravel and PHP
+/public/hot
+/public/storage
+/vendor
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+
+# Laravel Mix
+/mix-manifest.json
+/mix.js
+
+# Specific to Laravel Nova
+nova-license.json
+
+# Custom
+/README.md

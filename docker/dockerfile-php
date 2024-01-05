@@ -1,0 +1,41 @@
+FROM php:8.1-fpm
+
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    libz-dev \
+    libcurl4-openssl-dev \
+    locales \
+    npm
+
+#gd
+RUN apt-get update \
+    && apt-get install -y libpng-dev libjpeg-dev libfreetype6-dev \
+    && docker-php-ext-configure gd --with-jpeg --with-freetype \
+    && docker-php-ext-install -j$(nproc) gd
+
+#zip
+RUN apt-get update \
+    && apt-get install -y libzip-dev \
+    && docker-php-ext-install zip
+
+#intl
+RUN apt-get update \
+    && apt-get install -y libicu-dev \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl
+
+#curl
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+#npm
+RUN npm install n -g && n latest
+
+#redis
+RUN pecl install -o -f redis && rm -rf /tmp/pear && docker-php-ext-enable redis
+
+#pdo_mysql
+RUN docker-php-ext-install pdo pdo_mysql
+
+#clean up
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
