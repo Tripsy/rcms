@@ -34,6 +34,7 @@ dist-ssr
 # Laravel and PHP
 /public/hot
 /public/storage
+/storage/framework
 /vendor
 .env
 .env.backup

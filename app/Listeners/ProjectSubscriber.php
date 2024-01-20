@@ -27,7 +27,8 @@ class ProjectSubscriber
      */
     public function handleProjectCreated(ProjectCreated $event): void
     {
-        Log::channel('project')->info(__('log.project.created', [
+        Log::channel('project')->info(
+            __('log.project.created', [
                 'project_id' => $event->project->id,
                 'name' => $event->project->name,
                 'created_by' => $event->project->created_by,
@@ -40,7 +41,8 @@ class ProjectSubscriber
      */
     public function handleProjectUpdated(ProjectUpdated $event): void
     {
-        Log::channel('project')->info(__('log.project.updated', [
+        Log::channel('project')->info(
+            __('log.project.updated', [
                 'project_id' => $event->project->id,
                 'updated_by' => $event->project->updated_by,
             ]),
@@ -57,7 +59,8 @@ class ProjectSubscriber
      */
     public function handleProjectActivated(ProjectActivated $event): void
     {
-        Log::channel('project')->info(__('log.project.activated', [
+        Log::channel('project')->info(
+            __('log.project.activated', [
                 'project_id' => $event->project->id,
                 'updated_by' => $event->project->updated_by,
             ])
@@ -69,16 +72,16 @@ class ProjectSubscriber
      */
     public function handleProjectCache(ProjectCache $event): void
     {
-         $this->repository
-            ->buildCacheTags(['list'])
-            ->flushCacheByTags();
+        $this->repository
+           ->buildCacheTags(['list'])
+           ->flushCacheByTags();
 
-         if (empty($event->project->id) === false) {
-             $this->repository
-                 ->buildCacheTags(['list'])
-                 ->buildCacheKey($event->project->id)
-                 ->removeCacheContent();
-         }
+        if (empty($event->project->id) === false) {
+            $this->repository
+                ->buildCacheTags(['list'])
+                ->buildCacheKey($event->project->id)
+                ->removeCacheContent();
+        }
     }
 
     /**

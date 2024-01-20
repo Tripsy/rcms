@@ -7,15 +7,11 @@ namespace App\Queries;
 use App\Enums\CommonStatus;
 use App\Models\Project;
 use App\Queries\Traits\FilterByStatusQueryTrait;
-use App\Queries\Traits\WithCreatedByQueryTrait;
-use App\Queries\Traits\WithUpdatedByQueryTrait;
 use Illuminate\Database\Eloquent\Builder;
 
 class ProjectReadQuery extends AbstractReadQuery
 {
     use FilterByStatusQueryTrait;
-    use WithCreatedByQueryTrait;
-    use WithUpdatedByQueryTrait;
 
     public function __construct(Project $model)
     {

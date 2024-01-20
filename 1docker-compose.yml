@@ -8,7 +8,6 @@ services:
         volumes:
             - .:/var/www/html
             - ./docker/default.conf.template:/etc/nginx/templates/default.conf.template
-            - ./docker/error.log:/var/log/nginx/error.log
         environment:
             API_SERVER_NAME: api.rcms.test
             FRONT_SERVER_NAME: rcms.test
@@ -32,6 +31,8 @@ services:
             dockerfile: docker/dockerfile-front
         volumes:
             - .:/var/www/html
+        working_dir: /var/www/html
+        command: npm run dev
         depends_on:
             - php
 networks:

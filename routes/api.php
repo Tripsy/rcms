@@ -69,5 +69,5 @@ Route::group([
             ->where('projectPermission', '[0-9]+');
     });
 
-//    Route::patch('/project-permission/{project}/{status}', ApiProjectPermissionStatusController::class)->where('project', '[0-9]+');
+    //    Route::patch('/project-permission/{project}/{status}', ApiProjectPermissionStatusController::class)->where('project', '[0-9]+');
 });

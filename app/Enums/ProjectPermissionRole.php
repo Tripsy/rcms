@@ -15,8 +15,7 @@ enum ProjectPermissionRole: string
 
     public function text(): string
     {
-        return match($this)
-        {
+        return match ($this) {
             self::MANAGER => __('Manager'),
             self::OPERATOR => __('Operator'),
         };

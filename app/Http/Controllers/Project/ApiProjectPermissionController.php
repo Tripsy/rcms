@@ -29,8 +29,12 @@ class ApiProjectPermissionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(ProjectPermissionIndexRequest $request, Project $project, ProjectPermissionReadQuery $query, ProjectPermissionRepository $repository): JsonResponse
-    {
+    public function index(
+        ProjectPermissionIndexRequest $request,
+        Project $project,
+        ProjectPermissionReadQuery $query,
+        ProjectPermissionRepository $repository
+    ): JsonResponse {
         Gate::authorize('index', [ProjectPermission::class, $project]);
 
         $validated = $request->validated();
@@ -46,7 +50,7 @@ class ApiProjectPermissionController extends Controller
                     ->withCreatedBy()
                     ->withUpdatedBy()
                     ->get($validated['page'], $validated['limit'])
-                )
+            )
                     ->makeHidden(['user_id']);
         });
 
@@ -68,8 +72,11 @@ class ApiProjectPermissionController extends Controller
      *
      * @throws ControllerException
      */
-    public function store(ProjectPermissionStoreRequest $request, Project $project, ProjectPermissionReadQuery $query): JsonResponse
-    {
+    public function store(
+        ProjectPermissionStoreRequest $request,
+        Project $project,
+        ProjectPermissionReadQuery $query
+    ): JsonResponse {
         Gate::authorize('create', [ProjectPermission::class, $project]);
 
         $validated = $request->validated();
@@ -89,7 +96,10 @@ class ApiProjectPermissionController extends Controller
                 ->filterByUserId($command->getUserId())
                 ->firstOrFail();
         } catch (ModelNotFoundException) {
-            throw new ControllerException(__('message.project_permission.store_fail'), Response::HTTP_INTERNAL_SERVER_ERROR);
+            throw new ControllerException(
+                __('message.project_permission.store_fail'),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
 
         return response()->json([
@@ -107,8 +117,12 @@ class ApiProjectPermissionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project, ProjectPermission $projectPermission, ProjectPermissionReadQuery $query, ProjectPermissionRepository $repository): JsonResponse
-    {
+    public function show(
+        Project $project,
+        ProjectPermission $projectPermission,
+        ProjectPermissionReadQuery $query,
+        ProjectPermissionRepository $repository
+    ): JsonResponse {
         Gate::authorize('view', [ProjectPermission::class, $project]);
 
         $data = $repository->getViewCache($projectPermission->id, function () use ($query, $projectPermission) {
@@ -130,8 +144,11 @@ class ApiProjectPermissionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ProjectPermissionUpdateRequest $request, Project $project, ProjectPermission $projectPermission): JsonResponse
-    {
+    public function update(
+        ProjectPermissionUpdateRequest $request,
+        Project $project,
+        ProjectPermission $projectPermission
+    ): JsonResponse {
         Gate::authorize('update', [$projectPermission, $project]);
 
         $validated = $request->validated();

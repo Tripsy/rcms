@@ -6,14 +6,10 @@ namespace App\Queries;
 
 use App\Models\ProjectPermission;
 use App\Queries\Traits\FilterByStatusQueryTrait;
-use App\Queries\Traits\WithCreatedByQueryTrait;
-use App\Queries\Traits\WithUpdatedByQueryTrait;
 
 class ProjectPermissionReadQuery extends AbstractReadQuery
 {
     use FilterByStatusQueryTrait;
-    use WithCreatedByQueryTrait;
-    use WithUpdatedByQueryTrait;
 
     public function __construct(ProjectPermission $model)
     {

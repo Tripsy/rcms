@@ -48,7 +48,7 @@ class ApiConsumerItemController extends Controller
 
         ItemStore::run($commandItem);
 
-        foreach($validated['data'] as $itemData) {
+        foreach ($validated['data'] as $itemData) {
             $commandItemData = new ItemDataStoreCommand(
                 $commandItem->getUuid(),
                 $itemData['label'],
@@ -115,7 +115,7 @@ class ApiConsumerItemController extends Controller
 
         ItemUpdate::run($commandItem);
 
-        foreach($validated['data'] as $itemData) {
+        foreach ($validated['data'] as $itemData) {
             $commandItemData = new ItemDataStoreCommand(
                 $commandItem->getUuid(),
                 $itemData['label'],

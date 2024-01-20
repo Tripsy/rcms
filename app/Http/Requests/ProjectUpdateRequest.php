@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Queries\ProjectReadQuery;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class ProjectUpdateRequest extends FormRequest
 {
@@ -30,25 +31,39 @@ class ProjectUpdateRequest extends FormRequest
     }
 
     /**
-     * Get the "after" validation callables for the request.
+     * Customize the validator instance.
+     *
+     * @param Validator $validator
+     * @return void
      */
-    public function after(ProjectReadQuery $query): array
+    protected function withValidator(Validator $validator): void
     {
-        return [
-            function () use ($query) {
-                $project = $query
-                    ->filterByAuthorityName($this->validator->safe()->authority_name)
-                    ->filterByName( $this->validator->safe()->name)
-                    ->filterById($this->route('project')->id, '<>') //ignore updated entry
-                    ->isUnique();
+        if ($validator->fails() === false) {
+            $validator->after(function ($validator) {
+                $this->checkProjectExist($validator);
+            });
+        }
+    }
 
-                if ($project === false) {
-                    $this->validator->errors()->add(
-                        'other',
-                        __('message.project.already_exist')
-                    );
-                }
-            }
-        ];
+    /**
+     * Custom verification logic.
+     *
+     * @param \Illuminate\Contracts\Validation\Validator $validator
+     * @return void
+     */
+    protected function checkProjectExist(\Illuminate\Contracts\Validation\Validator $validator): void
+    {
+        $project = app(ProjectReadQuery::class)
+            ->filterByAuthorityName($validator->safe()->authority_name)
+            ->filterByName($validator->safe()->name)
+            ->filterById($this->route('project')->id, '<>') //ignore updated entry
+            ->isUnique();
+
+        if ($project === false) {
+            $validator->errors()->add(
+                'other',
+                __('message.project.already_exist')
+            );
+        }
     }
 }

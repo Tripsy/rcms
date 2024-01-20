@@ -32,8 +32,11 @@ class ApiProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(ProjectIndexRequest $request, ProjectReadQuery $query, ProjectRepository $repository): JsonResponse
-    {
+    public function index(
+        ProjectIndexRequest $request,
+        ProjectReadQuery    $query,
+        ProjectRepository   $repository
+    ): JsonResponse {
         Gate::authorize('index', Project::class);
 
         $validated = $request->validated();

@@ -55,7 +55,7 @@ class ProjectPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user, Project $project): Response
+    public function create(User $user): Response
     {
         //TODO limit number of projects created
 

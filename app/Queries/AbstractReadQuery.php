@@ -51,4 +51,34 @@ abstract class AbstractReadQuery
     {
         return !$this->query->first();
     }
+
+    /**
+     * When using `with`, you should always include the id column and any relevant foreign key columns in
+     * the list of columns you wish to retrieve.
+     */
+    public function withCreatedBy(array $fields = ['name']): self
+    {
+        array_unshift($fields, 'id');
+
+        $columns = implode(',', array_unique($fields));
+
+        $this->query->with('createdBy:'.$columns);
+
+        return $this;
+    }
+
+    /**
+     * When using `with`, you should always include the id column and any relevant foreign key columns in
+     * the list of columns you wish to retrieve.
+     */
+    public function withUpdatedBy(array $fields = ['name']): self
+    {
+        array_unshift($fields, 'id');
+
+        $columns = implode(',', array_unique($fields));
+
+        $this->query->with('updatedBy:'.$columns);
+
+        return $this;
+    }
 }
