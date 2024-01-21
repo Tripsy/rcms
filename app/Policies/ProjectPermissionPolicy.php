@@ -71,7 +71,7 @@ class ProjectPermissionPolicy
     public function update(User $user, ProjectPermission $projectPermission, Project $project): Response
     {
         if ($user->id === $projectPermission->user_id) {
-            return Response::deny(__('message.exception.access_denied'));
+            return Response::deny(__('message.exception.action_denied'));
         }
 
         if ($project->hasRole($user, ProjectPermissionRole::MANAGER) === false) {

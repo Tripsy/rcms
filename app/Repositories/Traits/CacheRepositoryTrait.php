@@ -83,7 +83,7 @@ trait CacheRepositoryTrait
      */
     public function getCacheContent(callable $cacheContent): mixed
     {
-        if (self::CacheTime === 0) {
+        if (self::CACHE_TIME === 0) {
             return $cacheContent();
         }
 
@@ -94,7 +94,7 @@ trait CacheRepositoryTrait
             $this->isCached = cache()->tags($this->getCacheTags())->has($this->getCacheKey());
         }
 
-        return cache()->tags($this->getCacheTags())->remember($this->getCacheKey(), self::CacheTime, $cacheContent);
+        return cache()->tags($this->getCacheTags())->remember($this->getCacheKey(), self::CACHE_TIME, $cacheContent);
     }
 
     /**
@@ -130,7 +130,7 @@ trait CacheRepositoryTrait
     public function buildCacheTags(array $tags = []): self
     {
         $this->cacheTags = [];
-        $this->cacheTags[] = self::CacheModel;
+        $this->cacheTags[] = self::CACHE_MODEL;
 
         $cacheData = [];
 

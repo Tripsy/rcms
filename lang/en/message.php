@@ -25,6 +25,7 @@ return [
         'query' => 'Query error encountered',
         'pdo' => 'PDO error encountered',
         'access_denied' => 'Access Denied: You do not have permission to perform this action',
+        'action_denied' => 'Action Denied: You\'re not allowed to perform this action',
         'delete_without_filter' => 'Cannot perform delete operation!',
         'update_without_filter' => 'Cannot perform update operation!'
     ],

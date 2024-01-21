@@ -1,2 +1,4 @@
 - test cache
 - test special validation rules
+- with bad authorization code it returns a login page instead an errors
+- delete event -> log

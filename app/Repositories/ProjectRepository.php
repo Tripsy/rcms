@@ -10,8 +10,8 @@ class ProjectRepository
 {
     use CacheRepositoryTrait;
 
-    const CacheModel = 'project';
-    const CacheTime = 86400;
+    const CACHE_MODEL = 'project';
+    const CACHE_TIME = 86400;
 
     public function getListCache(array $data, callable $cacheContent)
     {

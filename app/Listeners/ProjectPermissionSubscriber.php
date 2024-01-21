@@ -30,8 +30,7 @@ class ProjectPermissionSubscriber
         Log::channel('project')->info(__('log.project_permission.created', [
                 'project_permission_id' => $event->permission->id,
                 'created_by' => $event->permission->created_by,
-            ])
-        );
+            ]));
     }
 
     /**
@@ -39,7 +38,8 @@ class ProjectPermissionSubscriber
      */
     public function handleProjectPermissionUpdated(ProjectPermissionUpdated $event): void
     {
-        Log::channel('project')->info(__('log.project_permission.updated', [
+        Log::channel('project')->info(
+            __('log.project_permission.updated', [
                 'project_permission_id' => $event->permission->id,
                 'updated_by' => $event->permission->updated_by,
             ]),
@@ -59,8 +59,7 @@ class ProjectPermissionSubscriber
         Log::channel('project')->info(__('log.project_permission.activated', [
                 'project_permission_id' => $event->permission->id,
                 'updated_by' => $event->permission->updated_by,
-            ])
-        );
+            ]));
     }
 
     /**
@@ -68,16 +67,16 @@ class ProjectPermissionSubscriber
      */
     public function handleProjectPermissionCache(ProjectPermissionCache $event): void
     {
-         $this->repository
-            ->buildCacheTags(['list'])
-            ->flushCacheByTags();
+        $this->repository
+           ->buildCacheTags(['list'])
+           ->flushCacheByTags();
 
-         if (empty($event->project->id) === false) {
-             $this->repository
-                 ->buildCacheTags(['list'])
-                 ->buildCacheKey($event->permission->id)
-                 ->removeCacheContent();
-         }
+        if (empty($event->project->id) === false) {
+            $this->repository
+                ->buildCacheTags(['list'])
+                ->buildCacheKey($event->permission->id)
+                ->removeCacheContent();
+        }
     }
 
     /**

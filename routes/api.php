@@ -3,6 +3,7 @@
 use App\Http\Controllers\Project\ApiProjectController;
 use App\Http\Controllers\Item\ApiConsumerItemController;
 use App\Http\Controllers\Project\ApiProjectPermissionController;
+use App\Http\Controllers\Project\ApiProjectPermissionStatusController;
 use App\Http\Controllers\Project\ApiProjectStatusController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -24,7 +25,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group([
     'middleware' => [
-        'force.json',
         'auth:sanctum'
     ]
 ], function () {
@@ -47,7 +47,8 @@ Route::group([
             ->where('project', '[0-9]+');
     });
 
-    Route::patch('/project/{project}/{status}', ApiProjectStatusController::class)->where('project', '[0-9]+');
+    Route::patch('/project/{project}/{status}', ApiProjectStatusController::class)
+        ->where('project', '[0-9]+');
 
     Route::controller(ApiProjectPermissionController::class)->group(function () {
         Route::get('/project-permission/{project}', 'index')
@@ -69,5 +70,10 @@ Route::group([
             ->where('projectPermission', '[0-9]+');
     });
 
-    //    Route::patch('/project-permission/{project}/{status}', ApiProjectPermissionStatusController::class)->where('project', '[0-9]+');
+    Route::patch(
+        '/project-permission/{project}/{projectPermission}/{status}',
+        ApiProjectPermissionStatusController::class
+    )
+        ->where('project', '[0-9]+')
+        ->where('projectPermission', '[0-9]+');
 });
