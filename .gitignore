@@ -39,6 +39,7 @@ dist-ssr
 .env
 .env.backup
 .env.production
+.php-cs-fixer.cache
 .phpunit.result.cache
 Homestead.json
 Homestead.yaml

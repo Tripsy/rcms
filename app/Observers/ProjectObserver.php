@@ -6,6 +6,7 @@ namespace App\Observers;
 
 use App\Events\ProjectCache;
 use App\Events\ProjectCreated;
+use App\Events\ProjectDeleting;
 use App\Events\ProjectUpdated;
 use App\Models\Project;
 use App\Observers\Traits\StandardCreating;
@@ -36,6 +37,15 @@ class ProjectObserver
     public function updated(Project $project): void
     {
         ProjectUpdated::dispatch($project);
+        ProjectCache::dispatch($project);
+    }
+
+    /**
+     * Handle the Model "deleting" event.
+     */
+    public function deleting(Project $project): void
+    {
+        ProjectDeleting::dispatch($project);
         ProjectCache::dispatch($project);
     }
 }

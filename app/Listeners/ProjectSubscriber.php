@@ -8,6 +8,7 @@ use App\Enums\CommonStatus;
 use App\Events\ProjectActivated;
 use App\Events\ProjectCache;
 use App\Events\ProjectCreated;
+use App\Events\ProjectDeleting;
 use App\Events\ProjectUpdated;
 use App\Repositories\ProjectRepository;
 use Illuminate\Events\Dispatcher;
@@ -31,7 +32,7 @@ class ProjectSubscriber
             __('log.project.created', [
                 'project_id' => $event->project->id,
                 'name' => $event->project->name,
-                'created_by' => $event->project->created_by,
+                'action_by' => $event->project->created_by,
             ])
         );
     }
@@ -44,7 +45,7 @@ class ProjectSubscriber
         Log::channel('project')->info(
             __('log.project.updated', [
                 'project_id' => $event->project->id,
-                'updated_by' => $event->project->updated_by,
+                'action_by' => $event->project->updated_by,
             ]),
             $event->project->getFillableChanges()
         );
@@ -62,7 +63,20 @@ class ProjectSubscriber
         Log::channel('project')->info(
             __('log.project.activated', [
                 'project_id' => $event->project->id,
-                'updated_by' => $event->project->updated_by,
+                'action_by' => $event->project->updated_by,
+            ])
+        );
+    }
+
+    /**
+     * Handle project deleting event.
+     */
+    public function handleProjectDeleting(ProjectDeleting $event): void
+    {
+        Log::channel('project')->info(
+            __('log.project.deleting', [
+                'project_id' => $event->project->id,
+                'action_by' => auth()->id(),
             ])
         );
     }
@@ -102,6 +116,11 @@ class ProjectSubscriber
         $events->listen(
             ProjectActivated::class,
             [ProjectSubscriber::class, 'handleProjectActivated']
+        );
+
+        $events->listen(
+            ProjectDeleting::class,
+            [ProjectSubscriber::class, 'handleProjectDeleting']
         );
 
         $events->listen(

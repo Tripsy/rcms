@@ -8,6 +8,7 @@ use App\Enums\CommonStatus;
 use App\Events\ProjectPermissionActivated;
 use App\Events\ProjectPermissionCache;
 use App\Events\ProjectPermissionCreated;
+use App\Events\ProjectPermissionDeleting;
 use App\Events\ProjectPermissionUpdated;
 use App\Repositories\ProjectPermissionRepository;
 use Illuminate\Events\Dispatcher;
@@ -28,8 +29,10 @@ class ProjectPermissionSubscriber
     public function handleProjectPermissionCreated(ProjectPermissionCreated $event): void
     {
         Log::channel('project')->info(__('log.project_permission.created', [
+                'project_id' => $event->permission->project_id,
                 'project_permission_id' => $event->permission->id,
-                'created_by' => $event->permission->created_by,
+                'user_id' => $event->permission->user_id,
+                'action_by' => $event->permission->created_by,
             ]));
     }
 
@@ -40,8 +43,9 @@ class ProjectPermissionSubscriber
     {
         Log::channel('project')->info(
             __('log.project_permission.updated', [
+                'project_id' => $event->permission->project_id,
                 'project_permission_id' => $event->permission->id,
-                'updated_by' => $event->permission->updated_by,
+                'action_by' => $event->permission->updated_by,
             ]),
             $event->permission->getFillableChanges()
         );
@@ -57,9 +61,24 @@ class ProjectPermissionSubscriber
     public function handleProjectPermissionActivated(ProjectPermissionActivated $event): void
     {
         Log::channel('project')->info(__('log.project_permission.activated', [
+                'project_id' => $event->permission->project_id,
                 'project_permission_id' => $event->permission->id,
-                'updated_by' => $event->permission->updated_by,
+                'action_by' => $event->permission->updated_by,
             ]));
+    }
+
+    /**
+     * Handle project deleting event.
+     */
+    public function handleProjectDeleting(ProjectPermissionDeleting $event): void
+    {
+        Log::channel('project')->info(
+            __('log.project_permission.deleting', [
+                'project_id' => $event->permission->project_id,
+                'project_permission_id' => $event->permission->id,
+                'action_by' => auth()->id(),
+            ])
+        );
     }
 
     /**
@@ -97,6 +116,11 @@ class ProjectPermissionSubscriber
         $events->listen(
             ProjectPermissionActivated::class,
             [ProjectPermissionSubscriber::class, 'handleProjectPermissionActivated']
+        );
+
+        $events->listen(
+            ProjectPermissionDeleting::class,
+            [ProjectPermissionSubscriber::class, 'handleProjectDeleting']
         );
 
         $events->listen(

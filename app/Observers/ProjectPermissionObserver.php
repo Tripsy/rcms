@@ -7,6 +7,7 @@ namespace App\Observers;
 use App\Events\ProjectCache;
 use App\Events\ProjectPermissionCache;
 use App\Events\ProjectPermissionCreated;
+use App\Events\ProjectPermissionDeleting;
 use App\Events\ProjectPermissionUpdated;
 use App\Models\ProjectPermission;
 use App\Observers\Traits\StandardCreating;
@@ -41,6 +42,19 @@ class ProjectPermissionObserver
     public function updated(ProjectPermission $permission): void
     {
         ProjectPermissionUpdated::dispatch($permission);
+        ProjectPermissionCache::dispatch($permission);
+
+        $project = $permission->project()->first();
+
+        ProjectCache::dispatch($project);
+    }
+
+    /**
+     * Handle the Model "deleting" event.
+     */
+    public function deleting(ProjectPermission $permission): void
+    {
+        ProjectPermissionDeleting::dispatch($permission);
         ProjectPermissionCache::dispatch($permission);
 
         $project = $permission->project()->first();
