@@ -7,3 +7,4 @@
   - build console command 
   - stubs
   - guide related to step needed to create a new model
+- build package for excel
