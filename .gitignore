@@ -38,6 +38,7 @@ dist-ssr
 /vendor
 .env
 .env.backup
+.env.staging
 .env.production
 .php-cs-fixer.cache
 .phpunit.result.cache
