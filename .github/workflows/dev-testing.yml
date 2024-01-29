@@ -48,7 +48,7 @@ jobs:
       - name: Npm dependencies
         run: npm ci
       - name: Compile assets
-        run: npm run dev
+        run: npm run build
       - name: Start Mysql
         run: |
           sudo /etc/init.d/mysql start
