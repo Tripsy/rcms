@@ -1,3 +1,4 @@
+https://akki.ca/blog/fix-the-style-of-your-code-using-github-actions/
 
 - test cache
 - test special validation rules
@@ -7,4 +8,4 @@
   - build console command 
   - stubs
   - guide related to step needed to create a new model
-- build package for excel
+- build package for Excel
