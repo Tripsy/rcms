@@ -31,9 +31,8 @@ jobs:
       - name: Composer Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Directory Permissions
-        run: |          
-          cd storage/
-          mkdir -p framework/{sessions,views,cache}
+        run: |
+          mkdir -p storage/framework/{sessions,views,cache}
           chmod -R 777 storage bootstrap/cache
       - name: Decrypt .env
         run: php artisan env:decrypt --key=${{ secrets.ENV_ENCRYPT_KEY }} --env=testing --filename=.env --force
