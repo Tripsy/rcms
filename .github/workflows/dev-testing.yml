@@ -31,8 +31,14 @@ jobs:
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Decrypt .env
-        run: php artisan env:decrypt --key=${{ secrets.ENV_ENCRYPT_KEY }} --env=staging --filename=.env --force
+        run: php artisan env:decrypt --key=${{ secrets.ENV_ENCRYPT_KEY }} --env=testing --filename=.env --force
+      - name: Start Mysql
+        run: |
+          sudo /etc/init.d/mysql start
+          mysql -u root --password=root -e "CREATE DATABASE IF NOT EXISTS rcms;"
 #      - name: Directory Permissions
 #        run: chmod -R 777 storage bootstrap/cache
+      - name: Run migration
+        run: php artisan migrate
       - name: Execute PHPUnit tests
         run: php artisan test
