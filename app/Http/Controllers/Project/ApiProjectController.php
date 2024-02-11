@@ -6,6 +6,8 @@ namespace App\Http\Controllers\Project;
 
 use App\Actions\ProjectDelete;
 use App\Actions\ProjectPermissionStore;
+use App\Actions\ProjectStore;
+use App\Actions\ProjectUpdate;
 use App\Commands\ProjectDeleteCommand;
 use App\Commands\ProjectPermissionStoreCommand;
 use App\Commands\ProjectStoreCommand;
@@ -17,8 +19,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectIndexRequest;
 use App\Http\Requests\ProjectStoreRequest;
 use App\Http\Requests\ProjectUpdateRequest;
-use App\Actions\ProjectStore;
-use App\Actions\ProjectUpdate;
 use App\Models\Project;
 use App\Queries\ProjectReadQuery;
 use App\Repositories\ProjectRepository;
@@ -34,8 +34,8 @@ class ApiProjectController extends Controller
      */
     public function index(
         ProjectIndexRequest $request,
-        ProjectReadQuery    $query,
-        ProjectRepository   $repository
+        ProjectReadQuery $query,
+        ProjectRepository $repository
     ): JsonResponse {
         Gate::authorize('index', Project::class);
 
@@ -59,8 +59,8 @@ class ApiProjectController extends Controller
                 'results' => $projects,
                 'count' => count($projects),
                 'limit' => $validated['limit'],
-                'page' => $validated['page']
-            ]
+                'page' => $validated['page'],
+            ],
         ], Response::HTTP_OK);
     }
 
@@ -110,7 +110,7 @@ class ApiProjectController extends Controller
                     'id' => $project->id,
                 ],
                 $command->attributes()
-            )
+            ),
         ], Response::HTTP_CREATED);
     }
 
@@ -133,7 +133,7 @@ class ApiProjectController extends Controller
             'success' => true,
             'message' => __('message.success'),
             'is_cached' => $repository->isCached(),
-            'data' => $data
+            'data' => $data,
         ], Response::HTTP_OK);
     }
 
@@ -158,7 +158,7 @@ class ApiProjectController extends Controller
         return response()->json([
             'success' => true,
             'message' => __('message.success'),
-            'data' => $command->attributes()
+            'data' => $command->attributes(),
         ], Response::HTTP_OK);
     }
 

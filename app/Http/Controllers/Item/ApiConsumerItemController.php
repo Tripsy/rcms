@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Item;
 
+use App\Actions\ItemDataStore;
+use App\Actions\ItemStore;
+use App\Actions\ItemUpdate;
 use App\Commands\ItemDataStoreCommand;
 use App\Commands\ItemStoreCommand;
 use App\Commands\ItemUpdateCommand;
@@ -9,9 +12,6 @@ use App\Enums\ItemStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ItemStoreRequest;
 use App\Http\Requests\ItemUpdateRequest;
-use App\Actions\ItemDataStore;
-use App\Actions\ItemStore;
-use App\Actions\ItemUpdate;
 use App\Models\Item;
 use App\Models\ItemData;
 use Illuminate\Http\JsonResponse;
@@ -65,7 +65,7 @@ class ApiConsumerItemController extends Controller
                 'uuid' => $commandItem->getUuid(),
                 'description' => $commandItem->getDescription(),
                 'data' => $validated['data'],
-            ]
+            ],
         ], Response::HTTP_CREATED);
     }
 
@@ -96,8 +96,8 @@ class ApiConsumerItemController extends Controller
                 'created_by' => $item->created_by,
                 'updated_at' => $item->updated_at,
                 'updated_by' => $item->updated_by,
-                'data' => $itemData
-            ]
+                'data' => $itemData,
+            ],
         ], Response::HTTP_CREATED);
     }
 
@@ -132,7 +132,7 @@ class ApiConsumerItemController extends Controller
                 'uuid' => $uuid,
                 'description' => $commandItem->getDescription(),
                 'data' => $validated['data'],
-            ]
+            ],
         ], Response::HTTP_OK);
     }
 

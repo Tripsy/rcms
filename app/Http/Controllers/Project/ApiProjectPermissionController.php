@@ -40,17 +40,17 @@ class ApiProjectPermissionController extends Controller
         $validated = $request->validated();
 
         $permissions = $repository->getListCache($validated, function () use ($query, $validated, $project) {
-            return (
+            return
                 $query
                     ->filterByProjectId($project->id)
-                    ->filterByUserName('%' . $validated['filter']['user_name'] . '%', 'LIKE')
+                    ->filterByUserName('%'.$validated['filter']['user_name'].'%', 'LIKE')
                     ->filterByRole($validated['filter']['role'])
                     ->filterByStatus($validated['filter']['status'])
                     ->withUser()
                     ->withCreatedBy()
                     ->withUpdatedBy()
                     ->get($validated['page'], $validated['limit'])
-            )
+
                     ->makeHidden(['user_id']);
         });
 
@@ -62,8 +62,8 @@ class ApiProjectPermissionController extends Controller
                 'results' => $permissions,
                 'count' => count($permissions),
                 'limit' => $validated['limit'],
-                'page' => $validated['page']
-            ]
+                'page' => $validated['page'],
+            ],
         ], Response::HTTP_OK);
     }
 
@@ -110,7 +110,7 @@ class ApiProjectPermissionController extends Controller
                     'id' => $permission->id,
                 ],
                 $command->attributes()
-            )
+            ),
         ], Response::HTTP_CREATED);
     }
 
@@ -137,7 +137,7 @@ class ApiProjectPermissionController extends Controller
             'success' => true,
             'message' => __('message.success'),
             'is_cached' => $repository->isCached(),
-            'data' => $data
+            'data' => $data,
         ], Response::HTTP_OK);
     }
 
@@ -163,7 +163,7 @@ class ApiProjectPermissionController extends Controller
         return response()->json([
             'success' => true,
             'message' => __('message.success'),
-            'data' => $command->attributes()
+            'data' => $command->attributes(),
         ], Response::HTTP_OK);
     }
 

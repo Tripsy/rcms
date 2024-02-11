@@ -5,7 +5,6 @@ namespace App\Http\Requests;
 use App\Enums\CommonStatus;
 use App\Enums\ProjectPermissionRole;
 use App\Queries\ProjectPermissionReadQuery;
-use App\Queries\ProjectReadQuery;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
@@ -39,7 +38,7 @@ class ProjectPermissionStoreRequest extends FormRequest
     {
         $this->merge([
             'user_id' => (int) $this->user_id,
-            'status' => $this->status ?? ''
+            'status' => $this->status ?? '',
         ]);
     }
 
@@ -59,9 +58,6 @@ class ProjectPermissionStoreRequest extends FormRequest
 
     /**
      * Customize the validator instance.
-     *
-     * @param Validator $validator
-     * @return void
      */
     protected function withValidator(Validator $validator): void
     {
@@ -74,9 +70,6 @@ class ProjectPermissionStoreRequest extends FormRequest
 
     /**
      * Custom verification logic.
-     *
-     * @param \Illuminate\Contracts\Validation\Validator $validator
-     * @return void
      */
     protected function checkProjectPermissionExist(\Illuminate\Contracts\Validation\Validator $validator): void
     {

@@ -21,8 +21,6 @@ class ProjectPermissionStatusUpdate
     }
 
     /**
-     * @param ProjectPermissionStatusUpdateCommand $command
-     * @return void
      * @throws ActionException
      */
     public function handle(ProjectPermissionStatusUpdateCommand $command): void

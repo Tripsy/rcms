@@ -19,8 +19,6 @@ class ProjectPermissionDelete
     }
 
     /**
-     * @param ProjectPermissionDeleteCommand $command
-     * @return void
      * @throws ActionException
      */
     public function handle(ProjectPermissionDeleteCommand $command): void

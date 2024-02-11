@@ -19,10 +19,6 @@ class ProjectPermissionUpdate
         $this->query = $query;
     }
 
-    /**
-     * @param ProjectPermissionUpdateCommand $command
-     * @return void
-     */
     public function handle(ProjectPermissionUpdateCommand $command): void
     {
         $this->query

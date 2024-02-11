@@ -9,8 +9,6 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -28,9 +26,9 @@ return new class extends Migration
             $table->enum('status', CommonStatus::justKeys())->default(CommonStatus::INACTIVE->value);
 
             $table->dateTime('created_at');
-            $table->bigInteger('created_by',false, true)->nullable();
+            $table->bigInteger('created_by', false, true)->nullable();
             $table->dateTime('updated_at')->nullable();
-            $table->bigInteger('updated_by',false, true)->nullable();
+            $table->bigInteger('updated_by', false, true)->nullable();
 
             $table->index(['authority_name', 'name']);
 

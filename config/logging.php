@@ -127,12 +127,9 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
 
-
         /**
          * Custom channels
-         *
-        */
-
+         */
         'test' => [
             'driver' => 'single',
             'path' => storage_path('logs/test.log'),

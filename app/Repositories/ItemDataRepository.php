@@ -37,7 +37,7 @@ class ItemDataRepository implements ItemDataRepositoryInterface
     public function setAsInactive(ItemData $model): bool
     {
         return $model->update([
-            'is_active' => DefaultOption::NO
+            'is_active' => DefaultOption::NO,
         ]);
     }
 }

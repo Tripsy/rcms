@@ -19,8 +19,6 @@ class ProjectDelete
     }
 
     /**
-     * @param ProjectDeleteCommand $command
-     * @return void
      * @throws ActionException
      */
     public function handle(ProjectDeleteCommand $command): void

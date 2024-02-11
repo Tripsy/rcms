@@ -17,7 +17,7 @@ class ProjectPermissionStore
         $this->query = $query;
     }
 
-    public function handle(ProjectPermissionStoreCommand $command, ): void
+    public function handle(ProjectPermissionStoreCommand $command): void
     {
         $this->query->create([
             'project_id' => $command->getProjectId(),

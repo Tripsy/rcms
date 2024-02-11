@@ -1,0 +1,12 @@
+{
+  "preset": "laravel",
+  "rules": {
+    "error_suppression": {
+      "noise_remaining_usages": true
+    },
+    "logical_operators": true,
+    "not_operator_with_space": true
+  },
+  "exclude": [
+  ]
+}

@@ -17,7 +17,7 @@ class ProjectStore
         $this->query = $query;
     }
 
-    public function handle(ProjectStoreCommand $command, ): void
+    public function handle(ProjectStoreCommand $command): void
     {
         $this->query->create([
             'name' => $command->getName(),

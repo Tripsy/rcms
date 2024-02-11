@@ -19,8 +19,6 @@ class ProjectIndexRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {
@@ -30,7 +28,7 @@ class ProjectIndexRequest extends FormRequest
             'filter' => [
                 'authority_name' => $this->filter['authority_name'] ?? '',
                 'status' => $this->filter['status'] ?? '',
-            ]
+            ],
         ]);
     }
 

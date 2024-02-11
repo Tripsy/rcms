@@ -11,6 +11,7 @@ class ProjectPermissionRepository
     use CacheRepositoryTrait;
 
     const CACHE_MODEL = 'project_permission';
+
     const CACHE_TIME = 86400;
 
     public function getListCache(array $data, callable $cacheContent)

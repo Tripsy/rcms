@@ -31,7 +31,7 @@ class ProjectPermission extends BaseModel
         'project_id',
         'user_id',
         'role',
-        'status'
+        'status',
     ];
 
     /**

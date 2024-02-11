@@ -15,8 +15,7 @@ enum CommonStatus: string
 
     public function text(): string
     {
-        return match($this)
-        {
+        return match ($this) {
             self::ACTIVE => __('Active'),
             self::INACTIVE => __('Inactive'),
         };

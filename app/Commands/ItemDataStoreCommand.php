@@ -13,7 +13,9 @@ class ItemDataStoreCommand
     use GetUuidCommandTrait;
 
     private string $uuid;
+
     private string $label;
+
     private string $content;
 
     public function __construct(string $uuid, string $label, string $content)

@@ -19,8 +19,7 @@ enum ProjectLabelType: string
 
     public function text(): string
     {
-        return match($this)
-        {
+        return match ($this) {
             self::TEXT => __('Text'),
             self::TEXTAREA => __('Textarea'),
             self::SELECT => __('Select'),

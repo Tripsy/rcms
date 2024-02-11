@@ -87,8 +87,8 @@ class ProjectSubscriber
     public function handleProjectCache(ProjectCache $event): void
     {
         $this->repository
-           ->buildCacheTags(['list'])
-           ->flushCacheByTags();
+            ->buildCacheTags(['list'])
+            ->flushCacheByTags();
 
         if (empty($event->project->id) === false) {
             $this->repository

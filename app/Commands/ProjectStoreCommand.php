@@ -16,8 +16,11 @@ class ProjectStoreCommand
     use GetStatusCommandTrait;
 
     private string $name;
+
     private string $authority_name;
+
     private string $authority_key;
+
     private CommonStatus $status;
 
     public function __construct(string $name, string $authority_name, string $authority_key, string $status)

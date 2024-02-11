@@ -26,9 +26,9 @@ return new class extends Migration
             $table->enum('status', CommonStatus::justKeys())->default(CommonStatus::ACTIVE->value);
 
             $table->dateTime('created_at');
-            $table->bigInteger('created_by',false, true)->nullable();
+            $table->bigInteger('created_by', false, true)->nullable();
             $table->dateTime('updated_at')->nullable();
-            $table->bigInteger('updated_by',false, true)->nullable();
+            $table->bigInteger('updated_by', false, true)->nullable();
 
             $table->foreign('project_id')->references('id')->on('project')->onUpdate('no action')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');

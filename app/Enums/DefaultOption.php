@@ -15,8 +15,7 @@ enum DefaultOption: string
 
     public function text(): string
     {
-        return match($this)
-        {
+        return match ($this) {
             self::YES => __('Yes'),
             self::NO => __('No'),
         };

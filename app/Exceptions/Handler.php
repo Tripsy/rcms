@@ -38,9 +38,6 @@ class Handler extends ExceptionHandler
      * Overwrite the base class method to change of
      *      ModelNotFoundException to NotFoundHttpException
      *      RecordsNotFoundException to NotFoundHttpException
-     *
-     * @param Throwable $e
-     * @return Throwable
      */
     protected function prepareException(Throwable $e): Throwable
     {
@@ -60,14 +57,14 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-//        $this->stopIgnoring(ModelNotFoundException::class); //this does update $this->internalDontReport but the exception is still not reported
+        //        $this->stopIgnoring(ModelNotFoundException::class); //this does update $this->internalDontReport but the exception is still not reported
 
         $this->renderable(function (MethodNotAllowedHttpException $e, Request $request) {
             if ($request->expectsJson()) {
                 Log::channel('test')->error($e->getMessage());
 
                 return $this->standardJsonResponseError($request, $e, __('message.exception.method_not_supported', [
-                    'method' => $request->method()
+                    'method' => $request->method(),
                 ]), $e->getStatusCode());
             }
         });
@@ -141,27 +138,21 @@ class Handler extends ExceptionHandler
 
     /**
      * Return common response for requests which expects JSON
-     *
-     * @param Request $request
-     * @param Exception $e
-     * @param string $message
-     * @param int $fallBackCode
-     * @return JsonResponse
      */
     private function standardJsonResponseError(Request $request, Exception $e, string $message, int $fallBackCode = Response::HTTP_UNPROCESSABLE_ENTITY): JsonResponse
     {
         $responseData = [
             'success' => false,
             'message' => $message,
-            'request' => $request->all()
+            'request' => $request->all(),
         ];
 
         if (app()->environment() == 'local') {
             $responseData['debug'] = [
                 'message' => $e->getMessage(),
-                'exception' => $e::class
-//                'file' => $e->getFile(),
-//                'line' => $e->getLine(),
+                'exception' => $e::class,
+                //                'file' => $e->getFile(),
+                //                'line' => $e->getLine(),
             ];
         }
 
@@ -172,9 +163,7 @@ class Handler extends ExceptionHandler
      * Convert an authentication exception into a response.
      *
      *
-     * @param Request $request
-     * @param AuthenticationException $exception
-     * @return RedirectResponse|JsonResponse
+     * @param  Request  $request
      */
     protected function unauthenticated($request, AuthenticationException $exception): JsonResponse|RedirectResponse
     {
@@ -183,5 +172,4 @@ class Handler extends ExceptionHandler
                     ? $this->standardJsonResponseError($request, $exception, __('message.exception.unauthenticated'))
                     : redirect()->guest($exception->redirectTo() ?? route('login'));
     }
-
 }

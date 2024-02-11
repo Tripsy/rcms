@@ -8,8 +8,6 @@ class HelpersServiceProvider extends ServiceProvider
 {
     /**
      * List with available helper files
-     *
-     * @var array
      */
     protected array $definedHelpers = [
         'response',
@@ -21,7 +19,7 @@ class HelpersServiceProvider extends ServiceProvider
     public function register(): void
     {
         foreach ($this->definedHelpers as $helper) {
-            require_once(app_path() . '/Helpers/' . $helper . '.php');
+            require_once app_path().'/Helpers/'.$helper.'.php';
         }
     }
 

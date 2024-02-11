@@ -16,8 +16,11 @@ class ItemStoreCommand
     use GetStatusCommandTrait;
 
     private string $uuid;
+
     private int $project_id;
+
     private string $description;
+
     private ItemStatus $status;
 
     public function __construct(string $uuid, int $project_id, string $description, ItemStatus $status)

@@ -168,7 +168,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-//        App\Providers\TelescopeServiceProvider::class, //it's manually registered in AppServiceProvider to make it work only in local environment
+        //        App\Providers\TelescopeServiceProvider::class, //it's manually registered in AppServiceProvider to make it work only in local environment
 
         /*
          * Custom Service Providers...

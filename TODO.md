@@ -8,6 +8,9 @@ https://dev.to/nasrulhazim/php-code-style-3go8
 
 https://gitlab.pdam-sby.go.id/nauvalidzi/dev-eproc/-/blob/7344573eaa6f37f0547a6e04d309eb6410cb209a/api/vendor/phpoffice/phpword/.php_cs.dist
 
+
+https://mlocati.github.io/php-cs-fixer-configurator/#version:3.49
+
 - test cache
 - test special validation rules
 - with bad authorization code it returns a login page instead an errors

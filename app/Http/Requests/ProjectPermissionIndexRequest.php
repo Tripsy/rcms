@@ -20,8 +20,6 @@ class ProjectPermissionIndexRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {
@@ -32,7 +30,7 @@ class ProjectPermissionIndexRequest extends FormRequest
                 'user_name' => $this->filter['user_name'] ?? '',
                 'role' => $this->filter['role'] ?? '',
                 'status' => $this->filter['status'] ?? '',
-            ]
+            ],
         ]);
     }
 

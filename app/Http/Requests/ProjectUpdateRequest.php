@@ -32,9 +32,6 @@ class ProjectUpdateRequest extends FormRequest
 
     /**
      * Customize the validator instance.
-     *
-     * @param Validator $validator
-     * @return void
      */
     protected function withValidator(Validator $validator): void
     {
@@ -47,9 +44,6 @@ class ProjectUpdateRequest extends FormRequest
 
     /**
      * Custom verification logic.
-     *
-     * @param \Illuminate\Contracts\Validation\Validator $validator
-     * @return void
      */
     protected function checkProjectExist(\Illuminate\Contracts\Validation\Validator $validator): void
     {

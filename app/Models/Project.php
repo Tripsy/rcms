@@ -56,7 +56,7 @@ class Project extends BaseModel
      * @var array
      */
     protected $dispatchesEvents = [
-//        'created' => ProjectCreated::class, // replaced by use of app/Observers/ProjectObserver.php
+        //        'created' => ProjectCreated::class, // replaced by use of app/Observers/ProjectObserver.php
     ];
 
     /**
@@ -77,31 +77,24 @@ class Project extends BaseModel
 
     /**
      * Check if user has permission (active) with specified role on the project
-     *
-     * @param User|Authenticatable $user
-     * @param ProjectPermissionRole $role
-     * @return bool
      */
     public function hasRole(User|Authenticatable $user, ProjectPermissionRole $role): bool
     {
         return $this->permissions()
-                    ->where('user_id', $user->id)
-                    ->where('role', $role)
-                    ->where('status', CommonStatus::ACTIVE)
-                    ->exists();
+            ->where('user_id', $user->id)
+            ->where('role', $role)
+            ->where('status', CommonStatus::ACTIVE)
+            ->exists();
     }
 
     /**
      * Check if user has permission (active) set on the project
-     *
-     * @param User|Authenticatable $user
-     * @return bool
      */
     public function hasPermission(User|Authenticatable $user): bool
     {
         return $this->permissions()
-                    ->where('user_id', $user->id)
-                    ->where('status', CommonStatus::ACTIVE)
-                    ->exists();
+            ->where('user_id', $user->id)
+            ->where('status', CommonStatus::ACTIVE)
+            ->exists();
     }
 }

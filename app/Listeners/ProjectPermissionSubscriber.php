@@ -29,11 +29,11 @@ class ProjectPermissionSubscriber
     public function handleProjectPermissionCreated(ProjectPermissionCreated $event): void
     {
         Log::channel('project')->info(__('log.project_permission.created', [
-                'project_id' => $event->permission->project_id,
-                'project_permission_id' => $event->permission->id,
-                'user_id' => $event->permission->user_id,
-                'action_by' => $event->permission->created_by,
-            ]));
+            'project_id' => $event->permission->project_id,
+            'project_permission_id' => $event->permission->id,
+            'user_id' => $event->permission->user_id,
+            'action_by' => $event->permission->created_by,
+        ]));
     }
 
     /**
@@ -61,10 +61,10 @@ class ProjectPermissionSubscriber
     public function handleProjectPermissionActivated(ProjectPermissionActivated $event): void
     {
         Log::channel('project')->info(__('log.project_permission.activated', [
-                'project_id' => $event->permission->project_id,
-                'project_permission_id' => $event->permission->id,
-                'action_by' => $event->permission->updated_by,
-            ]));
+            'project_id' => $event->permission->project_id,
+            'project_permission_id' => $event->permission->id,
+            'action_by' => $event->permission->updated_by,
+        ]));
     }
 
     /**
@@ -87,8 +87,8 @@ class ProjectPermissionSubscriber
     public function handleProjectPermissionCache(ProjectPermissionCache $event): void
     {
         $this->repository
-           ->buildCacheTags(['list'])
-           ->flushCacheByTags();
+            ->buildCacheTags(['list'])
+            ->flushCacheByTags();
 
         if (empty($event->project->id) === false) {
             $this->repository

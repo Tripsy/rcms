@@ -49,7 +49,7 @@ abstract class AbstractReadQuery
 
     public function isUnique(): bool
     {
-        return !$this->query->first();
+        return ! $this->query->first();
     }
 
     /**

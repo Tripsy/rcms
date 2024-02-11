@@ -6,31 +6,31 @@ namespace App\Enums\Traits;
 
 trait EnumTrait
 {
-//    public static function fromValue(string $value): self
-//    {
-//        $cases = self::cases();
-//
-//        foreach ($cases as $c) {
-//            if($value === $c->value ){
-//                return $c;
-//            }
-//        }
-//
-//        throw new \ValueError($name. ' is not a valid value for enum ' . self::class );
-//    }
+    //    public static function fromValue(string $value): self
+    //    {
+    //        $cases = self::cases();
+    //
+    //        foreach ($cases as $c) {
+    //            if($value === $c->value ){
+    //                return $c;
+    //            }
+    //        }
+    //
+    //        throw new \ValueError($name. ' is not a valid value for enum ' . self::class );
+    //    }
 
-//    public static function toObject(string $value): self
-//    {
-//        $cases = self::cases();
-//
-//        foreach ($cases as $c) {
-//            if($value === $c->value ){
-//                return $c;
-//            }
-//        }
-//
-//        throw new \ValueError($name. ' is not a valid value for enum ' . self::class );
-//    }
+    //    public static function toObject(string $value): self
+    //    {
+    //        $cases = self::cases();
+    //
+    //        foreach ($cases as $c) {
+    //            if($value === $c->value ){
+    //                return $c;
+    //            }
+    //        }
+    //
+    //        throw new \ValueError($name. ' is not a valid value for enum ' . self::class );
+    //    }
 
     public static function toArray($use_key = true): array
     {
@@ -42,7 +42,7 @@ trait EnumTrait
             $array[($use_key ? $c->value : $c->text())] = $c->text();
         }
 
-       return $array;
+        return $array;
     }
 
     public static function justKeys(): array
@@ -55,6 +55,6 @@ trait EnumTrait
             $array[] = $c->value;
         }
 
-       return $array;
+        return $array;
     }
 }

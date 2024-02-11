@@ -32,7 +32,7 @@ class ApiProjectStatusController extends Controller
         return response()->json([
             'success' => true,
             'message' => __('message.success'),
-            'data' => $command->attributes()
+            'data' => $command->attributes(),
         ], Response::HTTP_OK);
     }
 }

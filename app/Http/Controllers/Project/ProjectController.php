@@ -31,7 +31,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project, ProjectReadQuery $query): array
     {
-//        return projectReadQuery->showData($project_id);
+        //        return projectReadQuery->showData($project_id);
     }
 
     /**

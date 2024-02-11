@@ -24,7 +24,7 @@ class ProjectPermissionReadQuery extends AbstractReadQuery
             $this->query->where('project_id', $operator, $project_id);
         }
 
-         return $this;
+        return $this;
     }
 
     public function filterByUserId(int $user_id, string $operator = '='): self
@@ -33,7 +33,7 @@ class ProjectPermissionReadQuery extends AbstractReadQuery
             $this->query->where('user_id', $operator, $user_id);
         }
 
-         return $this;
+        return $this;
     }
 
     public function filterByUserName(string $user_name, string $operator = '='): self
@@ -44,7 +44,7 @@ class ProjectPermissionReadQuery extends AbstractReadQuery
             });
         }
 
-         return $this;
+        return $this;
     }
 
     public function filterByRole(string $role, string $operator = '='): self
@@ -58,7 +58,7 @@ class ProjectPermissionReadQuery extends AbstractReadQuery
 
     public function withUser(array $fields = ['name']): self
     {
-        array_unshift($fields,'id');
+        array_unshift($fields, 'id');
 
         $columns = implode(',', array_unique($fields));
 

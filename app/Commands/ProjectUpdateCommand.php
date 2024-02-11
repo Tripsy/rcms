@@ -15,8 +15,11 @@ class ProjectUpdateCommand
     use GetNameCommandTrait;
 
     private int $id;
+
     private string $name;
+
     private string $authority_name;
+
     private string $authority_key;
 
     public function __construct(int $id, string $name, string $authority_name, string $authority_key)

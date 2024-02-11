@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Project\ApiProjectController;
 use App\Http\Controllers\Item\ApiConsumerItemController;
+use App\Http\Controllers\Project\ApiProjectController;
 use App\Http\Controllers\Project\ApiProjectPermissionController;
 use App\Http\Controllers\Project\ApiProjectPermissionStatusController;
 use App\Http\Controllers\Project\ApiProjectStatusController;
@@ -25,8 +25,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group([
     'middleware' => [
-        'auth:sanctum'
-    ]
+        'auth:sanctum',
+    ],
 ], function () {
     Route::post('/item/new', [ApiConsumerItemController::class, 'store']);
     Route::put('/item/{uuid}', [ApiConsumerItemController::class, 'update']);

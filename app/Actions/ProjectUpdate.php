@@ -21,8 +21,6 @@ class ProjectUpdate
     }
 
     /**
-     * @param ProjectUpdateCommand $command
-     * @return void
      * @throws ActionException
      */
     public function handle(ProjectUpdateCommand $command): void

@@ -16,8 +16,7 @@ enum ItemStatus: string
 
     public function text(): string
     {
-        return match($this)
-        {
+        return match ($this) {
             self::ACTIVE => __('Active'),
             self::INACTIVE => __('Inactive'),
             self::DRAFT => __('Draft'),

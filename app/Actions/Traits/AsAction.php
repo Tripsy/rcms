@@ -4,9 +4,6 @@ namespace App\Actions\Traits;
 
 trait AsAction
 {
-    /**
-     * @return static
-     */
     public static function make(): static
     {
         return app(static::class);
@@ -14,8 +11,8 @@ trait AsAction
 
     /**
      * @see static::handle()
-     * @param mixed ...$arguments
-     * @return mixed
+     *
+     * @param  mixed  ...$arguments
      */
     public static function run(...$arguments): mixed
     {

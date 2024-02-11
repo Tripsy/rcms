@@ -20,8 +20,6 @@ class ProjectStoreRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation(): void
     {
@@ -47,9 +45,6 @@ class ProjectStoreRequest extends FormRequest
 
     /**
      * Customize the validator instance.
-     *
-     * @param Validator $validator
-     * @return void
      */
     protected function withValidator(Validator $validator): void
     {
@@ -62,9 +57,6 @@ class ProjectStoreRequest extends FormRequest
 
     /**
      * Custom verification logic.
-     *
-     * @param \Illuminate\Contracts\Validation\Validator $validator
-     * @return void
      */
     protected function checkProjectExist(\Illuminate\Contracts\Validation\Validator $validator): void
     {

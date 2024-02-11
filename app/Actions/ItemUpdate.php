@@ -27,7 +27,7 @@ class ItemUpdate
             ]);
         } catch (ModelNotFoundException) {
             $message = __('message.item.not_found', [
-                'uuid' => $this->command->getUuid()
+                'uuid' => $this->command->getUuid(),
             ]);
 
             throw new ActionException($message, Response::HTTP_NOT_FOUND); //this has to go away

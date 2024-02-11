@@ -9,8 +9,6 @@ return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up(): void
     {
@@ -28,9 +26,9 @@ return new class extends Migration
             $table->enum('status', ItemStatus::justKeys())->default(ItemStatus::DRAFT->value);
 
             $table->dateTime('created_at');
-            $table->bigInteger('created_by',false, true)->nullable();
+            $table->bigInteger('created_by', false, true)->nullable();
             $table->dateTime('updated_at')->nullable();
-            $table->bigInteger('updated_by',false, true)->nullable();
+            $table->bigInteger('updated_by', false, true)->nullable();
 
             $table->foreign('item_type_id')->references('id')->on('item_type')->onUpdate('no action')->onDelete('cascade');
             $table->foreign('created_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
@@ -40,8 +38,6 @@ return new class extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down(): void
     {

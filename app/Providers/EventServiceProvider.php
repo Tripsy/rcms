@@ -23,10 +23,10 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-//        ProjectCreated::class => [
-//            ProjectCreatedLog::class,
-////            ProjectCacheRefresh::class,
-//        ],
+        //        ProjectCreated::class => [
+        //            ProjectCreatedLog::class,
+        ////            ProjectCacheRefresh::class,
+        //        ],
     ];
 
     /**
@@ -63,18 +63,18 @@ class EventServiceProvider extends ServiceProvider
         ProjectPermission::class => [
             ProjectPermissionObserver::class,
         ],
-//        Item::class => [
-//            ItemObserver::class,
-//        ],
-//        ItemData::class => [
-//            ItemObserver::class,
-//        ],
-//        ItemType::class => [
-//            ItemObserver::class,
-//        ],
-//        ItemTypeLabel::class => [
-//            ItemObserver::class,
-//        ],
+        //        Item::class => [
+        //            ItemObserver::class,
+        //        ],
+        //        ItemData::class => [
+        //            ItemObserver::class,
+        //        ],
+        //        ItemType::class => [
+        //            ItemObserver::class,
+        //        ],
+        //        ItemTypeLabel::class => [
+        //            ItemObserver::class,
+        //        ],
     ];
 
     /**
@@ -89,7 +89,6 @@ class EventServiceProvider extends ServiceProvider
      * Determine if events and listeners should be automatically discovered.
      *
      * https://laravel.com/docs/10.x/events#event-discovery
-     *
      */
     public function shouldDiscoverEvents(): bool
     {

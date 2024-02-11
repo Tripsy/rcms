@@ -21,7 +21,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-//        Project::class => ProjectPolicy::class,
+        //        Project::class => ProjectPolicy::class,
     ];
 
     /**
@@ -35,10 +35,9 @@ class AuthServiceProvider extends ServiceProvider
          * Gates always receive a user instance as their first argument and may optionally receive additional arguments such as a relevant Eloquent model.
          *
          * https://laravel.com/docs/10.x/authorization#gates
-         *
          */
-        Gate::define('isAdmin', function($user) {
-           return $user->isAdmin();
+        Gate::define('isAdmin', function ($user) {
+            return $user->isAdmin();
         });
     }
 }

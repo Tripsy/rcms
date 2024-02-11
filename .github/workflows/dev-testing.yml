@@ -45,11 +45,16 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      - name: PHP CS Fixer Check
-        uses: friendsofphp/php-cs-fixer@v3
+      - name: Pint => PHP CS Fixer Check
+        uses: aglipanci/laravel-pint-action@2.0.0
         with:
-          config: .php_cs.dist
-          dry-run: true  # Set this to true to perform a dry-run (no changes made)
+          preset: laravel
+          verboseMode: false
+          testMode: false
+          configPath: "pint.json"
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Apply Pint / PHP-CS-Fixer changes
       - name: Npm dependencies
         run: npm ci
       - name: Compile assets

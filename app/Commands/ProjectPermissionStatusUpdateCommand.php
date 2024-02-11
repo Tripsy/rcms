@@ -16,6 +16,7 @@ class ProjectPermissionStatusUpdateCommand
     use GetStatusCommandTrait;
 
     private int $id;
+
     private CommonStatus $status;
 
     public function __construct(int $id, string $status)

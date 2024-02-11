@@ -13,6 +13,7 @@ class ItemUpdateCommand
     use GetUuidCommandTrait;
 
     private string $uuid;
+
     private string $description;
 
     public function __construct(string $uuid, string $description)

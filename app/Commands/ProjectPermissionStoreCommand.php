@@ -15,11 +15,14 @@ class ProjectPermissionStoreCommand
     use GetStatusCommandTrait;
 
     private int $project_id;
+
     private int $user_id;
+
     private ProjectPermissionRole $role;
+
     private CommonStatus $status;
 
-    public function __construct(int $project_id, int $user_id,  string $role, string $status)
+    public function __construct(int $project_id, int $user_id, string $role, string $status)
     {
         $this->project_id = $project_id;
         $this->user_id = $user_id;

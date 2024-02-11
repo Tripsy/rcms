@@ -14,6 +14,7 @@ class ProjectPermissionUpdateCommand
     use GetIdCommandTrait;
 
     private int $id;
+
     private ProjectPermissionRole $role;
 
     public function __construct(int $id, string $role)

@@ -35,7 +35,7 @@ class ProjectReadQuery extends AbstractReadQuery
             $this->query->where('name', $operator, $name);
         }
 
-         return $this;
+        return $this;
     }
 
     public function filterByAuthorityName(string $authority_name, string $operator = '='): self
@@ -44,7 +44,7 @@ class ProjectReadQuery extends AbstractReadQuery
             $this->query->where('authority_name', $operator, $authority_name);
         }
 
-         return $this;
+        return $this;
     }
 
     public function filterByAuthorityKey(string $authority_key, string $operator = '='): self
@@ -53,6 +53,6 @@ class ProjectReadQuery extends AbstractReadQuery
             $this->query->where('authority_key', $operator, $authority_key);
         }
 
-         return $this;
+        return $this;
     }
 }
