@@ -5,7 +5,7 @@ on:
     branches: [ "dev" ]
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -47,7 +47,7 @@ jobs:
             ${{ runner.os }}-node-
       - name: Pint => PHP CS Fixer Check
         run: ./vendor/bin/pint
-      - uses: stefanzweifel/git-auto-commit-action@v4
+      - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: Apply Pint / PHP-CS-Fixer changes
       - name: Npm dependencies
