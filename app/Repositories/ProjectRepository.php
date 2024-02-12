@@ -14,19 +14,18 @@ class ProjectRepository
 
     const CACHE_TIME = 86400;
 
-    public function getListCache(array $data, callable $cacheContent)
+    public function baseCacheKey(): self
     {
-        return $this
-            ->buildCacheTags(['list'])
-            ->buildCacheKey($data)
-            ->getCacheContent($cacheContent);
+        $this->cachePieces = [];
+
+        return $this;
     }
 
     public function getViewCache(int $id, callable $cacheContent)
     {
         return $this
-            ->buildCacheTags()
-            ->buildCacheKey($id)
+            ->initCacheKey()
+            ->addCachePiece($id)
             ->getCacheContent($cacheContent);
     }
 }

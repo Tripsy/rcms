@@ -41,20 +41,17 @@ class ApiProjectController extends Controller
 
         $validated = $request->validated();
 
-        $projects = $repository->getListCache($validated, function () use ($query, $validated) {
-            return $query
-                ->whereHasPermission()
-                ->filterByAuthorityName($validated['filter']['authority_name'])
-                ->filterByStatus($validated['filter']['status'])
-                ->withCreatedBy()
-                ->withUpdatedBy()
-                ->get($validated['page'], $validated['limit']);
-        });
+        $projects = $query
+            ->whereHasPermission()
+            ->filterByAuthorityName($validated['filter']['authority_name'])
+            ->filterByStatus($validated['filter']['status'])
+            ->withCreatedBy()
+            ->withUpdatedBy()
+            ->get($validated['page'], $validated['limit']);
 
         return response()->json([
             'success' => true,
             'message' => __('message.success'),
-            'is_cached' => $repository->isCached(),
             'data' => [
                 'results' => $projects,
                 'count' => count($projects),

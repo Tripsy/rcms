@@ -4,10 +4,6 @@ declare(strict_types=1);
 
 namespace App\Repositories\Traits;
 
-use App\Repositories\ProjectPermissionRepository;
-use App\Repositories\ProjectRepository;
-use Illuminate\Support\Str;
-
 trait CacheRepositoryTrait
 {
     /**
@@ -23,24 +19,17 @@ trait CacheRepositoryTrait
      */
     private bool $refreshCache = false;
 
-    private array $cacheTags;
-
-    private string $cacheKey;
-
     /**
-     * Getter for $this->cacheTags
+     * Array containing pieces from which the cache key is build
      */
-    public function getCacheTags(): array
-    {
-        return $this->cacheTags;
-    }
+    private array $cachePieces;
 
     /**
      * Getter for $this->cacheKey
      */
     public function getCacheKey(): string
     {
-        return $this->cacheKey;
+        return implode('-', $this->cachePieces);
     }
 
     /**
@@ -56,8 +45,6 @@ trait CacheRepositoryTrait
 
     /**
      * Update the flag `refreshCache` to true which as a result will remove the current cache first
-     *
-     * @return ProjectRepository|ProjectPermissionRepository|CacheRepositoryTrait
      */
     public function refreshCache(): self
     {
@@ -67,7 +54,7 @@ trait CacheRepositoryTrait
     }
 
     /**
-     * Return cache content based on cache tags & cache key
+     * Return cache content based on cache key
      */
     public function getCacheContent(callable $cacheContent): mixed
     {
@@ -79,85 +66,42 @@ trait CacheRepositoryTrait
             $this->removeCacheContent();
         } else {
             //set `isCached` flag before creating the cache
-            $this->isCached = cache()->tags($this->getCacheTags())->has($this->getCacheKey());
+            $this->isCached = cache()->has($this->getCacheKey());
         }
 
-        return cache()->tags($this->getCacheTags())->remember($this->getCacheKey(), self::CACHE_TIME, $cacheContent);
+        return cache()->remember($this->getCacheKey(), self::CACHE_TIME, $cacheContent);
     }
 
     /**
-     * Return cache content based on cache tags & cache key
+     * Return cache content based on cache key
      */
     public function removeCacheContent(): void
     {
-        cache()->tags($this->getCacheTags())->forget($this->getCacheKey());
+        cache()->forget($this->getCacheKey());
     }
 
     /**
-     * Return cache content based on cache tags & cache key
+     * Append to cachePieces
      */
-    public function flushCacheByTags(): void
+    public function addCachePiece(mixed $piece): self
     {
-        cache()->tags($this->getCacheTags())->flush();
-    }
-
-    /**
-     * Build array with tags for caching.
-     * [
-     *      0 => "project"
-     *      1 => "authority_name:name"
-     * ]
-     *
-     * @return ProjectRepository|ProjectPermissionRepository|CacheRepositoryTrait
-     */
-    public function buildCacheTags(array $tags = []): self
-    {
-        $this->cacheTags = [];
-        $this->cacheTags[] = self::CACHE_MODEL;
-
-        $cacheData = [];
-
-        $this->buildCacheData($tags, $cacheData);
-
-        $this->cacheTags = array_merge($this->cacheTags, $cacheData);
-
-        return $this;
-    }
-
-    /**
-     * Build array with tags for caching.
-     * page:1-limit:15-authorityName:play-zone.ro
-     *
-     * @return ProjectRepository|ProjectPermissionRepository|CacheRepositoryTrait
-     */
-    public function buildCacheKey(mixed $data): self
-    {
-        if (is_array($data)) {
-            $cacheData = [];
-
-            $this->buildCacheData($data, $cacheData);
-
-            $this->cacheKey = implode('-', $cacheData);
+        if (is_array($piece)) {
+            $this->cachePieces = array_merge($this->cachePieces, $piece);
         } else {
-            $this->cacheKey = (string) $data;
+            $this->cachePieces[] = $piece;
         }
 
         return $this;
     }
 
     /**
-     * Recursive function used to convert an array (can be multidimensional array) into to an array containing key:value entries as strings
+     * Reset `cachePieces` and append CACHE_MODEL
      */
-    private function buildCacheData(array $data, &$cacheData): void
+    public function initCacheKey(): self
     {
-        foreach ($data as $k => $v) {
-            if (is_array($v)) {
-                $this->buildCacheData($v, $cacheData);
-            } else {
-                if ($v) {
-                    $cacheData[] = Str::camel($k).':'.$v;
-                }
-            }
-        }
+        $this->cachePieces = [];
+        $this->cachePieces[] = self::CACHE_MODEL;
+
+        return $this;
     }
 }

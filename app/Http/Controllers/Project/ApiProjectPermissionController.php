@@ -39,25 +39,20 @@ class ApiProjectPermissionController extends Controller
 
         $validated = $request->validated();
 
-        $permissions = $repository->getListCache($validated, function () use ($query, $validated, $project) {
-            return
-                $query
-                    ->filterByProjectId($project->id)
-                    ->filterByUserName('%'.$validated['filter']['user_name'].'%', 'LIKE')
-                    ->filterByRole($validated['filter']['role'])
-                    ->filterByStatus($validated['filter']['status'])
-                    ->withUser()
-                    ->withCreatedBy()
-                    ->withUpdatedBy()
-                    ->get($validated['page'], $validated['limit'])
-
-                    ->makeHidden(['user_id']);
-        });
+        $permissions = $query
+            ->filterByProjectId($project->id)
+            ->filterByUserName('%'.$validated['filter']['user_name'].'%', 'LIKE')
+            ->filterByRole($validated['filter']['role'])
+            ->filterByStatus($validated['filter']['status'])
+            ->withUser()
+            ->withCreatedBy()
+            ->withUpdatedBy()
+            ->get($validated['page'], $validated['limit'])
+            ->makeHidden(['user_id']);
 
         return response()->json([
             'success' => true,
             'message' => __('message.success'),
-            'is_cached' => $repository->isCached(),
             'data' => [
                 'results' => $permissions,
                 'count' => count($permissions),

@@ -14,19 +14,11 @@ class ProjectPermissionRepository
 
     const CACHE_TIME = 86400;
 
-    public function getListCache(array $data, callable $cacheContent)
-    {
-        return $this
-            ->buildCacheTags(['list'])
-            ->buildCacheKey($data)
-            ->getCacheContent($cacheContent);
-    }
-
     public function getViewCache(int $id, callable $cacheContent)
     {
         return $this
-            ->buildCacheTags()
-            ->buildCacheKey($id)
+            ->initCacheKey()
+            ->addCachePiece($id)
             ->getCacheContent($cacheContent);
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Observers;
 
-use App\Events\ProjectCache;
 use App\Events\ProjectPermissionCache;
 use App\Events\ProjectPermissionCreated;
 use App\Events\ProjectPermissionDeleting;
@@ -24,11 +23,6 @@ class ProjectPermissionObserver
     public function created(ProjectPermission $permission): void
     {
         ProjectPermissionCreated::dispatch($permission);
-        ProjectPermissionCache::dispatch($permission);
-
-        $project = $permission->project()->first();
-
-        ProjectCache::dispatch($project);
     }
 
     /**
@@ -42,10 +36,6 @@ class ProjectPermissionObserver
     {
         ProjectPermissionUpdated::dispatch($permission);
         ProjectPermissionCache::dispatch($permission);
-
-        $project = $permission->project()->first();
-
-        ProjectCache::dispatch($project);
     }
 
     /**
@@ -55,9 +45,5 @@ class ProjectPermissionObserver
     {
         ProjectPermissionDeleting::dispatch($permission);
         ProjectPermissionCache::dispatch($permission);
-
-        $project = $permission->project()->first();
-
-        ProjectCache::dispatch($project);
     }
 }

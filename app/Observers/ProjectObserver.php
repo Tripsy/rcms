@@ -23,7 +23,6 @@ class ProjectObserver
     public function created(Project $project): void
     {
         ProjectCreated::dispatch($project);
-        ProjectCache::dispatch($project);
     }
 
     /**
