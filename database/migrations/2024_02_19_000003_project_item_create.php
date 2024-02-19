@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('item', function (Blueprint $table) {
+        Schema::create('project_item', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->id();
 
             $table->uuid()->unique();
-            $table->bigInteger('item_type_id', false, true);
+            $table->bigInteger('project_blueprint_id', false, true);
             $table->text('description');
 
             $table->enum('status', ItemStatus::justKeys())->default(ItemStatus::DRAFT->value);
@@ -30,9 +30,23 @@ return new class extends Migration
             $table->dateTime('updated_at')->nullable();
             $table->bigInteger('updated_by', false, true)->nullable();
 
-            $table->foreign('item_type_id')->references('id')->on('item_type')->onUpdate('no action')->onDelete('cascade');
-            $table->foreign('created_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
-            $table->foreign('updated_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
+            $table->foreign('project_blueprint_id')
+                ->references('id')
+                ->on('project_blueprint')
+                ->onUpdate('no action')
+                ->onDelete('cascade');
+
+            $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('no action')
+                ->onDelete('set null');
+
+            $table->foreign('updated_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('no action')
+                ->onDelete('set null');
         });
     }
 
@@ -41,6 +55,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('item');
+        Schema::dropIfExists('project_item');
     }
 };

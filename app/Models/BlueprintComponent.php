@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Enums\CommonStatus;
 use App\Enums\DefaultOption;
-use App\Enums\ProjectLabelType;
+use App\Enums\BlueprintComponentType;
 use App\Models\Traits\StatusScopeTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -42,7 +42,7 @@ class ItemTypeLabel extends BaseModel
      * @var array
      */
     protected $casts = [
-        'label_type' => ProjectLabelType::class,
+        'label_type' => BlueprintComponentType::class,
         'label_options' => 'array',
         'is_required' => DefaultOption::class,
         'is_html' => DefaultOption::class,

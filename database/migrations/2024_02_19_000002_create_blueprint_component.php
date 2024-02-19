@@ -14,19 +14,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('item_type_label', function (Blueprint $table) {
+        Schema::create('blueprint_component', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
 
             $table->id();
 
-            $table->bigInteger('item_type_id', false, true);
-            $table->char('label_key', 64);
-            $table->char('label_name', 255);
-            $table->text('label_info');
-            $table->enum('label_type', ProjectLabelType::justKeys())->default(ProjectLabelType::TEXT->value);
-            $table->json('label_options');
+            $table->bigInteger('project_blueprint_id', false, true);
+            $table->char('name', 64);
+            $table->char('description', 255);
+            $table->text('info');
+            $table->enum('blueprint_type', ProjectLabelType::justKeys())->default(ProjectLabelType::TEXT->value);
+            $table->json('type_options');
             $table->enum('is_required', DefaultOption::justKeys())->default(DefaultOption::NO->value);
             $table->enum('is_html', DefaultOption::justKeys())->default(DefaultOption::NO->value);
 
@@ -37,9 +37,23 @@ return new class extends Migration
             $table->dateTime('updated_at')->nullable();
             $table->bigInteger('updated_by', false, true)->nullable();
 
-            $table->foreign('item_type_id')->references('id')->on('item_type')->onUpdate('no action')->onDelete('cascade');
-            $table->foreign('created_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
-            $table->foreign('updated_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
+            $table->foreign('project_blueprint_id')
+                ->references('id')
+                ->on('project_blueprint')
+                ->onUpdate('no action')
+                ->onDelete('cascade');
+
+            $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('no action')
+                ->onDelete('set null');
+
+            $table->foreign('updated_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('no action')
+                ->onDelete('set null');
         });
     }
 
@@ -48,6 +62,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('item_type_label');
+        Schema::dropIfExists('blueprint_component');
     }
 };

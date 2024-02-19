@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('item_type', function (Blueprint $table) {
+        Schema::create('project_blueprint', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->id();
 
             $table->bigInteger('project_id', false, true);
-            $table->char('name', 64);
+            $table->text('description');
             $table->text('notes')->nullable();
 
             $table->enum('status', CommonStatus::justKeys())->default(CommonStatus::ACTIVE->value);
@@ -30,9 +30,23 @@ return new class extends Migration
             $table->dateTime('updated_at')->nullable();
             $table->bigInteger('updated_by', false, true)->nullable();
 
-            $table->foreign('project_id')->references('id')->on('project')->onUpdate('no action')->onDelete('cascade');
-            $table->foreign('created_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
-            $table->foreign('updated_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
+            $table->foreign('project_id')
+                ->references('id')
+                ->on('project')
+                ->onUpdate('no action')
+                ->onDelete('cascade');
+
+            $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('no action')
+                ->onDelete('set null');
+
+            $table->foreign('updated_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('no action')
+                ->onDelete('set null');
         });
     }
 
@@ -41,6 +55,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('item_type');
+        Schema::dropIfExists('project_blueprint');
     }
 };

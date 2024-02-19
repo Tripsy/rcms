@@ -19,13 +19,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
 
 Route::group([
     'middleware' => [
-        'auth:sanctum',
+//        'auth:sanctum', //already set in `app/Http/Kernel.php`
     ],
 ], function () {
     Route::post('/item/new', [ApiConsumerItemController::class, 'store']);
