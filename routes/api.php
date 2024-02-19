@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group([
     'middleware' => [
-//        'auth:sanctum', //already set in `app/Http/Kernel.php`
+        //        'auth:sanctum', //already set in `app/Http/Kernel.php`
     ],
 ], function () {
     Route::post('/item/new', [ApiConsumerItemController::class, 'store']);

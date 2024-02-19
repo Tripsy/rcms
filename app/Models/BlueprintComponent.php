@@ -3,9 +3,9 @@
 namespace App\Models;
 
 use App\Enums\BlueprintComponentFormat;
+use App\Enums\BlueprintComponentType;
 use App\Enums\CommonStatus;
 use App\Enums\DefaultOption;
-use App\Enums\BlueprintComponentType;
 use App\Models\Traits\StatusScopeTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
