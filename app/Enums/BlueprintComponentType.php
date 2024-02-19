@@ -6,10 +6,9 @@ namespace App\Enums;
 
 use App\Enums\Traits\EnumTrait;
 
-enum ProjectLabelType: string
+enum BlueprintComponentType: string
 {
     use EnumTrait;
-
     case TEXT = 'text';
     case TEXTAREA = 'textarea';
     case SELECT = 'select';

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Enums\BlueprintComponentFormat;
 use App\Enums\CommonStatus;
 use App\Enums\DefaultOption;
 use App\Enums\BlueprintComponentType;
 use App\Models\Traits\StatusScopeTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ItemTypeLabel extends BaseModel
+class BlueprintComponent extends BaseModel
 {
     use StatusScopeTrait;
 
@@ -17,7 +18,7 @@ class ItemTypeLabel extends BaseModel
      *
      * @var string
      */
-    protected $table = 'item_type_label';
+    protected $table = 'blueprint_component';
 
     /**
      * The attributes that are mass assignable.
@@ -25,14 +26,14 @@ class ItemTypeLabel extends BaseModel
      * @var array
      */
     protected $fillable = [
-        'item_type_id',
-        'label_key',
-        'label_name',
-        'label_info',
-        'label_type',
-        'label_options',
+        'project_blueprint_id',
+        'name',
+        'description',
+        'info',
+        'component_type',
+        'component_format',
+        'type_options',
         'is_required',
-        'is_html',
         'status',
     ];
 
@@ -42,18 +43,18 @@ class ItemTypeLabel extends BaseModel
      * @var array
      */
     protected $casts = [
-        'label_type' => BlueprintComponentType::class,
-        'label_options' => 'array',
+        'component_type' => BlueprintComponentType::class,
+        'component_format' => BlueprintComponentFormat::class,
+        'type_options' => 'array',
         'is_required' => DefaultOption::class,
-        'is_html' => DefaultOption::class,
         'status' => CommonStatus::class,
     ];
 
     /**
-     * Get the item type that owns this item type label.
+     * Get the blueprint that owns this component
      */
     public function itemType(): BelongsTo
     {
-        return $this->belongsTo(ItemType::class);
+        return $this->belongsTo(ProjectBlueprint::class);
     }
 }

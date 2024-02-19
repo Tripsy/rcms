@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
-class Item extends BaseModel
+class ProjectItem extends BaseModel
 {
     use UuidScopeTrait;
     use StatusScopeTrait;
@@ -19,7 +19,7 @@ class Item extends BaseModel
      *
      * @var string
      */
-    protected $table = 'item';
+    protected $table = 'project_item';
 
     /**
      * The attributes that are mass assignable.
@@ -28,7 +28,7 @@ class Item extends BaseModel
      */
     protected $fillable = [
         'uuid',
-        'item_type_id',
+        'project_blueprint_id',
         'description',
         'status',
     ];
@@ -43,19 +43,19 @@ class Item extends BaseModel
     ];
 
     /**
-     * Get the item type that owns the item.
+     * Get the blueprint that owns this item
      */
-    public function itemType(): BelongsTo
+    public function blueprint(): BelongsTo
     {
-        return $this->belongsTo(ItemType::class);
+        return $this->belongsTo(ProjectBlueprint::class);
     }
 
     /**
-     * Get the data for the item.
+     * Get the content for the item.
      */
-    public function itemData(): HasMany
+    public function itemContent(): HasMany
     {
-        return $this->hasMany(ItemData::class, 'uuid', 'uuid');
+        return $this->hasMany(ItemContent::class, 'uuid', 'uuid');
     }
 
     /**
@@ -63,6 +63,6 @@ class Item extends BaseModel
      */
     public function project(): HasOneThrough
     {
-        return $this->hasOneThrough(Project::class, ItemType::class);
+        return $this->hasOneThrough(Project::class, ProjectBlueprint::class);
     }
 }

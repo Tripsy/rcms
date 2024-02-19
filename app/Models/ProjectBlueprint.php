@@ -7,7 +7,7 @@ use App\Models\Traits\StatusScopeTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class ItemType extends BaseModel
+class ProjectBlueprint extends BaseModel
 {
     use StatusScopeTrait;
 
@@ -16,7 +16,7 @@ class ItemType extends BaseModel
      *
      * @var string
      */
-    protected $table = 'item_type';
+    protected $table = 'project_blueprint';
 
     /**
      * The attributes that are mass assignable.
@@ -25,7 +25,7 @@ class ItemType extends BaseModel
      */
     protected $fillable = [
         'project_id',
-        'name',
+        'description',
         'notes',
         'status',
     ];
@@ -40,7 +40,7 @@ class ItemType extends BaseModel
     ];
 
     /**
-     * Get the project that owns this item type.
+     * Get the project that owns this blueprint.
      */
     public function project(): BelongsTo
     {
@@ -48,10 +48,10 @@ class ItemType extends BaseModel
     }
 
     /**
-     * Get the item type labels for this item type.
+     * Get the components for this blueprint.
      */
-    public function itemTypeLabels(): HasMany
+    public function blueprintComponents(): HasMany
     {
-        return $this->hasMany(ItemTypeLabel::class);
+        return $this->hasMany(BlueprintComponent::class);
     }
 }

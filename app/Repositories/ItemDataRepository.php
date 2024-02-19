@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace App\Repositories;
 
 use App\Enums\DefaultOption;
-use App\Models\ItemData;
+use App\Models\ItemContent;
 use App\Repositories\Interfaces\ItemDataRepositoryInterface;
 
 class ItemDataRepository implements ItemDataRepositoryInterface
 {
-    public function create(array $data): ItemData
+    public function create(array $data): ItemContent
     {
-        $itemData = ItemData::query()
+        $itemData = ItemContent::query()
             ->uuid($data['uuid'])
             ->label($data['label'])
             ->isActive()
@@ -26,15 +26,15 @@ class ItemDataRepository implements ItemDataRepositoryInterface
             }
         }
 
-        return ItemData::create($data);
+        return ItemContent::create($data);
     }
 
-    public function delete(ItemData $model): bool
+    public function delete(ItemContent $model): bool
     {
         return $model->delete();
     }
 
-    public function setAsInactive(ItemData $model): bool
+    public function setAsInactive(ItemContent $model): bool
     {
         return $model->update([
             'is_active' => DefaultOption::NO,

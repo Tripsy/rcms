@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ItemData extends Model
+class ItemContent extends Model
 {
     use HasFactory;
     use UuidScopeTrait;
@@ -19,7 +19,7 @@ class ItemData extends Model
      *
      * @var string
      */
-    protected $table = 'item_data';
+    protected $table = 'item_content';
 
     /**
      * The attributes that are mass assignable.
@@ -28,7 +28,7 @@ class ItemData extends Model
      */
     protected $fillable = [
         'uuid',
-        'label',
+        'component_name',
         'content',
         'is_active',
     ];
@@ -47,21 +47,21 @@ class ItemData extends Model
      */
     public function item(): BelongsTo
     {
-        return $this->belongsTo(Item::class, 'uuid', 'uuid');
+        return $this->belongsTo(ProjectItem::class, 'uuid', 'uuid');
     }
 
     /**
      * Scope a query to select items with selected label
      */
-    public function scopeLabel(Builder $query, string $label): void
+    public function scopeComponent(Builder $query, string $component_name): void
     {
-        $query->where('label', $label);
+        $query->where('component_name', $component_name);
     }
 
     /**
      * Scope a query to select items marked as active
      */
-    public function scopeIsActive(Builder $query): void
+    public function scopeActive(Builder $query): void
     {
         $query->where('is_active', DefaultOption::YES->value);
     }

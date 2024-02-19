@@ -1,8 +1,9 @@
 <?php
 
+use App\Enums\BlueprintComponentFormat;
 use App\Enums\CommonStatus;
 use App\Enums\DefaultOption;
-use App\Enums\ProjectLabelType;
+use App\Enums\BlueprintComponentType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -25,11 +26,12 @@ return new class extends Migration
             $table->char('name', 64);
             $table->char('description', 255);
             $table->text('info');
-            $table->enum('blueprint_type', ProjectLabelType::justKeys())->default(ProjectLabelType::TEXT->value);
+            $table->enum('component_type', BlueprintComponentType::justKeys())
+                ->default(BlueprintComponentType::TEXT->value);
+            $table->enum('component_format', BlueprintComponentFormat::justKeys())
+                ->default(BlueprintComponentFormat::TEXT->value);
             $table->json('type_options');
             $table->enum('is_required', DefaultOption::justKeys())->default(DefaultOption::NO->value);
-            $table->enum('is_html', DefaultOption::justKeys())->default(DefaultOption::NO->value);
-
             $table->enum('status', CommonStatus::justKeys())->default(CommonStatus::ACTIVE->value);
 
             $table->dateTime('created_at');

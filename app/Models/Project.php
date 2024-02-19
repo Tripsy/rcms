@@ -64,7 +64,7 @@ class Project extends BaseModel
      */
     public function itemTypes(): HasMany
     {
-        return $this->hasMany(ItemType::class);
+        return $this->hasMany(ProjectBlueprint::class);
     }
 
     /**

@@ -2,17 +2,17 @@
 
 namespace App\Repositories\Interfaces;
 
-use App\Models\Item;
+use App\Models\ProjectItem;
 
 interface ItemRepositoryInterface
 {
-    public function create(array $data): Item;
+    public function create(array $data): ProjectItem;
 
-    public function update(Item $model, array $data): bool;
+    public function update(ProjectItem $model, array $data): bool;
 
-    public function delete(Item $model): bool;
+    public function delete(ProjectItem $model): bool;
 
     public function getAll(): array;
 
-    public function findByUuid(string $uuid): ?Item;
+    public function findByUuid(string $uuid): ?ProjectItem;
 }

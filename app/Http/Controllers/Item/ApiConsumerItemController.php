@@ -12,8 +12,8 @@ use App\Enums\ItemStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ItemStoreRequest;
 use App\Http\Requests\ItemUpdateRequest;
-use App\Models\Item;
-use App\Models\ItemData;
+use App\Models\ProjectItem;
+use App\Models\ItemContent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
@@ -74,12 +74,12 @@ class ApiConsumerItemController extends Controller
      */
     public function show(string $uuid)
     {
-        $item = Item::query()
+        $item = ProjectItem::query()
             ->uuid($uuid)
             ->where('account_id', $account_id)
             ->firstOrFail();
 
-        $itemData = ItemData::query()
+        $itemData = ItemContent::query()
             ->uuid($uuid)
             ->isActive()
             ->get(['label', 'content'])

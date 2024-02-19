@@ -2,11 +2,11 @@
 
 namespace App\Repositories\Interfaces;
 
-use App\Models\ItemData;
+use App\Models\ItemContent;
 
 interface ItemDataRepositoryInterface
 {
-    public function create(array $data): ItemData;
+    public function create(array $data): ItemContent;
 
-    public function delete(ItemData $model): bool;
+    public function delete(ItemContent $model): bool;
 }
