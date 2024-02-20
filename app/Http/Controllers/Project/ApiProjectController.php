@@ -26,9 +26,17 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
+use Tripsy\ApiResponse\ApiResponse;
 
 class ApiProjectController extends Controller
 {
+    private ApiResponse $apiResponse;
+
+    public function __construct(ApiResponse $apiResponse)
+    {
+        $this->apiResponse = $apiResponse;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -49,16 +57,16 @@ class ApiProjectController extends Controller
             ->withUpdatedBy()
             ->get($validated['page'], $validated['limit']);
 
-        return response()->json([
-            'success' => true,
-            'message' => __('message.success'),
-            'data' => [
-                'results' => $projects,
-                'count' => count($projects),
-                'limit' => $validated['limit'],
-                'page' => $validated['page'],
-            ],
-        ], Response::HTTP_OK);
+        $this->apiResponse->success(true);
+        $this->apiResponse->message(__('message.success'));
+        $this->apiResponse->data([
+            'results' => $projects,
+            'count' => count($projects),
+            'limit' => $validated['limit'],
+            'page' => $validated['page'],
+        ]);
+
+        return response()->json($this->apiResponse->resultArray(), Response::HTTP_OK);
     }
 
     /**
@@ -99,16 +107,16 @@ class ApiProjectController extends Controller
 
         ProjectPermissionStore::run($commandPermission);
 
-        return response()->json([
-            'success' => true,
-            'message' => __('message.success'),
-            'data' => array_merge(
-                [
-                    'id' => $project->id,
-                ],
-                $command->attributes()
-            ),
-        ], Response::HTTP_CREATED);
+        $this->apiResponse->success(true);
+        $this->apiResponse->message(__('message.success'));
+        $this->apiResponse->data(array_merge(
+            [
+                'id' => $project->id,
+            ],
+            $command->attributes()
+        ));
+
+        return response()->json($this->apiResponse->resultArray(), Response::HTTP_CREATED);
     }
 
     /**
@@ -126,12 +134,12 @@ class ApiProjectController extends Controller
                 ->first();
         });
 
-        return response()->json([
-            'success' => true,
-            'message' => __('message.success'),
-            'is_cached' => $repository->isCached(),
-            'data' => $data,
-        ], Response::HTTP_OK);
+        $this->apiResponse->success(true);
+        $this->apiResponse->message(__('message.success'));
+        $this->apiResponse->pushMeta('isCached', $repository->isCached());
+        $this->apiResponse->data($data);
+
+        return response()->json($this->apiResponse->resultArray(), Response::HTTP_OK);
     }
 
     /**
@@ -152,11 +160,11 @@ class ApiProjectController extends Controller
 
         ProjectUpdate::run($command);
 
-        return response()->json([
-            'success' => true,
-            'message' => __('message.success'),
-            'data' => $command->attributes(),
-        ], Response::HTTP_OK);
+        $this->apiResponse->success(true);
+        $this->apiResponse->message(__('message.success'));
+        $this->apiResponse->data($command->attributes());
+
+        return response()->json($this->apiResponse->resultArray(), Response::HTTP_OK);
     }
 
     /**
@@ -172,9 +180,10 @@ class ApiProjectController extends Controller
 
         ProjectDelete::run($command);
 
-        return response()->json([
-            'success' => true,
-            'message' => __('message.success'),
-        ], Response::HTTP_OK);
+        $this->apiResponse->success(true);
+        $this->apiResponse->message(__('message.success'));
+        $this->apiResponse->data($command->attributes());
+
+        return response()->json($this->apiResponse->resultArray(), Response::HTTP_NO_CONTENT);
     }
 }

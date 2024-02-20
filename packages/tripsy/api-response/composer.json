@@ -1,0 +1,19 @@
+{
+    "name": "tripsy/api-response",
+    "description": "Wrapper for API response",
+    "autoload": {
+        "psr-4": {
+            "Tripsy\\ApiResponse\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Gabriel David"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.1",
+        "laravel/framework": "^10.10"
+    }
+}

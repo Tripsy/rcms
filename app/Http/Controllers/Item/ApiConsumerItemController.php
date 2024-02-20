@@ -17,11 +17,15 @@ use App\Models\ItemContent;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
+use Tripsy\ApiResponse\ApiResponse;
 
 class ApiConsumerItemController extends Controller
 {
-    public function __construct()
+    private ApiResponse $apiResponse;
+
+    public function __construct(ApiResponse $apiResponse)
     {
+        $this->apiResponse = $apiResponse;
     }
 
     /**
@@ -58,15 +62,15 @@ class ApiConsumerItemController extends Controller
             ItemDataStore::run($commandItemData);
         }
 
-        return response()->json([
-            'success' => true,
-            'message' => __('message.success'),
-            'data' => [
-                'uuid' => $commandItem->getUuid(),
-                'description' => $commandItem->getDescription(),
-                'data' => $validated['data'],
-            ],
-        ], Response::HTTP_CREATED);
+        $this->apiResponse->success(true);
+        $this->apiResponse->message(__('message.success'));
+        $this->apiResponse->data([
+            'uuid' => $commandItem->getUuid(),
+            'description' => $commandItem->getDescription(),
+            'data' => $validated['data'],
+        ]);
+
+        return response()->json($this->apiResponse->resultArray(), Response::HTTP_CREATED);
     }
 
     /**
