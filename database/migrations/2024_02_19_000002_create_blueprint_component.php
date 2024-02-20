@@ -1,9 +1,9 @@
 <?php
 
 use App\Enums\BlueprintComponentFormat;
+use App\Enums\BlueprintComponentType;
 use App\Enums\CommonStatus;
 use App\Enums\DefaultOption;
-use App\Enums\BlueprintComponentType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;

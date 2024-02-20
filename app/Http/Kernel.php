@@ -41,7 +41,7 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-//            \App\Http\Middleware\ForceJsonResponse::class, //could be set in case header `Accept: application/json`
+            //            \App\Http\Middleware\ForceJsonResponse::class, //could be set in case header `Accept: application/json`
             \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
