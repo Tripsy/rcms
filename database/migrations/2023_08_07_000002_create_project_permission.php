@@ -33,11 +33,29 @@ return new class extends Migration
 
             $table->unique(['project_id', 'user_id']);
 
-            $table->foreign('project_id')->references('id')->on('project')->onUpdate('no action')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onUpdate('no action')->onDelete('cascade');
+            $table->foreign('project_id')
+                ->references('id')
+                ->on('project')
+                ->onUpdate('no action')
+                ->onDelete('cascade');
 
-            $table->foreign('created_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
-            $table->foreign('updated_by')->references('id')->on('users')->onUpdate('no action')->onDelete('set null');
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('no action')
+                ->onDelete('cascade');
+
+            $table->foreign('created_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('no action')
+                ->onDelete('set null');
+
+            $table->foreign('updated_by')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('no action')
+                ->onDelete('set null');
         });
     }
 

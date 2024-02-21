@@ -42,8 +42,14 @@ return [
         'already_exist' => 'Project permission already set for selected user',
     ],
 
-    'item' => [
-        'not_found' => 'Item #:uuid does not exist',
-        'cannot_create_data' => 'Cannot create data item. Item #:uuid does not exist',
+    'project_blueprint' => [
+        'not_found' => 'Project blueprint #:id does not exist',
+        'store_fail' => 'Failed to create project blueprint!',
+        'already_exist' => 'Project blueprint with selected description already exist',
     ],
+
+//    'item' => [
+//        'not_found' => 'Item #:uuid does not exist',
+//        'cannot_create_data' => 'Cannot create data item. Item #:uuid does not exist',
+//    ],
 ];

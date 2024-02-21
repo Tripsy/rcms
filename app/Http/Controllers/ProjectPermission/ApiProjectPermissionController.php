@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Project;
+namespace App\Http\Controllers\ProjectPermission;
 
 use App\Actions\ProjectPermissionDelete;
 use App\Actions\ProjectPermissionStore;
@@ -23,17 +23,24 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
+use Tripsy\ApiResponse\ApiResponse;
 
 class ApiProjectPermissionController extends Controller
 {
+    private ApiResponse $apiResponse;
+
+    public function __construct(ApiResponse $apiResponse)
+    {
+        $this->apiResponse = $apiResponse;
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(
         ProjectPermissionIndexRequest $request,
         Project $project,
-        ProjectPermissionReadQuery $query,
-        ProjectPermissionRepository $repository
+        ProjectPermissionReadQuery $query
     ): JsonResponse {
         Gate::authorize('index', [ProjectPermission::class, $project]);
 
@@ -50,16 +57,16 @@ class ApiProjectPermissionController extends Controller
             ->get($validated['page'], $validated['limit'])
             ->makeHidden(['user_id']);
 
-        return response()->json([
-            'success' => true,
-            'message' => __('message.success'),
-            'data' => [
-                'results' => $permissions,
-                'count' => count($permissions),
-                'limit' => $validated['limit'],
-                'page' => $validated['page'],
-            ],
-        ], Response::HTTP_OK);
+        $this->apiResponse->success(true);
+        $this->apiResponse->message(__('message.success'));
+        $this->apiResponse->data([
+            'results' => $permissions,
+            'count' => count($permissions),
+            'limit' => $validated['limit'],
+            'page' => $validated['page'],
+        ]);
+
+        return response()->json($this->apiResponse->resultArray(), Response::HTTP_OK);
     }
 
     /**
@@ -97,16 +104,16 @@ class ApiProjectPermissionController extends Controller
             );
         }
 
-        return response()->json([
-            'success' => true,
-            'message' => __('message.success'),
-            'data' => array_merge(
-                [
-                    'id' => $permission->id,
-                ],
-                $command->attributes()
-            ),
-        ], Response::HTTP_CREATED);
+        $this->apiResponse->success(true);
+        $this->apiResponse->message(__('message.success'));
+        $this->apiResponse->data(array_merge(
+            [
+                'id' => $permission->id,
+            ],
+            $command->attributes()
+        ));
+
+        return response()->json($this->apiResponse->resultArray(), Response::HTTP_CREATED);
     }
 
     /**
@@ -128,12 +135,12 @@ class ApiProjectPermissionController extends Controller
                 ->first();
         });
 
-        return response()->json([
-            'success' => true,
-            'message' => __('message.success'),
-            'is_cached' => $repository->isCached(),
-            'data' => $data,
-        ], Response::HTTP_OK);
+        $this->apiResponse->success(true);
+        $this->apiResponse->message(__('message.success'));
+        $this->apiResponse->pushMeta('isCached', $repository->isCached());
+        $this->apiResponse->data($data);
+
+        return response()->json($this->apiResponse->resultArray(), Response::HTTP_OK);
     }
 
     /**
@@ -155,11 +162,11 @@ class ApiProjectPermissionController extends Controller
 
         ProjectPermissionUpdate::run($command);
 
-        return response()->json([
-            'success' => true,
-            'message' => __('message.success'),
-            'data' => $command->attributes(),
-        ], Response::HTTP_OK);
+        $this->apiResponse->success(true);
+        $this->apiResponse->message(__('message.success'));
+        $this->apiResponse->data($command->attributes());
+
+        return response()->json($this->apiResponse->resultArray(), Response::HTTP_OK);
     }
 
     /**
@@ -175,9 +182,10 @@ class ApiProjectPermissionController extends Controller
 
         ProjectPermissionDelete::run($command);
 
-        return response()->json([
-            'success' => true,
-            'message' => __('message.success'),
-        ], Response::HTTP_OK);
+        $this->apiResponse->success(true);
+        $this->apiResponse->message(__('message.success'));
+        $this->apiResponse->data($command->attributes());
+
+        return response()->json($this->apiResponse->resultArray(), Response::HTTP_NO_CONTENT);
     }
 }

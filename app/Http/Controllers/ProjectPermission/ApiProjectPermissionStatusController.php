@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Project;
+namespace App\Http\Controllers\ProjectPermission;
 
 use App\Actions\ProjectPermissionStatusUpdate;
 use App\Commands\ProjectPermissionStatusUpdateCommand;

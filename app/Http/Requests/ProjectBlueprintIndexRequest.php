@@ -8,7 +8,7 @@ use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
-class ProjectPermissionIndexRequest extends FormRequest
+class ProjectBlueprintIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,8 +27,8 @@ class ProjectPermissionIndexRequest extends FormRequest
             'page' => (int) $this->page ?? 1,
             'limit' => (int) $this->limit ?? 5,
             'filter' => [
-                'user_name' => $this->filter['user_name'] ?? '',
-                'role' => $this->filter['role'] ?? '',
+                'description' => $this->filter['description'] ?? '',
+                'notes' => $this->filter['notes'] ?? '',
                 'status' => $this->filter['status'] ?? '',
             ],
         ]);
@@ -36,14 +36,16 @@ class ProjectPermissionIndexRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
+     *
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {
         return [
             'page' => ['required', 'integer'],
             'limit' => ['required', 'integer', 'max:15'],
-            'filter.user_name' => ['sometimes', 'nullable', 'string'],
-            'filter.role' => ['sometimes', new Enum(ProjectPermissionRole::class)],
+            'filter.description' => ['sometimes', 'nullable', 'string'],
+            'filter.notes' => ['sometimes', 'nullable', 'string'],
             'filter.status' => ['sometimes', new Enum(CommonStatus::class)],
         ];
     }

@@ -3,12 +3,12 @@
 namespace App\Http\Requests;
 
 use App\Enums\CommonStatus;
-use App\Queries\ProjectReadQuery;
+use App\Queries\ProjectBlueprintReadQuery;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
 
-class ProjectStoreRequest extends FormRequest
+class ProjectBlueprintStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -34,9 +34,8 @@ class ProjectStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string'],
-            'authority_name' => ['required', 'string'],
-            'authority_key' => ['required', 'string', 'size:32'],
+            'description' => ['required', 'string', 'size:255'],
+            'notes' => ['sometimes', 'nullable', 'string'],
             'status' => ['sometimes', new Enum(CommonStatus::class)],
         ];
     }
@@ -48,7 +47,7 @@ class ProjectStoreRequest extends FormRequest
     {
         if ($validator->fails() === false) {
             $validator->after(function ($validator) {
-                $this->checkProjectExist($validator);
+                $this->checkProjectPermissionExist($validator);
             });
         }
     }
@@ -56,17 +55,17 @@ class ProjectStoreRequest extends FormRequest
     /**
      * Custom verification logic.
      */
-    protected function checkProjectExist(\Illuminate\Contracts\Validation\Validator $validator): void
+    protected function checkProjectPermissionExist(\Illuminate\Contracts\Validation\Validator $validator): void
     {
-        $project = app(ProjectReadQuery::class)
-            ->filterByAuthorityName($validator->safe()->authority_name)
-            ->filterByName($validator->safe()->name)
+        $projectBlueprint = app(ProjectBlueprintReadQuery::class)
+            ->filterByProjectId($this->route('project')->id)
+            ->filterByDescription($this->validator->safe()->description)
             ->isUnique();
 
-        if ($project === false) {
+        if ($projectBlueprint === false) {
             $validator->errors()->add(
                 'other',
-                __('message.project.already_exist')
+                __('message.project_blueprint.already_exist')
             );
         }
     }

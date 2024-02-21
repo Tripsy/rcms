@@ -2,10 +2,11 @@
 
 use App\Http\Controllers\Item\ApiConsumerItemController;
 use App\Http\Controllers\Project\ApiProjectController;
-use App\Http\Controllers\Project\ApiProjectPermissionController;
-use App\Http\Controllers\Project\ApiProjectPermissionStatusController;
 use App\Http\Controllers\Project\ApiProjectStatusController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\ProjectBlueprint\ApiProjectBlueprintController;
+use App\Http\Controllers\ProjectPermission\ApiProjectBlueprintStatusController;
+use App\Http\Controllers\ProjectPermission\ApiProjectPermissionController;
+use App\Http\Controllers\ProjectPermission\ApiProjectPermissionStatusController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -76,4 +77,31 @@ Route::group([
     )
         ->where('project', '[0-9]+')
         ->where('projectPermission', '[0-9]+');
+
+    Route::controller(ApiProjectBlueprintController::class)->group(function () {
+        Route::get('/project-blueprint/{project}', 'index')
+            ->where('project', '[0-9]+');
+
+        Route::get('/project-blueprint/{project}/{projectBlueprint}', 'show')
+            ->where('project', '[0-9]+')
+            ->where('projectBlueprint', '[0-9]+');
+
+        Route::post('/project-blueprint/{project}', 'store')
+            ->where('project', '[0-9]+');
+
+        Route::put('/project-blueprint/{project}/{projectBlueprint}', 'update')
+            ->where('project', '[0-9]+')
+            ->where('projectBlueprint', '[0-9]+');
+
+        Route::delete('/project-blueprint/{project}/{projectBlueprint}', 'destroy')
+            ->where('project', '[0-9]+')
+            ->where('projectBlueprint', '[0-9]+');
+    });
+
+    Route::patch(
+        '/project-blueprint/{project}/{projectBlueprint}/{status}',
+        ApiProjectBlueprintStatusController::class
+    )
+        ->where('project', '[0-9]+')
+        ->where('projectBlueprint', '[0-9]+');
 });

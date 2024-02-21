@@ -8,7 +8,7 @@ use App\Models\ProjectPermission;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class ProjectPermissionPolicy
+class ProjectBlueprintPolicy
 {
     /**
      * Perform pre-authorization checks.
@@ -55,7 +55,7 @@ class ProjectPermissionPolicy
      */
     public function create(User $user, Project $project): Response
     {
-        return $project->hasRole($user, ProjectPermissionRole::MANAGER)
+        return $project->hasPermission($user)
             ? Response::allow()
             : Response::deny(__('message.exception.access_denied'));
     }
@@ -63,28 +63,18 @@ class ProjectPermissionPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, ProjectPermission $projectPermission, Project $project): Response
+    public function update(User $user, Project $project): Response
     {
-        if ($user->id === $projectPermission->user_id) {
-            return Response::deny(__('message.exception.action_denied'));
-        }
-
-        if ($project->hasRole($user, ProjectPermissionRole::MANAGER) === false) {
-            return Response::deny(__('message.exception.access_denied'));
-        }
-
-        return Response::allow();
+        return $project->hasPermission($user)
+            ? Response::allow()
+            : Response::deny(__('message.exception.access_denied'));
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, ProjectPermission $projectPermission, Project $project): Response
+    public function delete(User $user, Project $project): Response
     {
-        if ($user->id === $projectPermission->user_id) {
-            return Response::deny(__('message.exception.access_denied'));
-        }
-
         if ($project->hasRole($user, ProjectPermissionRole::MANAGER) === false) {
             return Response::deny(__('message.exception.access_denied'));
         }
