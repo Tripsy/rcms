@@ -164,11 +164,24 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'user_id' => [
+            'exists' => 'User #:input not found',
+        ],
+        'components' => [
+            'required' => 'Provide at least one blueprint component',
+            'type_options' => 'For component :k the field type options is required',
+            'names' => 'Component :k uses a name (eg: :name) previously defined',
+        ],
+        'components.*.name' => [
+            'required' => 'Each component must have a name value',
+        ],
+        'components.*.description' => [
+            'required' => 'Each component must have a description value',
+        ],
+        'components.*.info' => [
+            'string' => 'The component info field must be a string',
         ],
     ],
-
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes

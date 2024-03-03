@@ -6,9 +6,9 @@ use App\Actions\ItemDataStore;
 use App\Actions\ItemStore;
 use App\Actions\ItemUpdate;
 use App\Commands\ItemDataStoreCommand;
-use App\Commands\ItemStoreCommand;
+use App\Commands\BlueprintComponentStoreCommand;
 use App\Commands\ItemUpdateCommand;
-use App\Enums\ItemStatus;
+use App\Enums\BlueprintComponentStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ItemStoreRequest;
 use App\Http\Requests\ItemUpdateRequest;
@@ -43,11 +43,11 @@ class ApiConsumerItemController extends Controller
     {
         $validated = $request->validated();
 
-        $commandItem = new ItemStoreCommand(
+        $commandItem = new BlueprintComponentStoreCommand(
             Str::orderedUuid(),
             $validated['account_id'],
             $validated['description'],
-            empty($validated['status']) === false ? ItemStatus::from($validated['status']) : ItemStatus::DRAFT
+            empty($validated['status']) === false ? BlueprintComponentStatus::from($validated['status']) : BlueprintComponentStatus::DRAFT
         );
 
         ItemStore::run($commandItem);

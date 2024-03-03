@@ -6,6 +6,7 @@ use App\Enums\CommonStatus;
 use App\Enums\ProjectPermissionRole;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 
 class ProjectBlueprintIndexRequest extends FormRequest
@@ -46,7 +47,7 @@ class ProjectBlueprintIndexRequest extends FormRequest
             'limit' => ['required', 'integer', 'max:15'],
             'filter.description' => ['sometimes', 'nullable', 'string'],
             'filter.notes' => ['sometimes', 'nullable', 'string'],
-            'filter.status' => ['sometimes', new Enum(CommonStatus::class)],
+            'filter.status' => ['sometimes', Rule::enum(CommonStatus::class)],
         ];
     }
 }

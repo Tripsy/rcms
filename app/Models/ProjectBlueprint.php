@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\Enums\CommonStatus;
 use App\Models\Traits\StatusScopeTrait;
+use App\Models\Traits\UuidScopeTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProjectBlueprint extends BaseModel
 {
+    use UuidScopeTrait;
     use StatusScopeTrait;
 
     /**
@@ -25,6 +27,7 @@ class ProjectBlueprint extends BaseModel
      */
     protected $fillable = [
         'project_id',
+        'uuid',
         'description',
         'notes',
         'status',

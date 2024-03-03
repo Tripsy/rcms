@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\ItemStatus;
+use App\Enums\BlueprintComponentStatus;
 use App\Models\Traits\StatusScopeTrait;
 use App\Models\Traits\UuidScopeTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -39,7 +39,7 @@ class ProjectItem extends BaseModel
      * @var array
      */
     protected $casts = [
-        'status' => ItemStatus::class,
+        'status' => BlueprintComponentStatus::class,
     ];
 
     /**

@@ -47,14 +47,11 @@ trait EnumTrait
 
     public static function justKeys(): array
     {
-        $cases = self::cases();
+        return array_column(self::cases(), 'value');
+    }
 
-        $array = [];
-
-        foreach ($cases as $c) {
-            $array[] = $c->value;
-        }
-
-        return $array;
+    public static function listKeys(): string
+    {
+        return implode(', ', array_column(self::cases(), 'value'));
     }
 }

@@ -21,6 +21,7 @@ class ProjectBlueprintStore
     {
         $this->query->create([
             'project_id' => $command->getProjectId(),
+            'uuid' => $command->getUuid(),
             'description' => $command->getDescription(),
             'notes' => $command->getNotes(),
             'status' => $command->getStatus(),

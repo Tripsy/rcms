@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\ItemStatus;
+use App\Enums\BlueprintComponentStatus;
 use App\Models\Project;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -27,7 +27,7 @@ class ItemStoreRequest extends FormRequest
     {
         return [
             'project_id' => ['required', 'int', Rule::exists(Project::class, 'id')],
-            'status' => ['sometimes', new Enum(ItemStatus::class)],
+            'status' => ['sometimes', Rule::enum(BlueprintComponentStatus::class)],
             'description' => ['present', 'string'],
             'data.*.label' => ['required', 'string', 'max:64'],
             'data.*.content' => ['present', 'string'],

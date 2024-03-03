@@ -98,10 +98,10 @@ Route::group([
             ->where('projectBlueprint', '[0-9]+');
     });
 
-    Route::patch(
-        '/project-blueprint/{project}/{projectBlueprint}/{status}',
-        ApiProjectBlueprintStatusController::class
-    )
-        ->where('project', '[0-9]+')
-        ->where('projectBlueprint', '[0-9]+');
+    //    Route::patch(
+    //        '/project-blueprint/{project}/{projectBlueprint}/{status}',
+    //        ApiProjectBlueprintStatusController::class
+    //    )
+    //        ->where('project', '[0-9]+')
+    //        ->where('projectBlueprint', '[0-9]+');
 });

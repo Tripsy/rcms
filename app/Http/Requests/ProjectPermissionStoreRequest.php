@@ -6,6 +6,7 @@ use App\Enums\CommonStatus;
 use App\Enums\ProjectPermissionRole;
 use App\Queries\ProjectPermissionReadQuery;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
 
@@ -17,18 +18,6 @@ class ProjectPermissionStoreRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
-    }
-
-    /**
-     * Get the error messages for the defined validation rules.
-     *
-     * @return array<string, string>
-     */
-    public function messages(): array
-    {
-        return [
-            'user_id.exists' => 'User #:input not found',
-        ];
     }
 
     /**
@@ -49,8 +38,8 @@ class ProjectPermissionStoreRequest extends FormRequest
     {
         return [
             'user_id' => ['required', 'int', 'exists:App\Models\User,id'],
-            'role' => ['sometimes', new Enum(ProjectPermissionRole::class)],
-            'status' => ['sometimes', new Enum(CommonStatus::class)],
+            'role' => ['sometimes', Rule::enum(ProjectPermissionRole::class)],
+            'status' => ['sometimes', Rule::enum(CommonStatus::class)],
         ];
     }
 

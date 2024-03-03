@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\ItemStatus;
+use App\Enums\BlueprintComponentStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->bigInteger('project_blueprint_id', false, true);
             $table->text('description');
 
-            $table->enum('status', ItemStatus::justKeys())->default(ItemStatus::DRAFT->value);
+            $table->enum('status', BlueprintComponentStatus::justKeys())->default(BlueprintComponentStatus::DRAFT->value);
 
             $table->dateTime('created_at');
             $table->bigInteger('created_by', false, true)->nullable();

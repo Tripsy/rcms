@@ -139,13 +139,22 @@ class Handler extends ExceptionHandler
     /**
      * Return common response for requests which expects JSON
      */
-    private function standardJsonResponseError(Request $request, Exception $e, string $message, int $fallBackCode = Response::HTTP_UNPROCESSABLE_ENTITY): JsonResponse
-    {
+    private function standardJsonResponseError(
+        Request $request,
+        Exception $e,
+        string $message,
+        int $fallBackCode = Response::HTTP_UNPROCESSABLE_ENTITY
+    ): JsonResponse {
         $responseData = [
             'success' => false,
             'message' => $message,
+            'errors' => [],
             'request' => $request->all(),
         ];
+
+        if ($e instanceof ValidationException) {
+            $responseData['errors'] = $e->validator->errors();
+        }
 
         if (app()->environment() == 'local') {
             $responseData['debug'] = [

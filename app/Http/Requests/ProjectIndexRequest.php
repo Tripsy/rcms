@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Enums\CommonStatus;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 
 class ProjectIndexRequest extends FormRequest
@@ -41,7 +42,7 @@ class ProjectIndexRequest extends FormRequest
             'page' => ['required', 'integer'],
             'limit' => ['required', 'integer', 'max:15'],
             'filter.authority_name' => ['sometimes', 'nullable', 'string'],
-            'filter.status' => ['sometimes', new Enum(CommonStatus::class)],
+            'filter.status' => ['sometimes', Rule::enum(CommonStatus::class)],
         ];
     }
 }

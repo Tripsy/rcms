@@ -25,7 +25,7 @@ return new class extends Migration
             $table->bigInteger('project_blueprint_id', false, true);
             $table->char('name', 64);
             $table->char('description', 255);
-            $table->text('info');
+            $table->text('info')->nullable();
             $table->enum('component_type', BlueprintComponentType::justKeys())
                 ->default(BlueprintComponentType::TEXT->value);
             $table->enum('component_format', BlueprintComponentFormat::justKeys())

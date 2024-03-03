@@ -3,7 +3,7 @@
 namespace App\Actions;
 
 use App\Actions\Traits\AsAction;
-use App\Commands\ItemStoreCommand;
+use App\Commands\BlueprintComponentStoreCommand;
 use App\Repositories\Interfaces\ItemRepositoryInterface;
 
 class ItemStore
@@ -17,7 +17,7 @@ class ItemStore
         $this->itemRepository = $itemRepository;
     }
 
-    public function handle(ItemStoreCommand $command): void
+    public function handle(BlueprintComponentStoreCommand $command): void
     {
         $this->itemRepository->create([
             'uuid' => $command->getUuid(),

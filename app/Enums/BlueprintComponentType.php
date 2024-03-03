@@ -9,6 +9,7 @@ use App\Enums\Traits\EnumTrait;
 enum BlueprintComponentType: string
 {
     use EnumTrait;
+
     case TEXT = 'text';
     case TEXTAREA = 'textarea';
     case SELECT = 'select';

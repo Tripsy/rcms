@@ -6,6 +6,7 @@ use App\Enums\CommonStatus;
 use App\Enums\ProjectPermissionRole;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 
 class ProjectPermissionIndexRequest extends FormRequest
@@ -43,8 +44,8 @@ class ProjectPermissionIndexRequest extends FormRequest
             'page' => ['required', 'integer'],
             'limit' => ['required', 'integer', 'max:15'],
             'filter.user_name' => ['sometimes', 'nullable', 'string'],
-            'filter.role' => ['sometimes', new Enum(ProjectPermissionRole::class)],
-            'filter.status' => ['sometimes', new Enum(CommonStatus::class)],
+            'filter.role' => ['sometimes', Rule::enum(ProjectPermissionRole::class)],
+            'filter.status' => ['sometimes', Rule::enum(CommonStatus::class)],
         ];
     }
 }

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->collation = 'utf8mb4_general_ci';
 
             $table->id();
-
             $table->bigInteger('project_id', false, true);
+            $table->uuid()->unique();
             $table->char('description', 255);
             $table->text('notes')->nullable();
 

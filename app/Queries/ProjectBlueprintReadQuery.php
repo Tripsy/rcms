@@ -6,9 +6,11 @@ namespace App\Queries;
 
 use App\Models\ProjectBlueprint;
 use App\Queries\Traits\FilterByStatusQueryTrait;
+use App\Queries\Traits\FilterByUuidQueryTrait;
 
 class ProjectBlueprintReadQuery extends AbstractReadQuery
 {
+    use FilterByUuidQueryTrait;
     use FilterByStatusQueryTrait;
 
     public function __construct(ProjectBlueprint $model)

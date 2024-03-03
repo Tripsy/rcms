@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\ProjectBlueprint;
 
 use App\Actions\ProjectBlueprintStore;
+use App\Commands\BlueprintComponentStoreCommand;
 use App\Commands\ProjectBlueprintStoreCommand;
 use App\Exceptions\ControllerException;
 use App\Http\Controllers\Controller;
@@ -16,6 +17,7 @@ use App\Queries\ProjectBlueprintReadQuery;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use Tripsy\ApiResponse\ApiResponse;
 
@@ -76,22 +78,36 @@ class ApiProjectBlueprintController extends Controller
 
         $validated = $request->validated();
 
-        $command = new ProjectBlueprintStoreCommand(
+        $commandProjectBlueprint = new ProjectBlueprintStoreCommand(
             $project->id,
+            Str::orderedUuid()->toString(),
             $validated['description'],
             $validated['notes'],
             $validated['status'],
         );
 
-        ProjectBlueprintStore::run($command);
-
-        make description unique per project id >> migration
+        ProjectBlueprintStore::run($commandProjectBlueprint);
 
         try {
-            $blueprint = $query
-                ->filterByProjectId($command->getProjectId())
-                ->filterByDescription($command->getDescription())
+            $projectBlueprint = $query
+                ->filterByUuid($commandProjectBlueprint->getUuid())
                 ->firstOrFail();
+
+            foreach ($validated['components'] as $blueprintComponent) {
+                $commandBlueprintComponent = new BlueprintComponentStoreCommand(
+                    $projectBlueprint->id,
+                    $blueprintComponent['name'],
+                    $blueprintComponent['description'],
+                    $blueprintComponent['info'],
+                    $blueprintComponent['component_type'],
+                    $blueprintComponent['component_format'],
+                    $blueprintComponent['type_options'],
+                    $blueprintComponent['is_required'],
+                    $blueprintComponent['status'],
+                );
+
+                BlueprintComponentStore::run($commandBlueprintComponent);
+            }
         } catch (ModelNotFoundException) {
             throw new ControllerException(
                 __('message.project_blueprint.store_fail'),

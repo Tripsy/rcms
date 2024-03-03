@@ -9,6 +9,7 @@ use App\Enums\Traits\EnumTrait;
 enum BlueprintComponentFormat: string
 {
     use EnumTrait;
+
     case TEXT = 'text';
     case HTML = 'html';
     case MARKDOWN = 'markdown';
