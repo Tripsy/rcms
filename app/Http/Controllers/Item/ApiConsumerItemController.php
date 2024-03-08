@@ -8,7 +8,8 @@ use App\Actions\ItemUpdate;
 use App\Commands\ItemDataStoreCommand;
 use App\Commands\BlueprintComponentStoreCommand;
 use App\Commands\ItemUpdateCommand;
-use App\Enums\BlueprintComponentStatus;
+use App\Enums\ProjectItemStatus;
+use App\Enums\CommonStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ItemStoreRequest;
 use App\Http\Requests\ItemUpdateRequest;
@@ -17,15 +18,15 @@ use App\Models\ProjectItem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
-use Tripsy\ApiResponse\ApiResponse;
+use Tripsy\ApiWrapper\ApiWrapper;
 
 class ApiConsumerItemController extends Controller
 {
-    private ApiResponse $apiResponse;
+    private ApiWrapper $apiWrapper;
 
-    public function __construct(ApiResponse $apiResponse)
+    public function __construct(ApiWrapper $apiWrapper)
     {
-        $this->apiResponse = $apiResponse;
+        $this->apiWrapper = $apiWrapper;
     }
 
     /**
@@ -47,7 +48,7 @@ class ApiConsumerItemController extends Controller
             Str::orderedUuid(),
             $validated['account_id'],
             $validated['description'],
-            empty($validated['status']) === false ? BlueprintComponentStatus::from($validated['status']) : BlueprintComponentStatus::DRAFT
+            empty($validated['status']) === false ? CommonStatus::from($validated['status']) : CommonStatus::DRAFT
         );
 
         ItemStore::run($commandItem);
@@ -62,15 +63,15 @@ class ApiConsumerItemController extends Controller
             ItemDataStore::run($commandItemData);
         }
 
-        $this->apiResponse->success(true);
-        $this->apiResponse->message(__('message.success'));
-        $this->apiResponse->data([
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data([
             'uuid' => $commandItem->getUuid(),
             'description' => $commandItem->getDescription(),
             'data' => $validated['data'],
         ]);
 
-        return response()->json($this->apiResponse->resultArray(), Response::HTTP_CREATED);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_CREATED);
     }
 
     /**

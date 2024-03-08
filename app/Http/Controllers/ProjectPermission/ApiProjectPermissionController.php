@@ -23,15 +23,15 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
-use Tripsy\ApiResponse\ApiResponse;
+use Tripsy\ApiWrapper\ApiWrapper;
 
 class ApiProjectPermissionController extends Controller
 {
-    private ApiResponse $apiResponse;
+    private ApiWrapper $apiWrapper;
 
-    public function __construct(ApiResponse $apiResponse)
+    public function __construct(ApiWrapper $apiWrapper)
     {
-        $this->apiResponse = $apiResponse;
+        $this->apiWrapper = $apiWrapper;
     }
 
     /**
@@ -57,16 +57,16 @@ class ApiProjectPermissionController extends Controller
             ->get($validated['page'], $validated['limit'])
             ->makeHidden(['user_id']);
 
-        $this->apiResponse->success(true);
-        $this->apiResponse->message(__('message.success'));
-        $this->apiResponse->data([
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data([
             'results' => $permissions,
             'count' => count($permissions),
             'limit' => $validated['limit'],
             'page' => $validated['page'],
         ]);
 
-        return response()->json($this->apiResponse->resultArray(), Response::HTTP_OK);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_OK);
     }
 
     /**
@@ -104,16 +104,16 @@ class ApiProjectPermissionController extends Controller
             );
         }
 
-        $this->apiResponse->success(true);
-        $this->apiResponse->message(__('message.success'));
-        $this->apiResponse->data(array_merge(
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data(array_merge(
             [
                 'id' => $permission->id,
             ],
             $command->attributes()
         ));
 
-        return response()->json($this->apiResponse->resultArray(), Response::HTTP_CREATED);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_CREATED);
     }
 
     /**
@@ -135,12 +135,12 @@ class ApiProjectPermissionController extends Controller
                 ->first();
         });
 
-        $this->apiResponse->success(true);
-        $this->apiResponse->message(__('message.success'));
-        $this->apiResponse->pushMeta('isCached', $repository->isCached());
-        $this->apiResponse->data($data);
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->pushMeta('isCached', $repository->isCached());
+        $this->apiWrapper->data($data);
 
-        return response()->json($this->apiResponse->resultArray(), Response::HTTP_OK);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_OK);
     }
 
     /**
@@ -162,11 +162,11 @@ class ApiProjectPermissionController extends Controller
 
         ProjectPermissionUpdate::run($command);
 
-        $this->apiResponse->success(true);
-        $this->apiResponse->message(__('message.success'));
-        $this->apiResponse->data($command->attributes());
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data($command->attributes());
 
-        return response()->json($this->apiResponse->resultArray(), Response::HTTP_OK);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_OK);
     }
 
     /**
@@ -182,10 +182,10 @@ class ApiProjectPermissionController extends Controller
 
         ProjectPermissionDelete::run($command);
 
-        $this->apiResponse->success(true);
-        $this->apiResponse->message(__('message.success'));
-        $this->apiResponse->data($command->attributes());
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data($command->attributes());
 
-        return response()->json($this->apiResponse->resultArray(), Response::HTTP_NO_CONTENT);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_NO_CONTENT);
     }
 }

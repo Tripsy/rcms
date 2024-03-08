@@ -1,10 +1,12 @@
 ## TO DO
+- created by & updated by for project blueprint & blueprint component
+- observers by for project blueprint & blueprint component
+- policies for project blueprint & blueprint component
 - test special validation rules
 
 # PACKAGES
 
-tripsy/api-response
-  - ApiMethods https://github.com/MadrivoUS/api.volpserve.com/blob/master/app/Services/Traits/ApiMethods.php
+tripsy/api-wrapper
   - create example usage files
 
 ## Ideas

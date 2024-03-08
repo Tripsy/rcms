@@ -6,55 +6,93 @@ namespace App\Commands;
 
 use App\Commands\Traits\AttributesCommandTrait;
 use App\Commands\Traits\GetStatusCommandTrait;
-use App\Commands\Traits\GetUuidCommandTrait;
 use App\Enums\BlueprintComponentFormat;
 use App\Enums\BlueprintComponentType;
 use App\Enums\CommonStatus;
+use App\Enums\DefaultOption;
 
 class BlueprintComponentStoreCommand
 {
     use AttributesCommandTrait;
-    use GetUuidCommandTrait;
     use GetStatusCommandTrait;
 
-    private string $uuid;
+    private int $project_blueprint_id;
 
-    private int $project_id;
+    private string $name;
 
     private string $description;
+
+    private string $info;
+
+    private BlueprintComponentType $component_type;
+
+    private BlueprintComponentFormat $component_format;
+
+    private array $type_options;
+
+    private DefaultOption $is_required;
 
     private CommonStatus $status;
 
     public function __construct(
-        string $uuid,
         int $project_blueprint_id,
         string $name,
         string $description,
         string $info,
-        BlueprintComponentType $component_type,
-        BlueprintComponentFormat $component_format,
-        ??
-        CommonStatus $status)
-    {
+        string $component_type,
+        string $component_format,
+        array $type_options,
+        string $is_required,
+        string $status
+    ) {
         $this->project_blueprint_id = $project_blueprint_id;
-        $this->uuid = $uuid;
         $this->name = $name;
         $this->description = $description;
         $this->info = $info;
-        $this->component_type = $component_type;
-        $this->component_format = $component_format;
+        $this->component_type = BlueprintComponentType::tryFrom($component_type) ?? BlueprintComponentType::TEXT;
+        $this->component_format = BlueprintComponentFormat::tryFrom($component_format) ?? BlueprintComponentFormat::TEXT;
         $this->type_options = $type_options;
-        $this->is_required = $is_required;
-        $this->status = $status;
+        $this->is_required = DefaultOption::tryFrom($is_required) ?? DefaultOption::NO;
+        $this->status = CommonStatus::tryFrom($status) ?? CommonStatus::ACTIVE;
     }
 
-    public function getProjectId(): int
+    public function getBlueprintProjectId(): int
     {
-        return $this->project_id;
+        return $this->project_blueprint_id;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     public function getDescription(): string
     {
         return $this->description;
+    }
+
+    public function getInfo(): string
+    {
+        return $this->description;
+    }
+
+    public function getComponentType(): BlueprintComponentType
+    {
+        return $this->component_type;
+    }
+
+    public function getComponentFormat(): BlueprintComponentFormat
+    {
+        return $this->component_format;
+    }
+
+    public function getTypeOptions(): array
+    {
+        return $this->type_options;
+    }
+
+    public function getIsRequired(): DefaultOption
+    {
+        return $this->is_required;
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\ProjectBlueprint;
 
+use App\Actions\BlueprintComponentStore;
 use App\Actions\ProjectBlueprintStore;
 use App\Commands\BlueprintComponentStoreCommand;
 use App\Commands\ProjectBlueprintStoreCommand;
@@ -19,15 +20,15 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
-use Tripsy\ApiResponse\ApiResponse;
+use Tripsy\ApiWrapper\ApiWrapper;
 
 class ApiProjectBlueprintController extends Controller
 {
-    private ApiResponse $apiResponse;
+    private ApiWrapper $apiWrapper;
 
-    public function __construct(ApiResponse $apiResponse)
+    public function __construct(ApiWrapper $apiWrapper)
     {
-        $this->apiResponse = $apiResponse;
+        $this->apiWrapper = $apiWrapper;
     }
 
     /**
@@ -52,16 +53,16 @@ class ApiProjectBlueprintController extends Controller
             ->get($validated['page'], $validated['limit'])
             ->makeHidden(['user_id']);
 
-        $this->apiResponse->success(true);
-        $this->apiResponse->message(__('message.success'));
-        $this->apiResponse->data([
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data([
             'results' => $blueprints,
             'count' => count($blueprints),
             'limit' => $validated['limit'],
             'page' => $validated['page'],
         ]);
 
-        return response()->json($this->apiResponse->resultArray(), Response::HTTP_OK);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_OK);
     }
 
     /**
@@ -115,16 +116,16 @@ class ApiProjectBlueprintController extends Controller
             );
         }
 
-        $this->apiResponse->success(true);
-        $this->apiResponse->message(__('message.success'));
-        $this->apiResponse->data(array_merge(
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data(array_merge(
+            $commandProjectBlueprint->attributes(),
             [
-                'id' => $blueprint->id,
+                'components' => $projectBlueprint->blueprintComponents->all(),
             ],
-            $command->attributes()
         ));
 
-        return response()->json($this->apiResponse->resultArray(), Response::HTTP_CREATED);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_CREATED);
     }
 
     /**
@@ -148,12 +149,12 @@ class ApiProjectBlueprintController extends Controller
 
         //TODO add components ?
 
-        $this->apiResponse->success(true);
-        $this->apiResponse->message(__('message.success'));
-        $this->apiResponse->pushMeta('isCached', $repository->isCached());
-        $this->apiResponse->data($data);
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->pushMeta('isCached', $repository->isCached());
+        $this->apiWrapper->data($data);
 
-        return response()->json($this->apiResponse->resultArray(), Response::HTTP_OK);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_OK);
     }
 
     /**
@@ -175,11 +176,11 @@ class ApiProjectBlueprintController extends Controller
 
         ProjectBlueprintUpdate::run($command);
 
-        $this->apiResponse->success(true);
-        $this->apiResponse->message(__('message.success'));
-        $this->apiResponse->data($command->attributes());
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data($command->attributes());
 
-        return response()->json($this->apiResponse->resultArray(), Response::HTTP_OK);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_OK);
     }
 
     /**
@@ -195,10 +196,10 @@ class ApiProjectBlueprintController extends Controller
 
         ProjectBlueprintDelete::run($command);
 
-        $this->apiResponse->success(true);
-        $this->apiResponse->message(__('message.success'));
-        $this->apiResponse->data($command->attributes());
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data($command->attributes());
 
-        return response()->json($this->apiResponse->resultArray(), Response::HTTP_NO_CONTENT);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_NO_CONTENT);
     }
 }

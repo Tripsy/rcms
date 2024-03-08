@@ -6,12 +6,16 @@ use App\Enums\BlueprintComponentFormat;
 use App\Enums\BlueprintComponentType;
 use App\Enums\CommonStatus;
 use App\Enums\DefaultOption;
+use App\Models\Traits\CreatedByRelationTrait;
 use App\Models\Traits\StatusScopeTrait;
+use App\Models\Traits\UpdatedByRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class BlueprintComponent extends BaseModel
 {
+    use CreatedByRelationTrait;
     use StatusScopeTrait;
+    use UpdatedByRelationTrait;
 
     /**
      * The table associated with the model.
@@ -45,7 +49,7 @@ class BlueprintComponent extends BaseModel
     protected $casts = [
         'component_type' => BlueprintComponentType::class,
         'component_format' => BlueprintComponentFormat::class,
-        'type_options' => 'array',
+        'type_options' => 'json',
         'is_required' => DefaultOption::class,
         'status' => CommonStatus::class,
     ];

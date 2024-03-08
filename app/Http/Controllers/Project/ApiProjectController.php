@@ -26,15 +26,15 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
-use Tripsy\ApiResponse\ApiResponse;
+use Tripsy\ApiWrapper\ApiWrapper;
 
 class ApiProjectController extends Controller
 {
-    private ApiResponse $apiResponse;
+    private ApiWrapper $apiWrapper;
 
-    public function __construct(ApiResponse $apiResponse)
+    public function __construct(ApiWrapper $apiWrapper)
     {
-        $this->apiResponse = $apiResponse;
+        $this->apiWrapper = $apiWrapper;
     }
 
     /**
@@ -56,16 +56,16 @@ class ApiProjectController extends Controller
             ->withUpdatedBy()
             ->get($validated['page'], $validated['limit']);
 
-        $this->apiResponse->success(true);
-        $this->apiResponse->message(__('message.success'));
-        $this->apiResponse->data([
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data([
             'results' => $projects,
             'count' => count($projects),
             'limit' => $validated['limit'],
             'page' => $validated['page'],
         ]);
 
-        return response()->json($this->apiResponse->resultArray(), Response::HTTP_OK);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_OK);
     }
 
     /**
@@ -106,16 +106,16 @@ class ApiProjectController extends Controller
 
         ProjectPermissionStore::run($commandPermission);
 
-        $this->apiResponse->success(true);
-        $this->apiResponse->message(__('message.success'));
-        $this->apiResponse->data(array_merge(
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data(array_merge(
             [
                 'id' => $project->id,
             ],
             $command->attributes()
         ));
 
-        return response()->json($this->apiResponse->resultArray(), Response::HTTP_CREATED);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_CREATED);
     }
 
     /**
@@ -133,12 +133,12 @@ class ApiProjectController extends Controller
                 ->first();
         });
 
-        $this->apiResponse->success(true);
-        $this->apiResponse->message(__('message.success'));
-        $this->apiResponse->pushMeta('isCached', $repository->isCached());
-        $this->apiResponse->data($data);
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->pushMeta('isCached', $repository->isCached());
+        $this->apiWrapper->data($data);
 
-        return response()->json($this->apiResponse->resultArray(), Response::HTTP_OK);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_OK);
     }
 
     /**
@@ -159,11 +159,11 @@ class ApiProjectController extends Controller
 
         ProjectUpdate::run($command);
 
-        $this->apiResponse->success(true);
-        $this->apiResponse->message(__('message.success'));
-        $this->apiResponse->data($command->attributes());
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data($command->attributes());
 
-        return response()->json($this->apiResponse->resultArray(), Response::HTTP_OK);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_OK);
     }
 
     /**
@@ -179,10 +179,10 @@ class ApiProjectController extends Controller
 
         ProjectDelete::run($command);
 
-        $this->apiResponse->success(true);
-        $this->apiResponse->message(__('message.success'));
-        $this->apiResponse->data($command->attributes());
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data($command->attributes());
 
-        return response()->json($this->apiResponse->resultArray(), Response::HTTP_NO_CONTENT);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_NO_CONTENT);
     }
 }

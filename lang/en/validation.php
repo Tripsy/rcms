@@ -181,6 +181,9 @@ return [
         'components.*.info' => [
             'string' => 'The component info field must be a string',
         ],
+        'components.*.component_type' => [
+            'enum' => 'The component type field should be ...',
+        ],
     ],
     /*
     |--------------------------------------------------------------------------

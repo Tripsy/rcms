@@ -2,38 +2,37 @@
 
 declare(strict_types=1);
 
-namespace Tripsy\ApiResponse;
+namespace Tripsy\ApiWrapper;
 
-use Exception;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Arr;
 
-class ApiResponse
+class ApiWrapper
 {
     private bool $debug = false;
 
     private array $result;
 
-    private array $exposedKeys = [
-        'success' => 'success',
-        'message' => 'message',
-        'errors' => 'errors',
-        'data' => 'data',
-        'meta' => 'meta',
-        'response' => 'response',
-        'request' => 'request',
-        'url' => 'request.url',
-        'headers' => 'request.headers',
-        'method' => 'request.method',
-        'params' => 'request.params',
-    ];
+    //    private array $exposedKeys = [
+    //        'success' => 'success',
+    //        'message' => 'message',
+    //        'errors' => 'errors',
+    //        'data' => 'data',
+    //        'meta' => 'meta',
+    //        'response' => 'response',
+    //        'request' => 'request',
+    //        'url' => 'request.url',
+    //        'headers' => 'request.headers',
+    //        'method' => 'request.method',
+    //        'params' => 'request.params',
+    //    ];
 
     public function __construct()
     {
         $this->result = [
-            'success' => true,
+            'success' => false,
             'message' => '',
             'errors' => '',
             'data' => [],
@@ -41,24 +40,24 @@ class ApiResponse
         ];
     }
 
-    /**
-     * Magic method which will call getters if they are defined
-     *
-     * @throws Exception
-     */
-    public function __get(string $name): mixed
-    {
-        if (array_key_exists($name, $this->exposedKeys)) {
-            return $this->$name();
-        } else {
-            throw new Exception('Magic method not defined for this attribute (eg: '.$name.')');
-        }
-    }
+    //    /**
+    //     * Magic method which will call getters if they are defined
+    //     *
+    //     * @throws Exception
+    //     */
+    //    public function __get(string $name): mixed
+    //    {
+    //        if (array_key_exists($name, $this->exposedKeys)) {
+    //            return $this->$name();
+    //        } else {
+    //            throw new Exception('Magic method not defined for this attribute (eg: '.$name.')');
+    //        }
+    //    }
 
     /**
      * Utility function which turns debug on
      */
-    public function debug(bool $value = null): bool
+    public function debug(?bool $value = null): bool
     {
         if (is_null($value) === false) {
             $this->debug = $value;
@@ -100,7 +99,7 @@ class ApiResponse
      * Shortcut method used to get `success` value
      * If value is provided as argument it will set that value than return it
      */
-    public function success(bool $value = null): bool
+    public function success(?bool $value = null): bool
     {
         if (is_null($value) === false) {
             $this->set('success', $value);
@@ -113,7 +112,7 @@ class ApiResponse
      * Shortcut method used to get `message` value
      * If value is provided as argument it will set that value than return it
      */
-    public function message(string $value = null): string
+    public function message(?string $value = null): string
     {
         return $this->property('message', $value);
     }
@@ -130,7 +129,7 @@ class ApiResponse
     /**
      * Push message to `errors` key
      */
-    public function pushError(string $value, string $key = null): void
+    public function pushError(string $value, ?string $key = null): void
     {
         $this->result['errors'][$key] = $value;
     }
@@ -155,7 +154,7 @@ class ApiResponse
     /**
      * Shortcut method used to get `data` OR `data.{subKey}' value
      */
-    public function getData(string $subKey = null): mixed
+    public function getData(?string $subKey = null): mixed
     {
         $key = 'data';
 
@@ -186,7 +185,7 @@ class ApiResponse
     /**
      * Shortcut method used to get `meta` OR `meta.{subKey}' value
      */
-    public function getMeta(string $subKey = null): mixed
+    public function getMeta(?string $subKey = null): mixed
     {
         $key = 'meta';
 
@@ -210,13 +209,19 @@ class ApiResponse
     }
 
     /**
+     * Shortcut method used to get `request.method` existing value
+     * If value is provided as argument it will set that value than return it
+     */
+    public function requestMethod(?string $value = null): string
+    {
+        return $this->property('request.method', $value);
+    }
+
+    /**
      * Shortcut method used to get `request.url` value
      * If value is provided as argument it will set that value than return it
-     *
-     * @param  bool|null  $value
-     * @return bool
      */
-    public function requestUrl(mixed $value = null): mixed
+    public function requestUrl(?string $value = null): string
     {
         return $this->property('request.url', $value);
     }
@@ -225,7 +230,7 @@ class ApiResponse
      * Shortcut method used to get `request.headers` OR 'request.headers.{subKey}' value
      * If value is provided as argument it will set that value than return it
      */
-    public function requestHeaders(string $subKey = null, mixed $value = null): mixed
+    public function requestHeaders(?string $subKey = null, mixed $value = null): mixed
     {
         $key = 'request.headers';
 
@@ -234,18 +239,6 @@ class ApiResponse
         }
 
         return $this->property($key, $value);
-    }
-
-    /**
-     * Shortcut method used to get `request.method` value
-     * If value is provided as argument it will set that value than return it
-     *
-     * @param  bool|null  $value
-     * @return bool
-     */
-    public function requestMethod(mixed $value = null): mixed
-    {
-        return $this->property('request.method', $value);
     }
 
     /**
@@ -297,7 +290,7 @@ class ApiResponse
         }
 
         if ($response->successful()) {
-            $this->success(false);
+            $this->success(true);
             $this->set('response.status_code', $response->status());
             $this->set('response.body', $responseBody);
             $this->data($responseBody);
@@ -309,13 +302,23 @@ class ApiResponse
                 'body' => $responseBody,
             ]);
 
-            $this->message('API error occurred');
+            $this->message(__('api.generic_error'));
         }
 
         if ($this->isJson($responseBody)) {
             $responseJson = $response->json();
 
-            if (empty($responseJson['success']) === false) {
+            if (empty($responseJson['error']) === false) {
+                $this->success(false);
+
+                if (is_array($responseJson['error']) === true) {
+                    $this->errors($responseJson['error']);
+                } elseif (is_string($responseJson['error']) === true) {
+                    $this->message($responseJson['error']);
+                }
+            }
+
+            if (isset($responseJson['success']) === true) {
                 $this->success($responseJson['success']);
             }
 

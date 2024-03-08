@@ -3,13 +3,17 @@
 namespace App\Models;
 
 use App\Enums\CommonStatus;
+use App\Models\Traits\CreatedByRelationTrait;
 use App\Models\Traits\StatusScopeTrait;
+use App\Models\Traits\UpdatedByRelationTrait;
 use App\Models\Traits\UuidScopeTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProjectBlueprint extends BaseModel
 {
+    use CreatedByRelationTrait;
+    use UpdatedByRelationTrait;
     use UuidScopeTrait;
     use StatusScopeTrait;
 

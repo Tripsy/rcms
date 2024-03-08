@@ -37,7 +37,7 @@ class ProjectBlueprintStoreRequest extends FormRequest
             "components.*.component_type.Illuminate\Validation\Rules\Enum" => 'The component type field can be: '.BlueprintComponentType::listKeys(),
             "components.*.component_format.Illuminate\Validation\Rules\Enum" => 'The component format field can be: '.BlueprintComponentFormat::listKeys(),
             "components.*.is_required.Illuminate\Validation\Rules\Enum" => 'The `is_required` field can be: '.DefaultOption::listKeys(),
-            "components.*.status.Illuminate\Validation\Rules\Enum" => 'The statua field can be: '.CommonStatus::listKeys(),
+            "components.*.status.Illuminate\Validation\Rules\Enum" => 'The status field can be: '.CommonStatus::listKeys(),
         ];
     }
 
@@ -56,7 +56,7 @@ class ProjectBlueprintStoreRequest extends FormRequest
             'components.*.info' => ['sometimes', 'nullable', 'string'],
             'components.*.component_type' => ['required', Rule::enum(BlueprintComponentType::class)],
             'components.*.component_format' => ['required', Rule::enum(BlueprintComponentFormat::class)],
-            'components.*.type_options' => ['sometimes', 'nullable'],
+            'components.*.type_options' => ['sometimes', 'nullable', 'array'],
             'components.*.is_required' => ['required', Rule::enum(DefaultOption::class)],
             'components.*.status' => ['sometimes', Rule::enum(CommonStatus::class)],
         ];

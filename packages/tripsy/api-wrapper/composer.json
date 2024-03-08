@@ -1,9 +1,9 @@
 {
-    "name": "tripsy/api-response",
+    "name": "tripsy/api-wrapper",
     "description": "Wrapper for API response",
     "autoload": {
         "psr-4": {
-            "Tripsy\\ApiResponse\\": "src/"
+            "Tripsy\\ApiWrapper\\": "src/"
         }
     },
     "authors": [
