@@ -2,10 +2,16 @@
 
 namespace App\Providers;
 
+use App\Listeners\BlueprintComponentSubscriber;
+use App\Listeners\ProjectBlueprintSubscriber;
 use App\Listeners\ProjectPermissionSubscriber;
 use App\Listeners\ProjectSubscriber;
+use App\Models\BlueprintComponent;
 use App\Models\Project;
+use App\Models\ProjectBlueprint;
 use App\Models\ProjectPermission;
+use App\Observers\BlueprintComponentObserver;
+use App\Observers\ProjectBlueprintObserver;
 use App\Observers\ProjectObserver;
 use App\Observers\ProjectPermissionObserver;
 use Illuminate\Auth\Events\Registered;
@@ -42,6 +48,8 @@ class EventServiceProvider extends ServiceProvider
     protected $subscribe = [
         ProjectSubscriber::class,
         ProjectPermissionSubscriber::class,
+        ProjectBlueprintSubscriber::class,
+        BlueprintComponentObserver::class,
     ];
 
     /**
@@ -62,6 +70,12 @@ class EventServiceProvider extends ServiceProvider
         ],
         ProjectPermission::class => [
             ProjectPermissionObserver::class,
+        ],
+        ProjectBlueprint::class => [
+            ProjectBlueprintObserver::class,
+        ],
+        BlueprintComponent::class => [
+            BlueprintComponentObserver::class,
         ],
         //        Item::class => [
         //            ItemObserver::class,

@@ -1,6 +1,5 @@
 ## TO DO
-- created by & updated by for project blueprint & blueprint component
-- observers by for project blueprint & blueprint component
+-  app/Repositories/Interfaces/ItemDataRepositoryInterface.php ??
 - policies for project blueprint & blueprint component
 - test special validation rules
 

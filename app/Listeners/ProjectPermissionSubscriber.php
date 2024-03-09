@@ -87,15 +87,9 @@ class ProjectPermissionSubscriber
     public function handleProjectPermissionCache(ProjectPermissionCache $event): void
     {
         $this->repository
-            ->buildCacheTags(['list'])
-            ->flushCacheByTags();
-
-        if (empty($event->project->id) === false) {
-            $this->repository
-                ->buildCacheTags(['list'])
-                ->buildCacheKey($event->permission->id)
-                ->removeCacheContent();
-        }
+            ->initCacheKey()
+            ->addCachePiece($event->permission->id)
+            ->removeCacheContent();
     }
 
     /**

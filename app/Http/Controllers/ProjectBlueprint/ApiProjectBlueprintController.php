@@ -15,6 +15,7 @@ use App\Http\Requests\ProjectBlueprintStoreRequest;
 use App\Models\Project;
 use App\Models\ProjectBlueprint;
 use App\Queries\ProjectBlueprintReadQuery;
+use App\Repositories\ProjectBlueprintRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
