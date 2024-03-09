@@ -29,15 +29,6 @@ class ProjectReadQuery extends AbstractReadQuery
         return $this;
     }
 
-    public function filterByName(string $name, string $operator = '='): self
-    {
-        if ($name) {
-            $this->query->where('name', $operator, $name);
-        }
-
-        return $this;
-    }
-
     public function filterByAuthorityName(string $authority_name, string $operator = '='): self
     {
         if ($authority_name) {

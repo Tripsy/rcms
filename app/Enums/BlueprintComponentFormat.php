@@ -13,6 +13,7 @@ enum BlueprintComponentFormat: string
     case TEXT = 'text';
     case HTML = 'html';
     case MARKDOWN = 'markdown';
+    case OPTION = 'option'; //used when component_type is select, radio, checkbox
     case FILE = 'file';
 
     public function text(): string
@@ -21,6 +22,7 @@ enum BlueprintComponentFormat: string
             self::TEXT => __('Text'),
             self::HTML => __('HTML'),
             self::MARKDOWN => __('Markdown'),
+            self::OPTION => __('Option'),
             self::FILE => __('File'),
         };
     }

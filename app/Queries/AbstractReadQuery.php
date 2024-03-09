@@ -42,7 +42,7 @@ abstract class AbstractReadQuery
         return $this->query->firstOrFail();
     }
 
-    public function first(): Model
+    public function first(): ?Model
     {
         return $this->query->first();
     }

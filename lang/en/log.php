@@ -26,4 +26,18 @@ return [
         'activated' => 'Project #:project_id permission #:project_permission_id activated by user #:action_by',
         'deleting' => 'Project #:project_id permission #:project_permission_id delete init by user #:action_by',
     ],
+
+    'project_blueprint' => [
+        'created' => 'Project #:project_id blueprint #:project_blueprint_id created by user #:action_by ',
+        'updated' => 'Project #:project_id blueprint #:project_blueprint_id updated by user #:action_by',
+        'activated' => 'Project #:project_id blueprint #:project_blueprint_id activated by user #:action_by',
+        'deleting' => 'Project #:project_id blueprint #:project_blueprint_id delete init by user #:action_by',
+    ],
+
+    'blueprint_component' => [
+        'created' => 'Project blueprint #:project_blueprint_id component #:blueprint_component_id created by user #:action_by ',
+        'updated' => 'Project blueprint #:project_blueprint_id component #:blueprint_component_id updated by user #:action_by',
+        'activated' => 'Project blueprint #:project_blueprint_id component #:blueprint_component_id activated by user #:action_by',
+        'deleting' => 'Project blueprint #:project_blueprint_id component #:blueprint_component_id delete init by user #:action_by',
+    ],
 ];

@@ -170,6 +170,7 @@ return [
         'components' => [
             'required' => 'Provide at least one blueprint component',
             'type_options' => 'For component :k the field type options is required',
+            'component_format_option' => 'For component :k the field component format should be set as `option`',
             'names' => 'Component :k uses a name (eg: :name) previously defined',
         ],
         'components.*.name' => [

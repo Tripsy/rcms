@@ -57,7 +57,7 @@ class ProjectBlueprint extends BaseModel
     /**
      * Get the components for this blueprint.
      */
-    public function blueprintComponents(): HasMany
+    public function components(): HasMany
     {
         return $this->hasMany(BlueprintComponent::class);
     }

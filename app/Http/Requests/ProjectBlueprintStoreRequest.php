@@ -79,15 +79,28 @@ class ProjectBlueprintStoreRequest extends FormRequest
                     if (in_array($v['name'], $componentsName) === false) {
                         $componentsName[] = $v['name'];
 
-                        if (in_array($v['component_type'], ['select', 'radio', 'checkbox']) && empty($v['type_options'])) {
-                            $has_error = true;
+                        if (in_array($v['component_type'], ['select', 'radio', 'checkbox'])) {
+                            if ($v['component_format'] != 'option') {
+                                $has_error = true;
 
-                            $validator->errors()->add(
-                                'components',
-                                __('validation.custom.components.type_options', [
-                                    'k' => $k,
-                                ])
-                            );
+                                $validator->errors()->add(
+                                    'components',
+                                    __('validation.custom.components.component_format_option', [
+                                        'k' => $k,
+                                    ])
+                                );
+                            }
+
+                            if (empty($v['type_options'])) {
+                                $has_error = true;
+
+                                $validator->errors()->add(
+                                    'components',
+                                    __('validation.custom.components.type_options', [
+                                        'k' => $k,
+                                    ])
+                                );
+                            }
                         }
                     } else {
                         $has_error = true;

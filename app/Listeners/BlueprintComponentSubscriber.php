@@ -98,7 +98,7 @@ class BlueprintComponentSubscriber
     {
         $events->listen(
             BlueprintComponentCreated::class,
-            [BlueprintComponentSubscriber::class, 'handleBlueprintComponentCreated']
+            [BlueprintComponentSubscriber::class, 'handleProjectBlueprintCreated']
         );
 
         $events->listen(

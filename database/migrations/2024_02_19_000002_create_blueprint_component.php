@@ -39,6 +39,8 @@ return new class extends Migration
             $table->dateTime('updated_at')->nullable();
             $table->bigInteger('updated_by', false, true)->nullable();
 
+            $table->unique(['project_blueprint_id', 'name']);
+
             $table->foreign('project_blueprint_id')
                 ->references('id')
                 ->on('project_blueprint')

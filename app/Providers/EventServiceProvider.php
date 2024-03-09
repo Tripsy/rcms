@@ -49,7 +49,7 @@ class EventServiceProvider extends ServiceProvider
         ProjectSubscriber::class,
         ProjectPermissionSubscriber::class,
         ProjectBlueprintSubscriber::class,
-        BlueprintComponentObserver::class,
+        BlueprintComponentSubscriber::class,
     ];
 
     /**

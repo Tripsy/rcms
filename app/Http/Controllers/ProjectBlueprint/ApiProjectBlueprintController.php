@@ -103,9 +103,9 @@ class ApiProjectBlueprintController extends Controller
                     $blueprintComponent['info'],
                     $blueprintComponent['component_type'],
                     $blueprintComponent['component_format'],
-                    $blueprintComponent['type_options'],
+                    $blueprintComponent['type_options'] ?? [], //is not a required field
                     $blueprintComponent['is_required'],
-                    $blueprintComponent['status'],
+                    $blueprintComponent['status'] ?? '',
                 );
 
                 BlueprintComponentStore::run($commandBlueprintComponent);
@@ -122,7 +122,7 @@ class ApiProjectBlueprintController extends Controller
         $this->apiWrapper->data(array_merge(
             $commandProjectBlueprint->attributes(),
             [
-                'components' => $projectBlueprint->blueprintComponents->all(),
+                'components' => $projectBlueprint->components->all(),
             ],
         ));
 

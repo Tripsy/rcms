@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace App\Queries;
 
 use App\Models\ProjectBlueprint;
+use App\Queries\Traits\FilterByDescriptionQueryTrait;
 use App\Queries\Traits\FilterByStatusQueryTrait;
 use App\Queries\Traits\FilterByUuidQueryTrait;
 
 class ProjectBlueprintReadQuery extends AbstractReadQuery
 {
-    use FilterByUuidQueryTrait;
+    use FilterByDescriptionQueryTrait;
     use FilterByStatusQueryTrait;
+    use FilterByUuidQueryTrait;
 
     public function __construct(ProjectBlueprint $model)
     {
@@ -24,15 +26,6 @@ class ProjectBlueprintReadQuery extends AbstractReadQuery
     {
         if ($project_id) {
             $this->query->where('project_id', $operator, $project_id);
-        }
-
-        return $this;
-    }
-
-    public function filterByDescription(string $description, string $operator = '='): self
-    {
-        if ($description) {
-            $this->query->where('description', $operator, $description);
         }
 
         return $this;
