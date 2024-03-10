@@ -19,7 +19,6 @@ use App\Repositories\ProjectBlueprintRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use Tripsy\ApiWrapper\ApiWrapper;
 
@@ -46,8 +45,8 @@ class ApiProjectBlueprintController extends Controller
 
         $blueprints = $query
             ->filterByProjectId($project->id)
+            ->filterByName('%'.$validated['filter']['name'].'%', 'LIKE')
             ->filterByDescription('%'.$validated['filter']['description'].'%', 'LIKE')
-            ->filterByNotes('%'.$validated['filter']['description'].'%', 'LIKE')
             ->filterByStatus($validated['filter']['status'])
             ->withCreatedBy()
             ->withUpdatedBy()
@@ -82,9 +81,8 @@ class ApiProjectBlueprintController extends Controller
 
         $commandProjectBlueprint = new ProjectBlueprintStoreCommand(
             $project->id,
-            Str::orderedUuid()->toString(),
+            $validated['name'],
             $validated['description'],
-            $validated['notes'],
             $validated['status'],
         );
 
@@ -92,7 +90,8 @@ class ApiProjectBlueprintController extends Controller
 
         try {
             $projectBlueprint = $query
-                ->filterByUuid($commandProjectBlueprint->getUuid())
+                ->filterByProjectId($commandProjectBlueprint->getProjectId())
+                ->filterByName($commandProjectBlueprint->getName())
                 ->firstOrFail();
 
             foreach ($validated['components'] as $blueprintComponent) {
@@ -145,10 +144,9 @@ class ApiProjectBlueprintController extends Controller
                 ->filterById($projectBlueprint->id)
                 ->withCreatedBy()
                 ->withUpdatedBy()
+                ->withComponents() ??? disable cache
                 ->first();
         });
-
-        //TODO add components ?
 
         $this->apiWrapper->success(true);
         $this->apiWrapper->message(__('message.success'));

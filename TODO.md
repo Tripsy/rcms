@@ -1,6 +1,8 @@
 ## TO DO
+- check policies for project blueprint & blueprint component
+- work on ApiProjectBlueprintController - show()
+- create instructions about adding new stuff
 -  app/Repositories/Interfaces/ItemDataRepositoryInterface.php ??
-- policies for project blueprint & blueprint component
 - test special validation rules
 
 # PACKAGES

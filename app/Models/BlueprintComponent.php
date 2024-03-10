@@ -57,7 +57,7 @@ class BlueprintComponent extends BaseModel
     /**
      * Get the blueprint that owns this component
      */
-    public function itemType(): BelongsTo
+    public function blueprint(): BelongsTo
     {
         return $this->belongsTo(ProjectBlueprint::class);
     }

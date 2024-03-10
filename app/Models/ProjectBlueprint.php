@@ -14,7 +14,6 @@ class ProjectBlueprint extends BaseModel
 {
     use CreatedByRelationTrait;
     use UpdatedByRelationTrait;
-    use UuidScopeTrait;
     use StatusScopeTrait;
 
     /**
@@ -31,7 +30,7 @@ class ProjectBlueprint extends BaseModel
      */
     protected $fillable = [
         'project_id',
-        'uuid',
+        'name',
         'description',
         'notes',
         'status',

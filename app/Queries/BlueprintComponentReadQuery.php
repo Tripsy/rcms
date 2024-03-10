@@ -11,8 +11,8 @@ use App\Queries\Traits\FilterByStatusQueryTrait;
 
 class BlueprintComponentReadQuery extends AbstractReadQuery
 {
-    use FilterByNameQueryTrait;
     use FilterByDescriptionQueryTrait;
+    use FilterByNameQueryTrait;
     use FilterByStatusQueryTrait;
 
     public function __construct(BlueprintComponent $model)

@@ -19,9 +19,8 @@ return new class extends Migration
 
             $table->id();
             $table->bigInteger('project_id', false, true);
-            $table->uuid()->unique();
-            $table->char('description', 255);
-            $table->text('notes')->nullable();
+            $table->char('name', 255);
+            $table->text('description')->nullable();
 
             $table->enum('status', CommonStatus::justKeys())->default(CommonStatus::ACTIVE->value);
 
@@ -30,7 +29,7 @@ return new class extends Migration
             $table->dateTime('updated_at')->nullable();
             $table->bigInteger('updated_by', false, true)->nullable();
 
-            $table->unique(['project_id', 'description']);
+            $table->unique(['project_id', 'name']);
 
             $table->foreign('project_id')
                 ->references('id')

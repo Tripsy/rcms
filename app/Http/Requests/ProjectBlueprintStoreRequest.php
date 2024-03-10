@@ -47,8 +47,8 @@ class ProjectBlueprintStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'description' => ['required', 'string', 'max:255'],
-            'notes' => ['sometimes', 'nullable', 'string'],
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['sometimes', 'nullable', 'string'],
             'status' => ['sometimes', Rule::enum(CommonStatus::class)],
             'components' => ['required', 'array'],
             'components.*.name' => ['required', 'string', 'max:64'],
@@ -129,7 +129,7 @@ class ProjectBlueprintStoreRequest extends FormRequest
     {
         $projectBlueprint = app(ProjectBlueprintReadQuery::class)
             ->filterByProjectId($this->route('project')->id)
-            ->filterByDescription($this->validator->safe()->description)
+            ->filterByName($this->validator->safe()->name)
             ->isUnique();
 
         if ($projectBlueprint === false) {

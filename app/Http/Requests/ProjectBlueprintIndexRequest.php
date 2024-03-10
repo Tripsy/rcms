@@ -28,8 +28,8 @@ class ProjectBlueprintIndexRequest extends FormRequest
             'page' => (int) $this->page ?? 1,
             'limit' => (int) $this->limit ?? 5,
             'filter' => [
+                'name' => $this->filter['name'] ?? '',
                 'description' => $this->filter['description'] ?? '',
-                'notes' => $this->filter['notes'] ?? '',
                 'status' => $this->filter['status'] ?? '',
             ],
         ]);

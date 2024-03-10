@@ -6,12 +6,14 @@ namespace App\Queries;
 
 use App\Models\ProjectBlueprint;
 use App\Queries\Traits\FilterByDescriptionQueryTrait;
+use App\Queries\Traits\FilterByNameQueryTrait;
 use App\Queries\Traits\FilterByStatusQueryTrait;
 use App\Queries\Traits\FilterByUuidQueryTrait;
 
 class ProjectBlueprintReadQuery extends AbstractReadQuery
 {
     use FilterByDescriptionQueryTrait;
+    use FilterByNameQueryTrait;
     use FilterByStatusQueryTrait;
     use FilterByUuidQueryTrait;
 
@@ -31,11 +33,26 @@ class ProjectBlueprintReadQuery extends AbstractReadQuery
         return $this;
     }
 
-    public function filterByNotes(string $notes, string $operator = '='): self
+    /**
+     * When using `with`, you should always include the id column and any relevant foreign key columns in
+     * the list of columns you wish to retrieve.
+     */
+    public function withComponents(array $fields = [
+        'name',
+        'description',
+        'info',
+        'component_type',
+        'component_format',
+        'type_options',
+        'is_required',
+        'status',
+    ]): self
     {
-        if ($notes) {
-            $this->query->where('notes', $operator, $notes);
-        }
+        array_unshift($fields, 'id');
+
+        $columns = implode(',', array_unique($fields));
+
+        $this->query->with('components:'.$columns);
 
         return $this;
     }
