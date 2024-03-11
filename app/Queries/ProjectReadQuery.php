@@ -6,12 +6,14 @@ namespace App\Queries;
 
 use App\Enums\CommonStatus;
 use App\Models\Project;
+use App\Queries\Traits\FilterByNameQueryTrait;
 use App\Queries\Traits\FilterByStatusQueryTrait;
 use Illuminate\Database\Eloquent\Builder;
 
 class ProjectReadQuery extends AbstractReadQuery
 {
     use FilterByStatusQueryTrait;
+    use FilterByNameQueryTrait;
 
     public function __construct(Project $model)
     {

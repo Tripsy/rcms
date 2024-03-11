@@ -45,7 +45,13 @@ return [
     'project_blueprint' => [
         'not_found' => 'Project blueprint #:id does not exist',
         'store_fail' => 'Failed to create project blueprint!',
-        'already_exist' => 'Project blueprint with selected description already exist',
+        'already_exist' => 'Project blueprint with selected name already exist',
+    ],
+
+    'blueprint_component' => [
+        'not_found' => 'Blueprint component #:id does not exist',
+        'store_fail' => 'Failed to store blueprint component!',
+        'already_exist' => 'Blueprint component with selected name already exist',
     ],
 
 //    'item' => [

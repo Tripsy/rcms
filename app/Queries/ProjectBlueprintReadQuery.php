@@ -48,7 +48,7 @@ class ProjectBlueprintReadQuery extends AbstractReadQuery
         'status',
     ]): self
     {
-        array_unshift($fields, 'id');
+        array_unshift($fields, 'id', 'project_blueprint_id');
 
         $columns = implode(',', array_unique($fields));
 

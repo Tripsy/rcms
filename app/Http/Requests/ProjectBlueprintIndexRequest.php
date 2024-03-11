@@ -45,8 +45,8 @@ class ProjectBlueprintIndexRequest extends FormRequest
         return [
             'page' => ['required', 'integer'],
             'limit' => ['required', 'integer', 'max:15'],
+            'filter.name' => ['sometimes', 'nullable', 'string'],
             'filter.description' => ['sometimes', 'nullable', 'string'],
-            'filter.notes' => ['sometimes', 'nullable', 'string'],
             'filter.status' => ['sometimes', Rule::enum(CommonStatus::class)],
         ];
     }

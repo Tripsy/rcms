@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Commands;
 
 use App\Commands\Traits\AttributesCommandTrait;
+use App\Commands\Traits\GetDescriptionCommandTrait;
 use App\Commands\Traits\GetIdCommandTrait;
 use App\Commands\Traits\GetNameCommandTrait;
 use App\Enums\BlueprintComponentFormat;
@@ -14,6 +15,7 @@ use App\Enums\DefaultOption;
 class BlueprintComponentUpdateCommand
 {
     use AttributesCommandTrait;
+    use GetDescriptionCommandTrait;
     use GetIdCommandTrait;
     use GetNameCommandTrait;
 
@@ -51,16 +53,14 @@ class BlueprintComponentUpdateCommand
         $this->component_format = BlueprintComponentFormat::tryFrom($component_format) ?? BlueprintComponentFormat::TEXT;
         $this->type_options = $type_options;
         $this->is_required = DefaultOption::tryFrom($is_required) ?? DefaultOption::NO;
-    }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
+        if (in_array($this->component_type, [
+            BlueprintComponentType::SELECT,
+            BlueprintComponentType::RADIO,
+            BlueprintComponentType::CHECkBOX,
+        ])) {
+            $this->component_format = BlueprintComponentFormat::OPTION;
+        }
     }
 
     public function getInfo(): string

@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Enums\BlueprintComponentFormat;
 use App\Enums\BlueprintComponentType;
-use App\Enums\CommonStatus;
 use App\Enums\DefaultOption;
 use App\Queries\ProjectBlueprintReadQuery;
 use App\Repositories\BlueprintComponentRepository;
@@ -12,7 +11,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
-class ProjectBlueprintStoreRequest extends FormRequest
+class ProjectBlueprintUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,23 +21,12 @@ class ProjectBlueprintStoreRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Prepare the data for validation.
-     */
-    protected function prepareForValidation(): void
-    {
-        $this->merge([
-            'status' => $this->status ?? '',
-        ]);
-    }
-
     public function messages(): array
     {
         return [
             "components.*.component_type.Illuminate\Validation\Rules\Enum" => 'The component type field can be: '.BlueprintComponentType::listKeys(),
             "components.*.component_format.Illuminate\Validation\Rules\Enum" => 'The component format field can be: '.BlueprintComponentFormat::listKeys(),
             "components.*.is_required.Illuminate\Validation\Rules\Enum" => 'The `is_required` field can be: '.DefaultOption::listKeys(),
-            "components.*.status.Illuminate\Validation\Rules\Enum" => 'The status field can be: '.CommonStatus::listKeys(),
         ];
     }
 
@@ -51,8 +39,7 @@ class ProjectBlueprintStoreRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string'],
             'info' => ['sometimes', 'nullable', 'string'],
-            'status' => ['sometimes', Rule::enum(CommonStatus::class)],
-            'components' => ['required', 'array'],
+            'components' => ['sometimes', 'array'],
             'components.*.name' => ['required', 'string', 'max:64'],
             'components.*.description' => ['required', 'string', 'max:255'],
             'components.*.info' => ['sometimes', 'nullable', 'string'],
@@ -60,7 +47,6 @@ class ProjectBlueprintStoreRequest extends FormRequest
             'components.*.component_format' => ['required', Rule::enum(BlueprintComponentFormat::class)],
             'components.*.type_options' => ['sometimes', 'nullable', 'array'],
             'components.*.is_required' => ['required', Rule::enum(DefaultOption::class)],
-            'components.*.status' => ['sometimes', Rule::enum(CommonStatus::class)],
         ];
     }
 
@@ -71,42 +57,44 @@ class ProjectBlueprintStoreRequest extends FormRequest
     {
         if ($validator->fails() === false) {
             $validator->after(function ($validator) {
-                $has_error = false; //flag
+                $has_error = false;
 
-                $components = $this->validator->safe()->components;
+                $components = $this->validator->safe()->components ?? [];
 
-                $componentsName = [];
+                if (empty($components) === false) {
+                    $componentsName = [];
 
-                $blueprintComponentRepository = app(BlueprintComponentRepository::class);
+                    $blueprintComponentRepository = app(BlueprintComponentRepository::class);
 
-                foreach ($components as $k => $v) {
-                    if (in_array($v['name'], $componentsName) === false) {
-                        $componentsName[] = $v['name'];
+                    foreach ($components as $k => $v) {
+                        if (in_array($v['name'], $componentsName) === false) {
+                            $componentsName[] = $v['name'];
 
-                        $validationErrors = $blueprintComponentRepository->validateComponentStructure($v);
+                            $validationErrors = $blueprintComponentRepository->validateComponentStructure($v);
 
-                        if (empty($validationErrors) === false) {
+                            if (empty($validationErrors) === false) {
+                                $has_error = true;
+
+                                foreach ($validationErrors as $validationErrorMessage) {
+                                    $validator->errors()->add(
+                                        'components',
+                                        __($validationErrorMessage, [
+                                            'k' => $k,
+                                        ])
+                                    );
+                                }
+                            }
+                        } else {
                             $has_error = true;
 
-                            foreach ($validationErrors as $validationErrorMessage) {
-                                $validator->errors()->add(
-                                    'components',
-                                    __($validationErrorMessage, [
-                                        'k' => $k,
-                                    ])
-                                );
-                            }
+                            $validator->errors()->add(
+                                'components',
+                                __('validation.custom.components.names', [
+                                    'k' => $k,
+                                    'name' => $v['name'],
+                                ])
+                            );
                         }
-                    } else {
-                        $has_error = true;
-
-                        $validator->errors()->add(
-                            'components',
-                            __('validation.custom.components.names', [
-                                'k' => $k,
-                                'name' => $v['name'],
-                            ])
-                        );
                     }
                 }
 
@@ -125,6 +113,7 @@ class ProjectBlueprintStoreRequest extends FormRequest
         $projectBlueprint = app(ProjectBlueprintReadQuery::class)
             ->filterByProjectId($this->route('project')->id)
             ->filterByName($this->validator->safe()->name)
+            ->filterById($this->route('projectBlueprint')->id, '<>') //ignore updated entry
             ->isUnique();
 
         if ($projectBlueprint === false) {

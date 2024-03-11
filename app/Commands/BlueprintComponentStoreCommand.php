@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Commands;
 
 use App\Commands\Traits\AttributesCommandTrait;
+use App\Commands\Traits\GetDescriptionCommandTrait;
+use App\Commands\Traits\GetNameCommandTrait;
 use App\Commands\Traits\GetStatusCommandTrait;
 use App\Enums\BlueprintComponentFormat;
 use App\Enums\BlueprintComponentType;
@@ -14,6 +16,8 @@ use App\Enums\DefaultOption;
 class BlueprintComponentStoreCommand
 {
     use AttributesCommandTrait;
+    use GetDescriptionCommandTrait;
+    use GetNameCommandTrait;
     use GetStatusCommandTrait;
 
     private int $project_blueprint_id;
@@ -54,21 +58,19 @@ class BlueprintComponentStoreCommand
         $this->type_options = $type_options;
         $this->is_required = DefaultOption::tryFrom($is_required) ?? DefaultOption::NO;
         $this->status = CommonStatus::tryFrom($status) ?? CommonStatus::ACTIVE;
+
+        if (in_array($this->component_type, [
+            BlueprintComponentType::SELECT,
+            BlueprintComponentType::RADIO,
+            BlueprintComponentType::CHECkBOX,
+        ])) {
+            $this->component_format = BlueprintComponentFormat::OPTION;
+        }
     }
 
     public function getBlueprintProjectId(): int
     {
         return $this->project_blueprint_id;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
     }
 
     public function getInfo(): string

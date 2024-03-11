@@ -5,16 +5,22 @@ declare(strict_types=1);
 namespace App\Http\Controllers\ProjectBlueprint;
 
 use App\Actions\BlueprintComponentStore;
+use App\Actions\ProjectBlueprintDelete;
 use App\Actions\ProjectBlueprintStore;
+use App\Actions\ProjectBlueprintUpdate;
 use App\Commands\BlueprintComponentStoreCommand;
+use App\Commands\ProjectBlueprintDeleteCommand;
 use App\Commands\ProjectBlueprintStoreCommand;
+use App\Commands\ProjectBlueprintUpdateCommand;
 use App\Exceptions\ControllerException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProjectBlueprintIndexRequest;
 use App\Http\Requests\ProjectBlueprintStoreRequest;
+use App\Http\Requests\ProjectBlueprintUpdateRequest;
 use App\Models\Project;
 use App\Models\ProjectBlueprint;
 use App\Queries\ProjectBlueprintReadQuery;
+use App\Repositories\BlueprintComponentRepository;
 use App\Repositories\ProjectBlueprintRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -119,9 +125,12 @@ class ApiProjectBlueprintController extends Controller
         $this->apiWrapper->success(true);
         $this->apiWrapper->message(__('message.success'));
         $this->apiWrapper->data(array_merge(
+            [
+                'id' => $projectBlueprint->id,
+            ],
             $commandProjectBlueprint->attributes(),
             [
-                'components' => $projectBlueprint->components->all(),
+                'components' => $validated['components'],
             ],
         ));
 
@@ -140,12 +149,20 @@ class ApiProjectBlueprintController extends Controller
         Gate::authorize('view', [ProjectBlueprint::class, $project]);
 
         $data = $repository->getViewCache($projectBlueprint->id, function () use ($query, $projectBlueprint) {
-            return $query
+            $result = $query
                 ->filterById($projectBlueprint->id)
                 ->withCreatedBy()
                 ->withUpdatedBy()
-                ->withComponents() ??? disable cache
+                ->withComponents()
                 ->first();
+
+            if ($result) {
+                $result->components->each(function ($component) {
+                    $component->makeHidden('project_blueprint_id');
+                });
+            }
+
+            return $result;
         });
 
         $this->apiWrapper->success(true);
@@ -162,7 +179,8 @@ class ApiProjectBlueprintController extends Controller
     public function update(
         ProjectBlueprintUpdateRequest $request,
         Project $project,
-        ProjectBlueprint $projectBlueprint
+        ProjectBlueprint $projectBlueprint,
+        BlueprintComponentRepository $blueprintComponentRepository
     ): JsonResponse {
         Gate::authorize('update', [ProjectBlueprint::class, $project]);
 
@@ -170,10 +188,29 @@ class ApiProjectBlueprintController extends Controller
 
         $command = new ProjectBlueprintUpdateCommand(
             $projectBlueprint->id,
-            $validated['role']
+            $validated['name'],
+            $validated['description'],
         );
 
         ProjectBlueprintUpdate::run($command);
+
+        if (empty($validated['components']) === false) {
+            try {
+//                delete components TODO
+
+                foreach ($validated['components'] as $blueprintComponent) {
+                    $blueprintComponentRepository->onUpDateHandleComponent(
+                        $projectBlueprint->id,
+                        $blueprintComponent
+                    );
+                }
+            } catch (ModelNotFoundException) {
+                throw new ControllerException(
+                    __('message.blueprint_component.store_fail'),
+                    Response::HTTP_INTERNAL_SERVER_ERROR
+                );
+            }
+        }
 
         $this->apiWrapper->success(true);
         $this->apiWrapper->message(__('message.success'));
