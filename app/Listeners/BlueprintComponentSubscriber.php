@@ -46,11 +46,11 @@ class BlueprintComponentSubscriber
                 'blueprint_component_id' => $event->component->id,
                 'action_by' => $event->component->updated_by,
             ]),
-            $event->blueprint->getFillableChanges()
+            $event->component->getFillableChanges()
         );
 
-        if ($event->blueprint->wasChanged('status') && $event->blueprint->status == CommonStatus::ACTIVE) {
-            BlueprintComponentActivated::dispatch($event->blueprint);
+        if ($event->component->wasChanged('status') && $event->component->status == CommonStatus::ACTIVE) {
+            BlueprintComponentActivated::dispatch($event->component);
         }
     }
 

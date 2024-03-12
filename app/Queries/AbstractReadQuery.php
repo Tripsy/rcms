@@ -22,6 +22,11 @@ abstract class AbstractReadQuery
         $this->query = $this->model::query();
     }
 
+    public function asQuery(): Builder
+    {
+        return $this->query;
+    }
+
     public function get(int $page = 0, int $limit = 0): Collection
     {
         if ($page > 0) {

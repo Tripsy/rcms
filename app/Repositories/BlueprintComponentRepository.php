@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Actions\BlueprintComponentDelete;
 use App\Actions\BlueprintComponentStore;
 use App\Actions\BlueprintComponentUpdate;
+use App\Commands\BlueprintComponentDeleteCommand;
 use App\Commands\BlueprintComponentStoreCommand;
 use App\Commands\BlueprintComponentUpdateCommand;
 use App\Enums\BlueprintComponentType;
@@ -19,13 +21,6 @@ class BlueprintComponentRepository
     const CACHE_MODEL = 'blueprint_component';
 
     const CACHE_TIME = 86400;
-
-    private BlueprintComponentReadQuery $blueprintComponentReadQuery;
-
-    public function __construct(BlueprintComponentReadQuery $blueprintComponentReadQuery)
-    {
-        $this->blueprintComponentReadQuery = $blueprintComponentReadQuery;
-    }
 
     public function getViewCache(int $id, callable $cacheContent)
     {
@@ -71,12 +66,58 @@ class BlueprintComponentRepository
     }
 
     /**
-     * Update or insert component for a blueprint
-     * Provided argument array $component should be checked prior with `validateComponentStructure()`
+     * Handle project blueprint components:
+     *      - remove from DB components which are not present in $validatedComponents
+     *      - save component (eg: insert or update)
+     *
+     * Provided argument array $validatedComponents should be checked prior with `validateComponentStructure()`
      */
-    public function onUpDateHandleComponent(int $project_blueprint_id, array $component): void
+    public function onUpDateHandleComponents(int $project_blueprint_id, array $validatedComponents): void
     {
-        $blueprintComponent = $this->blueprintComponentReadQuery
+        $componentsName = array_column($validatedComponents, 'name');
+
+        $queryBlueprintComponent = app(BlueprintComponentReadQuery::class)
+            ->filterByProjectBlueprintId($project_blueprint_id)
+            ->asQuery();
+
+        $queryBlueprintComponent
+            ->whereNotIn('name', $componentsName);
+
+        //get a list with components found in the database and not present in the $validatedComponents
+        $extraComponents = $queryBlueprintComponent->get();
+
+        foreach ($extraComponents as $extraComponent) {
+            $this->deleteComponent($extraComponent->id);
+        }
+
+        foreach ($validatedComponents as $validatedComponent) {
+            $this->saveComponent(
+                $project_blueprint_id,
+                $validatedComponent
+            );
+        }
+    }
+
+    /**
+     * Delete blueprint component from DB
+     * Note: Is not for use outside repository - there are no permissions checks
+     */
+    private function deleteComponent(int $id): void
+    {
+        $command = new BlueprintComponentDeleteCommand(
+            $id
+        );
+
+        BlueprintComponentDelete::run($command);
+    }
+
+    /**
+     * Insert or update existing component
+     * Note: Is not for use outside repository - there are no permissions checks
+     */
+    private function saveComponent(int $project_blueprint_id, array $component): void
+    {
+        $blueprintComponent = app(BlueprintComponentReadQuery::class)
             ->filterByProjectBlueprintId($project_blueprint_id)
             ->filterByName($component['name'])
             ->first();

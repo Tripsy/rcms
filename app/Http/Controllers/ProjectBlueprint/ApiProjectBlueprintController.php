@@ -24,6 +24,7 @@ use App\Repositories\BlueprintComponentRepository;
 use App\Repositories\ProjectBlueprintRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 use Tripsy\ApiWrapper\ApiWrapper;
@@ -85,16 +86,18 @@ class ApiProjectBlueprintController extends Controller
 
         $validated = $request->validated();
 
-        $commandProjectBlueprint = new ProjectBlueprintStoreCommand(
-            $project->id,
-            $validated['name'],
-            $validated['description'],
-            $validated['status'],
-        );
-
-        ProjectBlueprintStore::run($commandProjectBlueprint);
-
         try {
+            DB::beginTransaction();
+
+            $commandProjectBlueprint = new ProjectBlueprintStoreCommand(
+                $project->id,
+                $validated['name'],
+                $validated['description'],
+                $validated['status'],
+            );
+
+            ProjectBlueprintStore::run($commandProjectBlueprint);
+
             $projectBlueprint = $query
                 ->filterByProjectId($commandProjectBlueprint->getProjectId())
                 ->filterByName($commandProjectBlueprint->getName())
@@ -115,7 +118,11 @@ class ApiProjectBlueprintController extends Controller
 
                 BlueprintComponentStore::run($commandBlueprintComponent);
             }
+
+            DB::commit();
         } catch (ModelNotFoundException) {
+            DB::rollBack();
+
             throw new ControllerException(
                 __('message.project_blueprint.store_fail'),
                 Response::HTTP_INTERNAL_SERVER_ERROR
@@ -175,6 +182,7 @@ class ApiProjectBlueprintController extends Controller
 
     /**
      * Update the specified resource in storage.
+     * @throws ControllerException
      */
     public function update(
         ProjectBlueprintUpdateRequest $request,
@@ -186,30 +194,32 @@ class ApiProjectBlueprintController extends Controller
 
         $validated = $request->validated();
 
-        $command = new ProjectBlueprintUpdateCommand(
-            $projectBlueprint->id,
-            $validated['name'],
-            $validated['description'],
-        );
+        try {
+            DB::beginTransaction();
 
-        ProjectBlueprintUpdate::run($command);
+            $command = new ProjectBlueprintUpdateCommand(
+                $projectBlueprint->id,
+                $validated['name'],
+                $validated['description'],
+            );
 
-        if (empty($validated['components']) === false) {
-            try {
-//                delete components TODO
+            ProjectBlueprintUpdate::run($command);
 
-                foreach ($validated['components'] as $blueprintComponent) {
-                    $blueprintComponentRepository->onUpDateHandleComponent(
-                        $projectBlueprint->id,
-                        $blueprintComponent
-                    );
-                }
-            } catch (ModelNotFoundException) {
-                throw new ControllerException(
-                    __('message.blueprint_component.store_fail'),
-                    Response::HTTP_INTERNAL_SERVER_ERROR
+            if (empty($validated['components']) === false) {
+                $blueprintComponentRepository->onUpDateHandleComponents(
+                    $projectBlueprint->id,
+                    $validated['components']
                 );
             }
+
+            DB::commit();
+        } catch (ModelNotFoundException) {
+            DB::rollBack();
+
+            throw new ControllerException(
+                __('message.project_blueprint.store_fail'),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
 
         $this->apiWrapper->success(true);
