@@ -1,7 +1,15 @@
 ## TO DO
-- check policies for project blueprint & blueprint component
+
+php artisan make:class
+php artisan make:enum
+php artisan make:interface
+php artisan make:trait
+
+- upgrade to laravel 11
+- check policies for blueprint component
 - create instructions about adding new stuff
--  app/Repositories/Interfaces/ItemDataRepositoryInterface.php ??
+- create app/Http/Controllers/BlueprintComponent/ApiBlueprintComponentController.php
+- app/Repositories/Interfaces/ItemDataRepositoryInterface.php ??
 - test special validation rules
 
 # PACKAGES

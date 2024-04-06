@@ -4,7 +4,7 @@ use App\Http\Controllers\Item\ApiConsumerItemController;
 use App\Http\Controllers\Project\ApiProjectController;
 use App\Http\Controllers\Project\ApiProjectStatusController;
 use App\Http\Controllers\ProjectBlueprint\ApiProjectBlueprintController;
-use App\Http\Controllers\ProjectPermission\ApiProjectBlueprintStatusController;
+use App\Http\Controllers\ProjectBlueprint\ApiProjectBlueprintStatusController;
 use App\Http\Controllers\ProjectPermission\ApiProjectPermissionController;
 use App\Http\Controllers\ProjectPermission\ApiProjectPermissionStatusController;
 use Illuminate\Support\Facades\Route;
@@ -98,10 +98,10 @@ Route::group([
             ->where('projectBlueprint', '[0-9]+');
     });
 
-    //    Route::patch(
-    //        '/project-blueprint/{project}/{projectBlueprint}/{status}',
-    //        ApiProjectBlueprintStatusController::class
-    //    )
-    //        ->where('project', '[0-9]+')
-    //        ->where('projectBlueprint', '[0-9]+');
+    Route::patch(
+        '/project-blueprint/{project}/{projectBlueprint}/{status}',
+        ApiProjectBlueprintStatusController::class
+    )
+        ->where('project', '[0-9]+')
+        ->where('projectBlueprint', '[0-9]+');
 });

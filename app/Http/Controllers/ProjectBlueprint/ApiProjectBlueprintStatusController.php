@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\ProjectPermission;
+namespace App\Http\Controllers\ProjectBlueprint;
 
-use App\Actions\ProjectPermissionStatusUpdate;
-use App\Commands\ProjectPermissionStatusUpdateCommand;
+use App\Actions\ProjectBlueprintStatusUpdate;
+use App\Commands\ProjectBlueprintStatusUpdateCommand;
 use App\Enums\CommonStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
-use App\Models\ProjectPermission;
+use App\Models\ProjectBlueprint;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,17 +21,17 @@ class ApiProjectBlueprintStatusController extends Controller
      */
     public function __invoke(
         Project $project,
-        ProjectPermission $projectPermission,
+        ProjectBlueprint $projectBlueprint,
         CommonStatus $status
     ): JsonResponse {
-        Gate::authorize('update', [$projectPermission, $project]);
+        Gate::authorize('update', [$projectBlueprint, $project]);
 
-        $command = new ProjectPermissionStatusUpdateCommand(
-            $projectPermission->id,
+        $command = new ProjectBlueprintStatusUpdateCommand(
+            $projectBlueprint->id,
             $status->value
         );
 
-        ProjectPermissionStatusUpdate::run($command);
+        ProjectBlueprintStatusUpdate::run($command);
 
         return response()->json([
             'success' => true,

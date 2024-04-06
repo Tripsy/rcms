@@ -4,7 +4,7 @@ namespace App\Policies;
 
 use App\Enums\ProjectPermissionRole;
 use App\Models\Project;
-use App\Models\ProjectPermission;
+use App\Models\ProjectBlueprint;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
@@ -21,7 +21,7 @@ class ProjectBlueprintPolicy
      * The before method of a policy class will not be called if the class doesn't contain a method with a name matching the name of the ability being checked.
      * https://laravel.com/docs/10.x/authorization#policy-filters
      */
-    public function before(User $user, string $ability): bool|null
+    public function before(User $user, string $ability): ?bool
     {
         if ($user->isAdmin()) {
             return true;
@@ -63,7 +63,7 @@ class ProjectBlueprintPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Project $project): Response
+    public function update(User $user, ProjectBlueprint $projectBlueprint, Project $project): Response
     {
         return $project->hasPermission($user)
             ? Response::allow()
@@ -73,7 +73,7 @@ class ProjectBlueprintPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Project $project): Response
+    public function delete(User $user, ProjectBlueprint $projectBlueprint, Project $project): Response
     {
         if ($project->hasRole($user, ProjectPermissionRole::MANAGER) === false) {
             return Response::deny(__('message.exception.access_denied'));
