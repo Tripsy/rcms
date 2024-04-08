@@ -5,7 +5,6 @@ php artisan make:enum
 php artisan make:interface
 php artisan make:trait
 
-- upgrade to laravel 11
 - check policies for blueprint component
 - create instructions about adding new stuff
 - create app/Http/Controllers/BlueprintComponent/ApiBlueprintComponentController.php

@@ -98,14 +98,4 @@ class EventServiceProvider extends ServiceProvider
     {
         //
     }
-
-    /**
-     * Determine if events and listeners should be automatically discovered.
-     *
-     * https://laravel.com/docs/10.x/events#event-discovery
-     */
-    public function shouldDiscoverEvents(): bool
-    {
-        return false;
-    }
 }

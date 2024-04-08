@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,6 +23,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        /**
+         * Gates are simply closures that determine if a user is authorized to perform a given action.
+         * Typically, gates are defined within the boot method of the App\Providers\AuthServiceProvider class using the Gate facade.
+         * Gates always receive a user instance as their first argument and may optionally receive additional arguments such as a relevant Eloquent model.
+         *
+         * https://laravel.com/docs/10.x/authorization#gates
+         */
+        Gate::define('isAdmin', function ($user) {
+            return $user->isAdmin();
+        });
     }
 }
