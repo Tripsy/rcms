@@ -46,7 +46,7 @@ class ApiProjectPermissionController extends Controller
 
         $validated = $request->validated();
 
-        $permissions = $query
+        $results = $query
             ->filterByProjectId($project->id)
             ->filterByUserName('%'.$validated['filter']['user_name'].'%', 'LIKE')
             ->filterByRole($validated['filter']['role'])
@@ -60,8 +60,8 @@ class ApiProjectPermissionController extends Controller
         $this->apiWrapper->success(true);
         $this->apiWrapper->message(__('message.success'));
         $this->apiWrapper->data([
-            'results' => $permissions,
-            'count' => count($permissions),
+            'results' => $results,
+            'count' => count($results),
             'limit' => $validated['limit'],
             'page' => $validated['page'],
         ]);

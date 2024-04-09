@@ -1,0 +1,26 @@
+{
+    "name": "tripsy/stub-creator",
+    "description": "Used for creating entities based on custom stubs",
+    "autoload": {
+        "psr-4": {
+            "Tripsy\\StubCreator\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Gabriel David"
+        }
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^11.0"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Tripsy\\StubCreator\\StubCreatorServiceProvider"
+            ]
+        }
+    }
+}

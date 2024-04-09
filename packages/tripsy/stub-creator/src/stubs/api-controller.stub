@@ -2,33 +2,33 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\Project;
+namespace App\Http\Controllers\{{ $controllerName }};
 
-use App\Actions\ProjectDelete;
-use App\Actions\ProjectPermissionStore;
-use App\Actions\ProjectStore;
-use App\Actions\ProjectUpdate;
-use App\Commands\ProjectDeleteCommand;
-use App\Commands\ProjectPermissionStoreCommand;
-use App\Commands\ProjectStoreCommand;
-use App\Commands\ProjectUpdateCommand;
+use App\Actions\{{ $controllerName }}Delete;
+use App\Actions\{{ $controllerName }}PermissionStore;
+use App\Actions\{{ $controllerName }}Store;
+use App\Actions\{{ $controllerName }}Update;
+use App\Commands\{{ $controllerName }}DeleteCommand;
+use App\Commands\{{ $controllerName }}PermissionStoreCommand;
+use App\Commands\{{ $controllerName }}StoreCommand;
+use App\Commands\{{ $controllerName }}UpdateCommand;
 use App\Enums\CommonStatus;
-use App\Enums\ProjectPermissionRole;
+use App\Enums\{{ $controllerName }}PermissionRole;
 use App\Exceptions\ControllerException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ProjectIndexRequest;
-use App\Http\Requests\ProjectStoreRequest;
-use App\Http\Requests\ProjectUpdateRequest;
-use App\Models\Project;
-use App\Queries\ProjectReadQuery;
-use App\Repositories\ProjectRepository;
+use App\Http\Requests\{{ $controllerName }}IndexRequest;
+use App\Http\Requests\{{ $controllerName }}StoreRequest;
+use App\Http\Requests\{{ $controllerName }}UpdateRequest;
+use App\Models\{{ $controllerName }};
+use App\Queries\{{ $controllerName }}ReadQuery;
+use App\Repositories\{{ $controllerName }}Repository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 use Tripsy\ApiWrapper\ApiWrapper;
 
-class ApiProjectController extends Controller
+class Api{{ $controllerName }}Controller extends Controller
 {
     private ApiWrapper $apiWrapper;
 
@@ -41,16 +41,16 @@ class ApiProjectController extends Controller
      * Display a listing of the resource.
      */
     public function index(
-        ProjectIndexRequest $request,
-        ProjectReadQuery $query
+        {{ $controllerName }}IndexRequest $request,
+        {{ $controllerName }}ReadQuery $query
     ): JsonResponse {
-        Gate::authorize('index', Project::class);
+        Gate::authorize('index', {{ $controllerName }}::class);
 
         $validated = $request->validated();
 
         $results = $query
             ->whereHasPermission()
-            ->filterByAuthorityName($validated['filter']['authority_name'])
+            ->filterByName($validated['filter']['name'])
             ->filterByStatus($validated['filter']['status'])
             ->withCreatedBy()
             ->withUpdatedBy()
@@ -73,44 +73,35 @@ class ApiProjectController extends Controller
      *
      * @throws ControllerException
      */
-    public function store(ProjectStoreRequest $request, ProjectReadQuery $query): JsonResponse
+    public function store({{ $controllerName }}StoreRequest $request, {{ $controllerName }}ReadQuery $query): JsonResponse
     {
-        Gate::authorize('create', Project::class);
+        Gate::authorize('create', {{ $controllerName }}::class);
 
         $validated = $request->validated();
 
-        $command = new ProjectStoreCommand(
+        $command = new {{ $controllerName }}StoreCommand(
             $validated['name'],
-            $validated['authority_name'],
-            $validated['authority_key'],
             $validated['status']
         );
 
-        ProjectStore::run($command);
+        {{ $controllerName }}Store::run($command);
 
         try {
-            $project = $query
-                ->filterByAuthorityName($command->getAuthorityName())
+            ${{ $modelName }} = $query
                 ->filterByName($command->getName())
                 ->firstOrFail();
         } catch (ModelNotFoundException) {
-            throw new ControllerException(__('message.project.store_fail'), Response::HTTP_INTERNAL_SERVER_ERROR);
+            throw new ControllerException(
+                __('message.{{ $modelName }}.store_fail'),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
         }
-
-        $commandPermission = new ProjectPermissionStoreCommand(
-            $project->id,
-            auth()->id(),
-            ProjectPermissionRole::MANAGER->value,
-            CommonStatus::ACTIVE->value,
-        );
-
-        ProjectPermissionStore::run($commandPermission);
 
         $this->apiWrapper->success(true);
         $this->apiWrapper->message(__('message.success'));
         $this->apiWrapper->data(array_merge(
             [
-                'id' => $project->id,
+                'id' => ${{ $modelName }}->id,
             ],
             $command->attributes()
         ));
@@ -121,13 +112,13 @@ class ApiProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project, ProjectReadQuery $query, ProjectRepository $repository): JsonResponse
+    public function show({{ $controllerName }} ${{ $modelName }}, {{ $controllerName }}ReadQuery $query, {{ $controllerName }}Repository $repository): JsonResponse
     {
-        Gate::authorize('view', $project);
+        Gate::authorize('view', ${{ $modelName }});
 
-        $data = $repository->getViewCache($project->id, function () use ($query, $project) {
+        $data = $repository->getViewCache(${{ $modelName }}->id, function () use ($query, ${{ $modelName }}) {
             return $query
-                ->filterById($project->id)
+                ->filterById(${{ $modelName }}->id)
                 ->withCreatedBy()
                 ->withUpdatedBy()
                 ->first();
@@ -144,20 +135,18 @@ class ApiProjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(ProjectUpdateRequest $request, Project $project): JsonResponse
+    public function update({{ $controllerName }}UpdateRequest $request, {{ $controllerName }} ${{ $modelName }}): JsonResponse
     {
-        Gate::authorize('update', $project);
+        Gate::authorize('update', ${{ $modelName }});
 
         $validated = $request->validated();
 
-        $command = new ProjectUpdateCommand(
-            $project->id,
-            $validated['name'],
-            $validated['authority_name'],
-            $validated['authority_key']
+        $command = new {{ $controllerName }}UpdateCommand(
+            ${{ $modelName }}->id,
+            $validated['name']
         );
 
-        ProjectUpdate::run($command);
+        {{ $controllerName }}Update::run($command);
 
         $this->apiWrapper->success(true);
         $this->apiWrapper->message(__('message.success'));
@@ -169,15 +158,15 @@ class ApiProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Project $project): JsonResponse
+    public function destroy({{ $controllerName }} ${{ $modelName }}): JsonResponse
     {
-        Gate::authorize('delete', $project);
+        Gate::authorize('delete', ${{ $modelName }});
 
-        $command = new ProjectDeleteCommand(
-            $project->id
+        $command = new {{ $controllerName }}DeleteCommand(
+            ${{ $modelName }}->id
         );
 
-        ProjectDelete::run($command);
+        {{ $controllerName }}Delete::run($command);
 
         $this->apiWrapper->success(true);
         $this->apiWrapper->message(__('message.success'));

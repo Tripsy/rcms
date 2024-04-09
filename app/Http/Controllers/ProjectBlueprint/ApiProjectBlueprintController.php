@@ -50,7 +50,7 @@ class ApiProjectBlueprintController extends Controller
 
         $validated = $request->validated();
 
-        $blueprints = $query
+        $results = $query
             ->filterByProjectId($project->id)
             ->filterByName('%'.$validated['filter']['name'].'%', 'LIKE')
             ->filterByDescription('%'.$validated['filter']['description'].'%', 'LIKE')
@@ -63,8 +63,8 @@ class ApiProjectBlueprintController extends Controller
         $this->apiWrapper->success(true);
         $this->apiWrapper->message(__('message.success'));
         $this->apiWrapper->data([
-            'results' => $blueprints,
-            'count' => count($blueprints),
+            'results' => $results,
+            'count' => count($results),
             'limit' => $validated['limit'],
             'page' => $validated['page'],
         ]);
