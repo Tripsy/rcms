@@ -2,33 +2,39 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\{{ $controllerName }};
+namespace App\Http\Controllers\{{ $model }};
 
-use App\Actions\{{ $controllerName }}Delete;
-use App\Actions\{{ $controllerName }}PermissionStore;
-use App\Actions\{{ $controllerName }}Store;
-use App\Actions\{{ $controllerName }}Update;
-use App\Commands\{{ $controllerName }}DeleteCommand;
-use App\Commands\{{ $controllerName }}PermissionStoreCommand;
-use App\Commands\{{ $controllerName }}StoreCommand;
-use App\Commands\{{ $controllerName }}UpdateCommand;
-use App\Enums\CommonStatus;
-use App\Enums\{{ $controllerName }}PermissionRole;
+use App\Actions\{{ $model }}Delete;
+use App\Actions\{{ $model }}Store;
+use App\Actions\{{ $model }}Update;
+use App\Commands\{{ $model }}DeleteCommand;
+use App\Commands\{{ $model }}StoreCommand;
+use App\Commands\{{ $model }}UpdateCommand;
 use App\Exceptions\ControllerException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\{{ $controllerName }}IndexRequest;
-use App\Http\Requests\{{ $controllerName }}StoreRequest;
-use App\Http\Requests\{{ $controllerName }}UpdateRequest;
-use App\Models\{{ $controllerName }};
-use App\Queries\{{ $controllerName }}ReadQuery;
-use App\Repositories\{{ $controllerName }}Repository;
+use App\Http\Requests\{{ $model }}IndexRequest;
+use App\Http\Requests\{{ $model }}StoreRequest;
+use App\Http\Requests\{{ $model }}UpdateRequest;
+use App\Models\{{ $model }};
+use App\Queries\{{ $model }}ReadQuery;
+use App\Repositories\{{ $model }}Repository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 use Tripsy\ApiWrapper\ApiWrapper;
 
-class Api{{ $controllerName }}Controller extends Controller
+extra App\Events\{{ $model }}Activated;
+extra App\Events\{{ $model }}Cache;
+extra App\Events\{{ $model }}Created;
+extra App\Events\{{ $model }}Deleting;
+extra App\Events\{{ $model }}Updated;
+extra App\Http\Api{{ $model }}StatusController;
+extra App\Listeners\{{ $model }}Subscriber;
+extra App\Observers\{{ $model }}Observer;
+extra App\Policies\{{ $model }}Policy;
+
+class {{ $className }} extends Controller
 {
     private ApiWrapper $apiWrapper;
 
@@ -41,15 +47,14 @@ class Api{{ $controllerName }}Controller extends Controller
      * Display a listing of the resource.
      */
     public function index(
-        {{ $controllerName }}IndexRequest $request,
-        {{ $controllerName }}ReadQuery $query
+        {{ $model }}IndexRequest $request,
+        {{ $model }}ReadQuery $query
     ): JsonResponse {
-        Gate::authorize('index', {{ $controllerName }}::class);
+        Gate::authorize('index', {{ $model }}::class);
 
         $validated = $request->validated();
 
         $results = $query
-            ->whereHasPermission()
             ->filterByName($validated['filter']['name'])
             ->filterByStatus($validated['filter']['status'])
             ->withCreatedBy()
@@ -73,26 +78,26 @@ class Api{{ $controllerName }}Controller extends Controller
      *
      * @throws ControllerException
      */
-    public function store({{ $controllerName }}StoreRequest $request, {{ $controllerName }}ReadQuery $query): JsonResponse
+    public function store({{ $model }}StoreRequest $request, {{ $model }}ReadQuery $query): JsonResponse
     {
-        Gate::authorize('create', {{ $controllerName }}::class);
+        Gate::authorize('create', {{ $model }}::class);
 
         $validated = $request->validated();
 
-        $command = new {{ $controllerName }}StoreCommand(
+        $command = new {{ $model }}StoreCommand(
             $validated['name'],
             $validated['status']
         );
 
-        {{ $controllerName }}Store::run($command);
+        {{ $model }}Store::run($command);
 
         try {
-            ${{ $modelName }} = $query
+            ${{ $modelVariable }} = $query
                 ->filterByName($command->getName())
                 ->firstOrFail();
         } catch (ModelNotFoundException) {
             throw new ControllerException(
-                __('message.{{ $modelName }}.store_fail'),
+                __('message.{{ $modelVariable }}.store_fail'),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -101,7 +106,7 @@ class Api{{ $controllerName }}Controller extends Controller
         $this->apiWrapper->message(__('message.success'));
         $this->apiWrapper->data(array_merge(
             [
-                'id' => ${{ $modelName }}->id,
+                'id' => ${{ $modelVariable }}->id,
             ],
             $command->attributes()
         ));
@@ -112,13 +117,13 @@ class Api{{ $controllerName }}Controller extends Controller
     /**
      * Display the specified resource.
      */
-    public function show({{ $controllerName }} ${{ $modelName }}, {{ $controllerName }}ReadQuery $query, {{ $controllerName }}Repository $repository): JsonResponse
+    public function show({{ $model }} ${{ $modelVariable }}, {{ $model }}ReadQuery $query, {{ $model }}Repository $repository): JsonResponse
     {
-        Gate::authorize('view', ${{ $modelName }});
+        Gate::authorize('view', ${{ $modelVariable }});
 
-        $data = $repository->getViewCache(${{ $modelName }}->id, function () use ($query, ${{ $modelName }}) {
+        $data = $repository->getViewCache(${{ $modelVariable }}->id, function () use ($query, ${{ $modelVariable }}) {
             return $query
-                ->filterById(${{ $modelName }}->id)
+                ->filterById(${{ $modelVariable }}->id)
                 ->withCreatedBy()
                 ->withUpdatedBy()
                 ->first();
@@ -135,18 +140,18 @@ class Api{{ $controllerName }}Controller extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update({{ $controllerName }}UpdateRequest $request, {{ $controllerName }} ${{ $modelName }}): JsonResponse
+    public function update({{ $model }}UpdateRequest $request, {{ $model }} ${{ $modelVariable }}): JsonResponse
     {
-        Gate::authorize('update', ${{ $modelName }});
+        Gate::authorize('update', ${{ $modelVariable }});
 
         $validated = $request->validated();
 
-        $command = new {{ $controllerName }}UpdateCommand(
-            ${{ $modelName }}->id,
+        $command = new {{ $model }}UpdateCommand(
+            ${{ $modelVariable }}->id,
             $validated['name']
         );
 
-        {{ $controllerName }}Update::run($command);
+        {{ $model }}Update::run($command);
 
         $this->apiWrapper->success(true);
         $this->apiWrapper->message(__('message.success'));
@@ -158,15 +163,15 @@ class Api{{ $controllerName }}Controller extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy({{ $controllerName }} ${{ $modelName }}): JsonResponse
+    public function destroy({{ $model }} ${{ $modelVariable }}): JsonResponse
     {
-        Gate::authorize('delete', ${{ $modelName }});
+        Gate::authorize('delete', ${{ $modelVariable }});
 
-        $command = new {{ $controllerName }}DeleteCommand(
-            ${{ $modelName }}->id
+        $command = new {{ $model }}DeleteCommand(
+            ${{ $modelVariable }}->id
         );
 
-        {{ $controllerName }}Delete::run($command);
+        {{ $model }}Delete::run($command);
 
         $this->apiWrapper->success(true);
         $this->apiWrapper->message(__('message.success'));

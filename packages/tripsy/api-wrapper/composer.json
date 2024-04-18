@@ -1,19 +1,23 @@
 {
     "name": "tripsy/api-wrapper",
     "description": "Wrapper for API response",
-    "autoload": {
-        "psr-4": {
-            "Tripsy\\ApiWrapper\\": "src/"
-        }
-    },
+    "type": "library",
+    "keywords": ["keyword1", "keyword2"],
+    "license": "MIT",
     "authors": [
         {
             "name": "Gabriel David"
         }
     ],
-    "license": "MIT",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Tripsy\\ApiWrapper\\": "src/"
+        }
+    },
     "require": {
         "php": "^8.1",
-        "laravel/framework": "^10.10"
+        "laravel/framework": "^11.0"
     }
 }
