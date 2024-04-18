@@ -141,11 +141,19 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
     }
 
     /**
-     * Get the command attribute value based on key
+     * Get the command argument value based on key
      */
     final protected function getArgumentValue(string $key): string
     {
         return strtolower(trim($this->argument($key)));
+    }
+
+    /**
+     * Return the command option based on key as a bool
+     */
+    final protected function getOption(string $key): bool
+    {
+        return filter_var($this->option($key), FILTER_VALIDATE_BOOLEAN);
     }
 
     /**
@@ -302,25 +310,29 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
      *
      * Destination folder will be created if it doesn't exist
      *
+     * Return false if file already exist
+     *
      * @throws FileNotFoundException
      * @throws Exception
      */
-    protected function generate(): void
+    protected function generate(): bool
     {
         $fileContent = $this->buildFileContent();
 
         $filePath = $this->destinationFileFolder.'/'.$this->destinationFileName;
 
         if ($this->fileExists($filePath) === true) {
-            //TODO just skip don't throw error
-            throw new \Exception(__('stub-chain::stub-chain.file_already_exist', [
-                'filePath' => $filePath,
-            ]));
+            return false;
+            //            throw new Exception(__('stub-chain::stub-chain.file_already_exist', [
+            //                'filePath' => $filePath,
+            //            ]));
         } else {
             $this->makeDirectory($filePath);
         }
 
         $this->fileSystem->put($filePath, $fileContent);
+
+        return true;
     }
 
     /**
@@ -411,7 +423,7 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
         });
 
         //transform name for used class (eg: {{ $model }}Delete
-        $dynamicClasses = array_map(function ($v) use ($dynamicClassesNeedle) {
+        return array_map(function ($v) use ($dynamicClassesNeedle) {
             // $v ~ App\Commands\{{ $model }}DeleteCommand
             $parts = explode('\\', $v);
 
@@ -423,8 +435,6 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
 
             return str_replace('parentmodel', 'parentModel', $dashedString); //parentModel-model-delete-command
         }, $dynamicClasses);
-
-        return $dynamicClasses;
     }
 
     /**

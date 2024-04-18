@@ -18,6 +18,7 @@ class StubChain extends StubCommand
         {stub : Stub file}
         {model : The model name}
         {parentModel? : The parent model name}
+        {--related=true : For related false related files are not generated}
     ';
 
     /**
@@ -71,24 +72,31 @@ class StubChain extends StubCommand
             $this->determineDestinationFileFolder($model);
 
             //generate destination file
-            $this->generate();
-
-            //generated related dynamic classes
-            $relatedStubFiles = $this->getRelatedStubFiles();
-
-            foreach ($relatedStubFiles as $s) {
-                $this->call('tripsy:stub-chain', array_filter([
-                    'stub' => $s,
-                    'model' => $this->getArgumentValue('model'),
-                    'parentModel' => $this->getArgumentValue('parentModel'),
+            if ($this->generate() === false) {
+                $this->warn(__('stub-chain::stub-chain.file_already_exist', [
+                    'fileName' => $this->destinationFileName,
+                    'fileFolder' => $this->destinationFileFolder,
+                ]));
+            } else {
+                $this->info(__('stub-chain::stub-chain.file_generated', [
+                    'fileName' => $this->destinationFileName,
+                    'fileFolder' => $this->destinationFileFolder,
+                    'stub' => $this->stub,
                 ]));
             }
 
-            $this->info(__('stub-chain::stub-chain.file_generated', [
-                'fileName' => $this->destinationFileName,
-                'fileFolder' => $this->destinationFileFolder,
-                'stub' => $this->stub,
-            ]));
+            if ($this->getOption('related') === true) {
+                //generated related dynamic classes
+                $relatedStubFiles = $this->getRelatedStubFiles();
+
+                foreach ($relatedStubFiles as $s) {
+                    $this->call('tripsy:stub-chain', array_filter([
+                        'stub' => $s,
+                        'model' => $this->getArgumentValue('model'),
+                        'parentModel' => $this->getArgumentValue('parentModel'),
+                    ]));
+                }
+            }
         } catch (Exception $exception) {
             $this->error($exception->getMessage());
         }

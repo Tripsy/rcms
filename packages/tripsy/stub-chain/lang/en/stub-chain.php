@@ -15,7 +15,7 @@ return [
 
     'stub_not_found' => 'The stub file :stub was not found',
     'is_reserved_name' => 'The name :className is reserved by PHP.',
-    'file_already_exist' => 'File :filePath already exist; use --force flag to overwrite the file.',
+    'file_already_exist' => 'File :fileName already exist in :fileFolder',
     'namespace_not_found' => 'Namespace not found in stub :stub.',
 
     'file_generated' => 'Class :fileName created with success in :fileFolder from :stub stub',

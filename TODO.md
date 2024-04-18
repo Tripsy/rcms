@@ -43,9 +43,9 @@ StubGeneratorFacade::from('/app/stubs/repository.stub')
 ])
 ->save();
 
-add notes
+stub-chain add notes
 
-stub-creator -> stub-chain
+
 
 
 api-model-controller.stub
