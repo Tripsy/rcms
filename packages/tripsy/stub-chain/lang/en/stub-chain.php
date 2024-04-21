@@ -18,5 +18,5 @@ return [
     'file_already_exist' => 'File :fileName already exist in :fileFolder',
     'namespace_not_found' => 'Namespace not found in stub :stub.',
 
-    'file_generated' => 'Class :fileName created with success in :fileFolder from :stub stub',
+    'file_generated' => 'Class :fileName created with success in :fileFolder from :stub.stub',
 ];

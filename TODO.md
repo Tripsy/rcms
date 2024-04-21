@@ -43,44 +43,10 @@ StubGeneratorFacade::from('/app/stubs/repository.stub')
 ])
 ->save();
 
-stub-chain add notes
+stub-chain 
 
-
-
-
-api-model-controller.stub
-api-parentModel-model-controller.stub 
-
-php artisan vendor:publish --tag=courier-config
-
-
-    /**
-     * Return `force` flag value
-     */
-    protected function getForceOption(): bool
-    {
-        return $this->option('force');
-    }
-
-        $this->call('make:controller', array_filter([
-            'name' => "{$controller}Controller",
-            '--model' => $this->option('resource') || $this->option('api') ? $modelName : null,
-            '--api' => $this->option('api'),
-            '--requests' => $this->option('requests') || $this->option('all'),
-            '--test' => $this->option('test'),
-            '--pest' => $this->option('pest'),
-        ]));
-
-    /**
-     * Create a policy file for the model.
-     *
-     * @return void
-     */
-    protected function createPolicy()
-    {
-        $policy = Str::studly(class_basename($this->argument('name')));
-
-        $this->call('make:policy', [
-            'name' => "{$policy}Policy",
-            '--model' => $this->qualifyClass($this->getNameInput()),
-        ]
+  add notes like 
+    - update EventServiceProvider.php
+  
+  add readme 
+  php artisan vendor:publish --tag=courier-config

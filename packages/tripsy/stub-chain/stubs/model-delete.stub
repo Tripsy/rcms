@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Actions;
+
+use App\Actions\Traits\AsAction;
+use App\Commands\{{ $model }}DeleteCommand;
+use App\Exceptions\ActionException;
+use App\Queries\{{ $model }}DeleteQuery;
+
+class {{ $className }}
+{
+    use AsAction;
+
+    private {{ $model }}DeleteQuery $query;
+
+    public function __construct({{ $model }}DeleteQuery $query)
+    {
+        $this->query = $query;
+    }
+
+    /**
+     * @throws ActionException
+     */
+    public function handle({{ $model }}DeleteCommand $command): void
+    {
+        $this->query
+            ->filterById($command->getId())
+            ->deleteFirst();
+    }
+}

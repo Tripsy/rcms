@@ -89,6 +89,8 @@ class StubChain extends StubCommand
                 //generated related dynamic classes
                 $relatedStubFiles = $this->getRelatedStubFiles();
 
+                dd($relatedStubFiles);
+
                 foreach ($relatedStubFiles as $s) {
                     $this->call('tripsy:stub-chain', array_filter([
                         'stub' => $s,
