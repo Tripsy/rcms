@@ -5,6 +5,7 @@ namespace Tripsy\StubChain\Console;
 use Exception;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Str;
 
 class StubBuilder
@@ -130,6 +131,16 @@ class StubBuilder
      * The array is updated using `addStubData` method
      */
     private array $stubData;
+
+    /**
+     * Flag used to determine if the file is overwritten if already exist
+     */
+    private bool $overwrite = false;
+
+    /**
+     * Flag used to determine if the file is auto added to git
+     */
+    private bool $gitAdd = false;
 
     public function __construct(Filesystem $fileSystem)
     {
@@ -341,6 +352,16 @@ class StubBuilder
         return $folder;
     }
 
+    public function setOverwrite(bool $value): void
+    {
+        $this->overwrite = $this->getOptionAsBoolean($value);
+    }
+
+    public function setGitAdd(bool $value): void
+    {
+        $this->gitAdd = $this->getOptionAsBoolean($value);
+    }
+
     /**
      * Generate destination file with content build based on defined `stub` content
      * in which `stubData` values have been replaced.
@@ -350,15 +371,19 @@ class StubBuilder
      * @throws FileNotFoundException
      * @throws Exception
      */
-    public function generate(bool $overwrite = false): array
+    public function generate(): array
     {
         $fileContent = $this->buildFileContent();
 
         $filePath = $this->getDestinationFileFolder().'/'.$this->getDestinationFileName();
 
         if ($this->fileExists($filePath) === true) {
-            if ($overwrite === true) {
+            if ($this->overwrite === true) {
                 $this->fileSystem->put($filePath, $fileContent);
+
+                if ($this->gitAdd === true) {
+                    $this->gitStageForCommit($filePath);
+                }
 
                 return [
                     'response' => 'warn',
@@ -383,6 +408,10 @@ class StubBuilder
 
             $this->fileSystem->put($filePath, $fileContent);
 
+            if ($this->gitAdd === true) {
+                $this->gitStageForCommit($filePath);
+            }
+
             return [
                 'response' => 'info',
                 'message' => __('stub-chain::stub-chain.file_already_exist', [
@@ -393,6 +422,14 @@ class StubBuilder
             ];
 
         }
+    }
+
+    /**
+     * Stage file for commit
+     */
+    private function gitStageForCommit(string $filePath): void
+    {
+        Process::run('git add '.$filePath);
     }
 
     /**

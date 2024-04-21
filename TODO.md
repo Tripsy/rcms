@@ -11,6 +11,8 @@ https://inertiajs.com/upgrade-guide
 
 tripsy/api-wrapper
   - create example usage files
+    - add bash commit
+      - create other stubs
 
 ## Ideas
 

@@ -22,6 +22,7 @@ class StubChain extends Command implements PromptsForMissingInput
         {parentModel? : The parent model name}
         {--related=true : For related false related files are not generated}
         {--overwrite=false : For overwrite true files will be overwritten if they already exist}
+        {--gitAdd=false : When true generated file is staged for commitcle}
     ';
 
     /**
@@ -80,11 +81,12 @@ class StubChain extends Command implements PromptsForMissingInput
             $builder->determineDestinationFileName($className);
             $builder->determineDestinationFileFolder($model);
 
-            //when `true` file are overwritten
-            $overwrite = $builder->getOptionAsBoolean($this->option('overwrite'));
+            // Set flags
+            $builder->setOverwrite($this->option('overwrite'));
+            $builder->setGitAdd($this->option('gitAdd'));
 
             // Generate destination file
-            $result = $builder->generate($overwrite); //the script doesn't stop if file is not generated because if already exists
+            $result = $builder->generate(); //the script doesn't stop if file is not generated because if already exists
 
             //output message as info OR warn
             $this->{$result['response']}($result['message']);

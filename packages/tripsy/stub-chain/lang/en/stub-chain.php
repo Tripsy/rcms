@@ -20,8 +20,7 @@ return [
     'destination_file_name_not_determined' => 'Destination file name was not determined',
     'destination_file_folder_not_determined' => 'Destination file folder was not determined',
 
-
     'file_already_exist' => 'File :fileName already exist in :fileFolder',
-    'file_already_overwritten' => 'File :fileName was overwritten in :fileFolder',
+    'file_overwritten' => 'File :fileName was overwritten in :fileFolder',
     'file_generated' => 'Class :fileName created with success in :fileFolder from :stub.stub',
 ];
