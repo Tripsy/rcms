@@ -255,7 +255,7 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
      * @throws FileNotFoundException
      * @throws Exception
      */
-    protected function determineDestinationFileFolder(string $model): void
+    protected function determineDestinationFileFolder(string $model): string
     {
         $namespace = $this->extractNamespaceFromStubContent($this->getStubContent());
 
@@ -264,7 +264,7 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
 
         $fileFolder = $this->convertNamespaceToFolder($namespace);
 
-        $this->destinationFileFolder = base_path($fileFolder);
+        return base_path($fileFolder);
     }
 
     /**
@@ -315,11 +315,11 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
      * @throws FileNotFoundException
      * @throws Exception
      */
-    protected function generate(): bool
+    protected function generate(string $destinationFileFolder): bool
     {
         $fileContent = $this->buildFileContent();
 
-        $filePath = $this->destinationFileFolder.'/'.$this->destinationFileName;
+        $filePath = $destinationFileFolder.'/'.$this->destinationFileName;
 
         if ($this->fileExists($filePath) === true) {
             return false;
