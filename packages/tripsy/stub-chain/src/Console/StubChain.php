@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace Tripsy\StubChain\Console;
 
 use Exception;
+use Illuminate\Console\Command;
+use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
-class StubChain extends StubCommand
+class StubChain extends Command implements PromptsForMissingInput
 {
     /**
      * The name and signature of the console command.
@@ -19,6 +21,7 @@ class StubChain extends StubCommand
         {model : The model name}
         {parentModel? : The parent model name}
         {--related=true : For related false related files are not generated}
+        {--overwrite=false : For overwrite true files will be overwritten if they already exist}
     ';
 
     /**
@@ -31,21 +34,29 @@ class StubChain extends StubCommand
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle(StubBuilder $builder): void
     {
         try {
-            $model = ucfirst($this->getArgumentValue('model'));
-            $parentModel = ucfirst($this->getArgumentValue('parentModel'));
+            $stubArgument = $this->argument('stub');
+            $modelArgument = $this->argument('model');
+            $parentModelArgument = $this->argument('parentModel') ?? '';
 
+            // Set stub
+            $builder->setStubArgument($stubArgument);
+
+            $model = ucfirst($builder->getArgumentValue($modelArgument));
+            $parentModel = ucfirst($builder->getArgumentValue($parentModelArgument));
+
+            /**
+             * The builder works with the premise that if you want to create a file ProjectPermission you will set
+             * model argument as `Permission` and the parentModel argument as `Project`
+             */
             if ($parentModel) {
                 $model = $parentModel.$model;
             }
 
-            // Set stub
-            $this->setStubName($this->getArgumentValue('stub'));
-
             // Build class name
-            $className = $this->buildClassName(
+            $className = $builder->buildClassName(
                 model: $model,
                 parentModel: $parentModel
             );
@@ -53,49 +64,40 @@ class StubChain extends StubCommand
             // First we need to ensure that the given name is not a reserved word within the PHP
             // language and that the class name will actually be valid. If it is not valid we
             // can error now and prevent from polluting the filesystem using invalid files.
-            if ($this->isReservedName($className)) {
+            if ($builder->isReservedName($className)) {
                 throw new FileNotFoundException(__('stub-chain::stub-chain.is_reserved_name', [
                     'className' => $className,
                 ]));
             }
 
             // Set the stub data
-            $this->addStubData('className', $className);
-            $this->addStubData('model', $model);
-            $this->addStubData('parentModel', $parentModel);
-            $this->addStubData('modelVariable', lcfirst($model));
+            $builder->addStubData('className', $className);
+            $builder->addStubData('model', $model);
+            $builder->addStubData('parentModel', $parentModel);
+            $builder->addStubData('modelVariable', lcfirst($model));
 
-            // Determine `destinationFileFolder`
-            $this->determineDestinationFileName($className);
+            // Determine file name & folder
+            $builder->determineDestinationFileName($className);
+            $builder->determineDestinationFileFolder($model);
 
-            // Determine destination file folder based on namespace found in stub content
-            $this->determineDestinationFileFolder($model);
+            //when `true` file are overwritten
+            $overwrite = $builder->getOptionAsBoolean($this->option('overwrite'));
 
-            //generate destination file
-            if ($this->generate() === false) {
-                $this->warn(__('stub-chain::stub-chain.file_already_exist', [
-                    'fileName' => $this->destinationFileName,
-                    'fileFolder' => $this->destinationFileFolder,
-                ]));
-            } else {
-                $this->info(__('stub-chain::stub-chain.file_generated', [
-                    'fileName' => $this->destinationFileName,
-                    'fileFolder' => $this->destinationFileFolder,
-                    'stub' => $this->stub,
-                ]));
-            }
+            // Generate destination file
+            $result = $builder->generate($overwrite); //the script doesn't stop if file is not generated because if already exists
 
-            if ($this->getOption('related') === true) {
-                //generated related dynamic classes
-                $relatedStubFiles = $this->getRelatedStubFiles();
+            //output message as info OR warn
+            $this->{$result['response']}($result['message']);
 
-                dd($relatedStubFiles);
+            // Generate related dynamic classes
+            if ($builder->getOptionAsBoolean($this->option('related')) === true) {
+                $relatedStubFiles = $builder->getRelatedStubFiles();
 
                 foreach ($relatedStubFiles as $s) {
                     $this->call('tripsy:stub-chain', array_filter([
                         'stub' => $s,
-                        'model' => $this->getArgumentValue('model'),
-                        'parentModel' => $this->getArgumentValue('parentModel'),
+                        'model' => $modelArgument,
+                        'parentModel' => $parentModelArgument,
                     ]));
                 }
             }

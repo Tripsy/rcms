@@ -3,25 +3,23 @@
 namespace Tripsy\StubChain\Console;
 
 use Exception;
-use Illuminate\Console\Command;
-use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
-abstract class StubCommand extends Command implements PromptsForMissingInput
+class StubBuilder
 {
     /**
      * The filesystem instance.
      */
-    protected Filesystem $fileSystem;
+    private Filesystem $fileSystem;
 
     /**
      * Reserved names that cannot be used for generation.
      *
      * @var string[]
      */
-    protected array $reservedNames = [
+    private array $reservedNames = [
         '__halt_compiler',
         'abstract',
         'and',
@@ -120,57 +118,71 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
     /**
      * Stub key (eg: file name) provided as command argument
      */
-    protected string $stub;
+    private string $stub;
 
     /**
      * Stub content
      */
-    protected string $stubContent;
+    private string $stubContent;
 
     /**
      * Associative array with values to be replaced in stub content
      * The array is updated using `addStubData` method
      */
-    protected array $stubData;
+    private array $stubData;
 
     public function __construct(Filesystem $fileSystem)
     {
-        parent::__construct();
-
         $this->fileSystem = $fileSystem;
     }
 
     /**
      * Get the command argument value based on key
      */
-    final protected function getArgumentValue(string $key): string
+    public function getArgumentValue(string $value): string
     {
-        return strtolower(trim($this->argument($key)));
+        return strtolower(trim($value));
     }
 
     /**
      * Return the command option based on key as a bool
      */
-    final protected function getOption(string $key): bool
+    public function getOptionAsBoolean(string $value): bool
     {
-        return filter_var($this->option($key), FILTER_VALIDATE_BOOLEAN);
+        return filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 
     /**
-     * Set stub name
+     * Set stub argument
      */
-    final protected function setStubName(string $value): void
+    public function setStubArgument(string $stubArgument): void
     {
-        $this->stub = $value;
+        $this->stub = $this->getArgumentValue($stubArgument);
+    }
+
+    /**
+     * Get stub argument
+     *
+     * @throws Exception
+     */
+    public function getStubArgument(): string
+    {
+        if (isset($this->stub) === false) {
+            throw new Exception(__('stub-chain::stub-chain.stub_argument_not_set'));
+        }
+
+        return $this->stub;
     }
 
     /**
      * Build class name based on stub file name
      * Provided `args` keys are replaced with corresponding values
+     *
+     * @throws Exception
      */
-    final protected function buildClassName(...$args): string
+    public function buildClassName(...$args): string
     {
-        $classNameParts = explode('-', $this->stub);
+        $classNameParts = explode('-', $this->getStubArgument());
 
         foreach ($classNameParts as &$v) {
             if (empty($args[$v]) === false) {
@@ -186,7 +198,7 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
     /**
      * Checks whether the given name is reserved.
      */
-    final protected function isReservedName(string $name): bool
+    public function isReservedName(string $name): bool
     {
         return in_array(
             strtolower($name),
@@ -201,7 +213,7 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
      *
      * @throws FileNotFoundException
      */
-    final protected function getStubContent(): string
+    private function getStubContent(): string
     {
         if (isset($this->stubContent) === false) {
             $this->stubContent = file_get_contents($this->getStubPath());
@@ -212,17 +224,18 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
 
     /**
      * @throws FileNotFoundException
+     * @throws Exception
      */
-    final protected function getStubPath(): string
+    private function getStubPath(): string
     {
-        $stubFile = $this->stub.'.stub';
+        $stubFile = $this->getStubArgument().'.stub';
         $stubPath = base_path('/stubs').'/'.$stubFile;
 
         if ($this->fileExists($stubPath) === true) {
             return $stubPath;
         }
 
-        $stubPath = config('stub-chain.stubs_path').'/'.$this->stub.'.stub';
+        $stubPath = config('stub-chain.stubs_path').'/'.$this->getStubArgument().'.stub';
 
         if ($this->fileExists($stubPath) === true) {
             return $stubPath;
@@ -236,7 +249,7 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
     /**
      * Add key / value entry to array `stubData`
      */
-    final protected function addStubData(string $key, string $value): void
+    public function addStubData(string $key, string $value): void
     {
         $this->stubData[$key] = $value;
     }
@@ -244,9 +257,21 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
     /**
      * Determine destination file name
      */
-    protected function determineDestinationFileName(string $className): void
+    public function determineDestinationFileName(string $className): void
     {
         $this->destinationFileName = $className.'.php';
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getDestinationFileName(): string
+    {
+        if (isset($this->destinationFileName)) {
+            return $this->destinationFileName;
+        }
+
+        throw new Exception(__('stub-chain::stub-chain.destination_file_name_not_determined'));
     }
 
     /**
@@ -255,7 +280,7 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
      * @throws FileNotFoundException
      * @throws Exception
      */
-    protected function determineDestinationFileFolder(string $model): string
+    public function determineDestinationFileFolder(string $model): void
     {
         $namespace = $this->extractNamespaceFromStubContent($this->getStubContent());
 
@@ -264,7 +289,19 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
 
         $fileFolder = $this->convertNamespaceToFolder($namespace);
 
-        return base_path($fileFolder);
+        $this->destinationFileFolder = base_path($fileFolder);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getDestinationFileFolder(): string
+    {
+        if (isset($this->destinationFileName)) {
+            return $this->destinationFileFolder;
+        }
+
+        throw new Exception(__('stub-chain::stub-chain.destination_file_folder_not_determined'));
     }
 
     /**
@@ -310,29 +347,52 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
      *
      * Destination folder will be created if it doesn't exist
      *
-     * Return false if file already exist
-     *
      * @throws FileNotFoundException
      * @throws Exception
      */
-    protected function generate(string $destinationFileFolder): bool
+    public function generate(bool $overwrite = false): array
     {
         $fileContent = $this->buildFileContent();
 
-        $filePath = $destinationFileFolder.'/'.$this->destinationFileName;
+        $filePath = $this->getDestinationFileFolder().'/'.$this->getDestinationFileName();
 
         if ($this->fileExists($filePath) === true) {
-            return false;
-            //            throw new Exception(__('stub-chain::stub-chain.file_already_exist', [
-            //                'filePath' => $filePath,
-            //            ]));
+            if ($overwrite === true) {
+                $this->fileSystem->put($filePath, $fileContent);
+
+                return [
+                    'response' => 'warn',
+                    'message' => __('stub-chain::stub-chain.file_overwritten', [
+                        'fileName' => $this->getDestinationFileName(),
+                        'fileFolder' => $this->getDestinationFileFolder(),
+                        'stub' => $this->getStubArgument(),
+                    ]),
+                ];
+            } else {
+                return [
+                    'response' => 'warn',
+                    'message' => __('stub-chain::stub-chain.file_already_exist', [
+                        'fileName' => $this->getDestinationFileName(),
+                        'fileFolder' => $this->getDestinationFileFolder(),
+                        'stub' => $this->getStubArgument(),
+                    ]),
+                ];
+            }
         } else {
             $this->makeDirectory($filePath);
+
+            $this->fileSystem->put($filePath, $fileContent);
+
+            return [
+                'response' => 'info',
+                'message' => __('stub-chain::stub-chain.file_already_exist', [
+                    'fileName' => $this->getDestinationFileName(),
+                    'fileFolder' => $this->getDestinationFileFolder(),
+                    'stub' => $this->getStubArgument(),
+                ]),
+            ];
+
         }
-
-        $this->fileSystem->put($filePath, $fileContent);
-
-        return true;
     }
 
     /**
@@ -340,7 +400,7 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
      *
      * @throws FileNotFoundException
      */
-    final protected function buildFileContent(): string
+    private function buildFileContent(): string
     {
         return strtr($this->getStubContent(), $this->prepareStubData());
     }
@@ -349,7 +409,7 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
      * `stubData` is an associate array;
      *  This method replace key with the pattern used in stub content file (eg: {{ $value }}
      */
-    protected function prepareStubData(): array
+    private function prepareStubData(): array
     {
         $stubData = $this->getStubData();
 
@@ -365,7 +425,7 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
     /**
      * Getter used to read `stubData`
      */
-    final protected function getStubData(): array
+    public function getStubData(): array
     {
         return $this->stubData;
     }
@@ -375,7 +435,7 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
      *
      * @throws FileNotFoundException
      */
-    protected function getRelatedStubFiles(): array
+    public function getRelatedStubFiles(): array
     {
         $relatedClasses = $this->extractRelatedClassesFromStubContent();
 
@@ -440,7 +500,7 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
     /**
      * Determine if the file exists.
      */
-    final protected function fileExists(string $filePath): bool
+    private function fileExists(string $filePath): bool
     {
         return $this->fileSystem->exists($filePath);
     }
@@ -448,12 +508,10 @@ abstract class StubCommand extends Command implements PromptsForMissingInput
     /**
      * Build the directory for the class if necessary.
      */
-    final protected function makeDirectory(string $path): string
+    private function makeDirectory(string $path): void
     {
         if ( ! $this->fileSystem->isDirectory(dirname($path))) {
             $this->fileSystem->makeDirectory(dirname($path), 0777, true, true);
         }
-
-        return $path;
     }
 }

@@ -15,8 +15,13 @@ return [
 
     'stub_not_found' => 'The stub file :stub was not found',
     'is_reserved_name' => 'The name :className is reserved by PHP.',
-    'file_already_exist' => 'File :fileName already exist in :fileFolder',
+    'stub_argument_not_set' => 'Stub argument not set',
     'namespace_not_found' => 'Namespace not found in stub :stub.',
+    'destination_file_name_not_determined' => 'Destination file name was not determined',
+    'destination_file_folder_not_determined' => 'Destination file folder was not determined',
 
+
+    'file_already_exist' => 'File :fileName already exist in :fileFolder',
+    'file_already_overwritten' => 'File :fileName was overwritten in :fileFolder',
     'file_generated' => 'Class :fileName created with success in :fileFolder from :stub.stub',
 ];
