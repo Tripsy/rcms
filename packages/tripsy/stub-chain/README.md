@@ -13,11 +13,16 @@ The signature for the console command is defined as:
       {--overwrite=false : For overwrite true files will be overwritten if they already exist}
       {--gitAdd=false : When true generated file is staged for commit}
 
+The final scope is to avoid redundant work, especially creating multiple classes for a new model (eg: controllers, requests, events, listeners, policies, etc).
+
+*Please be aware that the generated classes are based on templates and further customization & configuration is needed based on requirements.
+The generate files, depending on how the stub content is defined, can be a fully functional code from start, but we are templating so feel free to 
+add notes / hints in the stub file if is suitable; code from generated file can (& should be) cleaned / revised after.*
+
 # Requirements
 
 This package has been build to be used in Laravel.
 
-Recommendations:
   * php ^8.2
   * laravel/framework >=11.0
 
@@ -27,10 +32,14 @@ Require the package using composer:
 
       composer require tripsy/stub-chain
 
-There is no configuration required, however if you wish to create / update the existing stub files,
+There is no further configuration needed, however if you wish to update the existing stub files,
 first you will need to run:
 
       php artisan vendor:publish --tag=stub-chain
+
+*This will copy all the predefined stubs into /stubs/tripsy and also publish config file and language file.*
+
+If you want just to create new stubs just place them in the `/stubs` directory and follow the naming conventions (see **Managing** below)
 
 # Flags
 
@@ -51,15 +60,16 @@ If set as `true` and git is installed the new generated files will be staged for
 
 # Managing
 
+- The file name and also the class name are determined by the stub file name (ex: my-model-action.stub => MyModelAction.php)
 - The command works with the premise that if you want to create a file ProjectPermission you will set
-model argument as `Permission` and the parentModel argument as `Project`
+model argument as `Permission` and the parentModel argument as `Project` and the stub file is `model.stub`
 
 - The destination folder is determined based on the `namespace` defined in the stub file.
     
     - ex1: namespace App\Http\Controllers\{{ $model }} > app/Http/Controllers/{{ $Model}}/
     - ex2: namespace App\Http\Controllers > app/Http/Controllers/
       
-- We named the package `stub-chain` because it's purpose is to generated related dynamic classes 
+- We named the package `stub-chain` because it's purpose is to generate related dynamic classes 
 based on the `use` & `extra` clauses. While the `use` clauses are part of the final code, the `extra`
 is just a notation to generate some dynamic classes which are not actually imported in the 
 generated class (ex: Events, Listeners, etc); The `extra` lines needs to be removed manually, to obtain 
@@ -96,3 +106,39 @@ This command will generate an API controller (eg: app/Http/Controllers/ProjectPe
 
 *Note: In this example `project` is the argument parentModel and `permission` is set as the model argument, but on generation the actual 
 model is `ProjectPermission`*
+
+
+## Stub Sample
+
+    <?php
+    
+    declare(strict_types=1);
+    
+    namespace App\Actions;
+    
+    use App\Actions\Traits\AsAction;
+    use App\Commands\{{ $model }}DeleteCommand;
+    use App\Exceptions\ActionException;
+    use App\Queries\{{ $model }}DeleteQuery;
+    
+    class {{ $className }}
+    {
+        use AsAction;
+    
+        private {{ $model }}DeleteQuery $query;
+    
+        public function __construct({{ $model }}DeleteQuery $query)
+        {
+            $this->query = $query;
+        }
+    
+        /**
+         * @throws ActionException
+         */
+        public function handle({{ $model }}DeleteCommand $command): void
+        {
+            $this->query
+                ->filterById($command->getId())
+                ->deleteFirst();
+        }
+    }

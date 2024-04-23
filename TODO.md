@@ -14,9 +14,9 @@ https://inertiajs.com/upgrade-guide
 
 - guide related to step needed to create a new model
     - update EventServiceProvider.php
-  
-  add readme 
-  php artisan vendor:publish --tag=courier-config
 
-- create example usage files
+  php artisan vendor:publish --tag=courier-config
+      php artisan tripsy:stub-chain api-model-controller Test --related=false --overwrite=true              
+      The stub file api-model-controller.stub was not found
+
 - create other stubs
