@@ -19,5 +19,4 @@ https://inertiajs.com/upgrade-guide
   php artisan vendor:publish --tag=courier-config
 
 - create example usage files
-- add bash commit
 - create other stubs

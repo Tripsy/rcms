@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Tripsy\StubChain\Helpers\StubBuilder;
 
 class StubChain extends Command implements PromptsForMissingInput
 {
@@ -22,7 +23,7 @@ class StubChain extends Command implements PromptsForMissingInput
         {parentModel? : The parent model name}
         {--related=true : For related false related files are not generated}
         {--overwrite=false : For overwrite true files will be overwritten if they already exist}
-        {--gitAdd=false : When true generated file is staged for commitcle}
+        {--gitAdd=false : When true generated file is staged for commit}
     ';
 
     /**
@@ -49,7 +50,7 @@ class StubChain extends Command implements PromptsForMissingInput
             $parentModel = ucfirst($builder->getArgumentValue($parentModelArgument));
 
             /**
-             * The builder works with the premise that if you want to create a file ProjectPermission you will set
+             * The command works with the premise that if you want to create a file ProjectPermission you will set
              * model argument as `Permission` and the parentModel argument as `Project`
              */
             if ($parentModel) {

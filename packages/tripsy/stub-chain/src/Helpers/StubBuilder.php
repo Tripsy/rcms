@@ -1,6 +1,6 @@
 <?php
 
-namespace Tripsy\StubChain\Console;
+namespace Tripsy\StubChain\Helpers;
 
 use Exception;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
@@ -240,13 +240,13 @@ class StubBuilder
     private function getStubPath(): string
     {
         $stubFile = $this->getStubArgument().'.stub';
-        $stubPath = base_path('/stubs').'/'.$stubFile;
+        $stubPath = base_path('/stubs') . 'StubBuilder.php/' .$stubFile;
 
         if ($this->fileExists($stubPath) === true) {
             return $stubPath;
         }
 
-        $stubPath = config('stub-chain.stubs_path').'/'.$this->getStubArgument().'.stub';
+        $stubPath = config('stub-chain.stubs_path') . 'StubBuilder.php/' .$this->getStubArgument().'.stub';
 
         if ($this->fileExists($stubPath) === true) {
             return $stubPath;
@@ -375,7 +375,7 @@ class StubBuilder
     {
         $fileContent = $this->buildFileContent();
 
-        $filePath = $this->getDestinationFileFolder().'/'.$this->getDestinationFileName();
+        $filePath = $this->getDestinationFileFolder() . 'StubBuilder.php/' .$this->getDestinationFileName();
 
         if ($this->fileExists($filePath) === true) {
             if ($this->overwrite === true) {
@@ -429,10 +429,7 @@ class StubBuilder
      */
     private function gitStageForCommit(string $filePath): void
     {
-
-        $res = Process::run('git add '.$filePath);
-
-        dump($res);
+        Process::run('git add '.$filePath);
     }
 
     /**
