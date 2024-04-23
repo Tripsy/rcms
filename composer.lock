@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c443c7a531a81a79908846a7a8016c4e",
+    "content-hash": "0943f3ccbd0a2b5067fb2672524ace44",
     "packages": [
         {
             "name": "brick/math",
@@ -2131,16 +2131,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "3.2.4",
+            "version": "3.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "82c28278c1c8f7b82dcdab25692237f052ffc8d8"
+                "reference": "7219739c4e01d4680c980545821733b6ed8ee880"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/82c28278c1c8f7b82dcdab25692237f052ffc8d8",
-                "reference": "82c28278c1c8f7b82dcdab25692237f052ffc8d8",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/7219739c4e01d4680c980545821733b6ed8ee880",
+                "reference": "7219739c4e01d4680c980545821733b6ed8ee880",
                 "shasum": ""
             },
             "require": {
@@ -2233,7 +2233,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-04-05T09:58:10+00:00"
+            "time": "2024-04-18T16:35:06+00:00"
         },
         {
             "name": "nette/schema",
@@ -5739,15 +5739,21 @@
         },
         {
             "name": "tripsy/api-wrapper",
-            "version": "dev-main",
+            "version": "v1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Tripsy/api-wrapper.git",
+                "reference": "6897574fd34adf1e3b2a497daa07dd96134588d7"
+            },
             "dist": {
-                "type": "path",
-                "url": "packages/tripsy/api-wrapper",
-                "reference": "5e71e4d5191b14c6bf046ff3437af7b41e9ad58a"
+                "type": "zip",
+                "url": "https://api.github.com/repos/Tripsy/api-wrapper/zipball/6897574fd34adf1e3b2a497daa07dd96134588d7",
+                "reference": "6897574fd34adf1e3b2a497daa07dd96134588d7",
+                "shasum": ""
             },
             "require": {
-                "laravel/framework": "^11.0",
-                "php": "^8.1"
+                "laravel/framework": ">=8.0",
+                "php": "^7.3|^8.0"
             },
             "type": "library",
             "autoload": {
@@ -5755,6 +5761,7 @@
                     "Tripsy\\ApiWrapper\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -5765,12 +5772,16 @@
             ],
             "description": "Wrapper for API response",
             "keywords": [
-                "keyword1",
-                "keyword2"
+                "api",
+                "laravel",
+                "request",
+                "response"
             ],
-            "transport-options": {
-                "relative": true
-            }
+            "support": {
+                "issues": "https://github.com/Tripsy/api-wrapper/issues",
+                "source": "https://github.com/Tripsy/api-wrapper/tree/v1.0"
+            },
+            "time": "2024-04-22T14:31:52+00:00"
         },
         {
             "name": "tripsy/stub-chain",
@@ -8548,7 +8559,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "tripsy/api-wrapper": 20,
         "tripsy/stub-chain": 20
     },
     "prefer-stable": true,

@@ -14,7 +14,7 @@
         "laravel/tinker": "^2.9",
         "laravel/ui": "^4.2",
         "tightenco/ziggy": "^1.0",
-        "tripsy/api-wrapper": "dev-main",
+        "tripsy/api-wrapper": "^1.0",
         "tripsy/stub-chain": "dev-main"
     },
     "require-dev": {
@@ -74,10 +74,6 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "repositories": [
-        {
-            "type": "path",
-            "url": "packages/tripsy/api-wrapper"
-        },
         {
             "type": "path",
             "url": "packages/tripsy/stub-chain"

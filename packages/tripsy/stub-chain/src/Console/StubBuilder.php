@@ -352,12 +352,12 @@ class StubBuilder
         return $folder;
     }
 
-    public function setOverwrite(bool $value): void
+    public function setOverwrite(string $value): void
     {
         $this->overwrite = $this->getOptionAsBoolean($value);
     }
 
-    public function setGitAdd(bool $value): void
+    public function setGitAdd(string $value): void
     {
         $this->gitAdd = $this->getOptionAsBoolean($value);
     }
@@ -414,7 +414,7 @@ class StubBuilder
 
             return [
                 'response' => 'info',
-                'message' => __('stub-chain::stub-chain.file_already_exist', [
+                'message' => __('stub-chain::stub-chain.file_generated', [
                     'fileName' => $this->getDestinationFileName(),
                     'fileFolder' => $this->getDestinationFileFolder(),
                     'stub' => $this->getStubArgument(),
@@ -429,7 +429,10 @@ class StubBuilder
      */
     private function gitStageForCommit(string $filePath): void
     {
-        Process::run('git add '.$filePath);
+
+        $res = Process::run('git add '.$filePath);
+
+        dump($res);
     }
 
     /**
