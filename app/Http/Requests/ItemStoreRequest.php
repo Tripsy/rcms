@@ -6,7 +6,6 @@ use App\Enums\ProjectItemStatus;
 use App\Models\Project;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class ItemStoreRequest extends FormRequest
 {

@@ -6,7 +6,6 @@ use App\Enums\CommonStatus;
 use App\Queries\ProjectReadQuery;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
 
 class ProjectStoreRequest extends FormRequest

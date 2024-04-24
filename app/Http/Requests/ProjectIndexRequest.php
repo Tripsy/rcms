@@ -3,10 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Enums\CommonStatus;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class ProjectIndexRequest extends FormRequest
 {

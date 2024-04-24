@@ -4,10 +4,8 @@ namespace App\Http\Requests;
 
 use App\Enums\CommonStatus;
 use App\Enums\ProjectPermissionRole;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class ProjectPermissionIndexRequest extends FormRequest
 {

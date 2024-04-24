@@ -7,7 +7,6 @@ use App\Enums\ProjectPermissionRole;
 use App\Queries\ProjectPermissionReadQuery;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 use Illuminate\Validation\Validator;
 
 class ProjectPermissionStoreRequest extends FormRequest
