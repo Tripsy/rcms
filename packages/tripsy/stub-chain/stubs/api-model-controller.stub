@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 use Tripsy\ApiWrapper\ApiWrapper;
 
-extra App\Http\{{ $model }}/Api{{ $model }}StatusController;
+extra App\Http\{{ $model }}\Api{{ $model }}StatusController;
 extra App\Events\{{ $model }}Activated;
 extra App\Events\{{ $model }}Cache;
 extra App\Events\{{ $model }}Created;
