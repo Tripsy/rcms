@@ -1,6 +1,10 @@
 ## TO DO
 
-https://inertiajs.com/upgrade-guide
+- projectpermission controller stub ?
+- guide related to step needed to create a new model
+    - update EventServiceProvider.php
+    - language
+    - routes
 - check policies for blueprint component
 - create app/Http/Controllers/BlueprintComponent/ApiBlueprintComponentController.php
 - app/Repositories/Interfaces/ItemDataRepositoryInterface.php ??
@@ -10,13 +14,10 @@ https://inertiajs.com/upgrade-guide
 
 - build package for Excel
 
-## Ideas
+# TESTS
 
-- guide related to step needed to create a new model
-    - update EventServiceProvider.php
+# IDEAS
 
-  php artisan vendor:publish --tag=courier-config
-      php artisan tripsy:stub-chain api-model-controller Test --related=false --overwrite=true              
-      The stub file api-model-controller.stub was not found
+# READ
 
-- create other stubs
+https://inertiajs.com/upgrade-guide

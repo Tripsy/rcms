@@ -1,0 +1,38 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\{{ $model }};
+
+use App\Actions\{{ $model }}StatusUpdate;
+use App\Commands\{{ $model }}StatusUpdateCommand;
+use App\Enums\CommonStatus;
+use App\Http\Controllers\Controller;
+use App\Models\{{ $model }};
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
+
+class {{ $className }} extends Controller
+{
+    /**
+     * Handle the incoming request.
+     */
+    public function __invoke({{ $model }} ${{ $modelVariable }}, CommonStatus $status): JsonResponse
+    {
+        Gate::authorize('update', ${{ $modelVariable }});
+
+        $command = new {{ $model }}StatusUpdateCommand(
+            ${{ $modelVariable }}->id,
+            $status->value
+        );
+
+        {{ $model }}StatusUpdate::run($command);
+
+        return response()->json([
+            'success' => true,
+            'message' => __('message.success'),
+            'data' => $command->attributes(),
+        ], Response::HTTP_OK);
+    }
+}

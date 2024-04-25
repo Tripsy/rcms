@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Actions;
+
+use App\Actions\Traits\AsAction;
+use App\Commands\{{ $model }}StoreCommand;
+use App\Queries\{{ $model }}CreateQuery;
+
+class {{ $className }}
+{
+    use AsAction;
+
+    private {{ $model }}CreateQuery $query;
+
+    public function __construct({{ $model }}CreateQuery $query)
+    {
+        $this->query = $query;
+    }
+
+    public function handle({{ $model }}StoreCommand $command): void
+    {
+        $this->query->create([
+            'name' => $command->getName(),
+            'status' => $command->getStatus(),
+        ]);
+    }
+}

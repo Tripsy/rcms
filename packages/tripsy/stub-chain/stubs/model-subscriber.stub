@@ -1,0 +1,125 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Listeners;
+
+use App\Enums\CommonStatus;
+use App\Events\{{ $model }}Activated;
+use App\Events\{{ $model }}Cache;
+use App\Events\{{ $model }}Created;
+use App\Events\{{ $model }}Deleting;
+use App\Events\{{ $model }}Updated;
+use App\Repositories\{{ $model }}Repository;
+use Illuminate\Events\Dispatcher;
+use Illuminate\Support\Facades\Log;
+
+class {{ $className }}
+{
+    private {{ $model }}Repository $repository;
+
+    public function __construct({{ $model }}Repository $repository)
+    {
+        $this->repository = $repository;
+    }
+
+    /**
+     * Handle {{ $modelVariable }} created event.
+     */
+    public function handle{{ $model }}Created({{ $model }}Created $event): void
+    {
+        Log::channel('{{ $modelVariable }}')->info(
+            __('log.{{ $modelVariable }}.created', [
+                '{{ $modelVariable }}_id' => $event->{{ $modelVariable }}->id,
+                'name' => $event->{{ $modelVariable }}->name,
+                'action_by' => $event->{{ $modelVariable }}->created_by,
+            ])
+        );
+    }
+
+    /**
+     * Handle {{ $modelVariable }} updated event.
+     */
+    public function handle{{ $model }}Updated({{ $model }}Updated $event): void
+    {
+        Log::channel('{{ $modelVariable }}')->info(
+            __('log.{{ $modelVariable }}.updated', [
+                '{{ $modelVariable }}_id' => $event->{{ $modelVariable }}->id,
+                'action_by' => $event->{{ $modelVariable }}->updated_by,
+            ]),
+            $event->{{ $modelVariable }}->getFillableChanges()
+        );
+
+        if ($event->{{ $modelVariable }}->wasChanged('status') && $event->{{ $modelVariable }}->status == CommonStatus::ACTIVE) {
+            {{ $model }}Activated::dispatch($event->{{ $modelVariable }});
+        }
+    }
+
+    /**
+     * Handle {{ $modelVariable }} activated event.
+     */
+    public function handle{{ $model }}Activated({{ $model }}Activated $event): void
+    {
+        Log::channel('{{ $modelVariable }}')->info(
+            __('log.{{ $modelVariable }}.activated', [
+                '{{ $modelVariable }}_id' => $event->{{ $modelVariable }}->id,
+                'action_by' => $event->{{ $modelVariable }}->updated_by,
+            ])
+        );
+    }
+
+    /**
+     * Handle {{ $modelVariable }} deleting event.
+     */
+    public function handle{{ $model }}Deleting({{ $model }}Deleting $event): void
+    {
+        Log::channel('{{ $modelVariable }}')->info(
+            __('log.{{ $modelVariable }}.deleting', [
+                '{{ $modelVariable }}_id' => $event->{{ $modelVariable }}->id,
+                'action_by' => auth()->id(),
+            ])
+        );
+    }
+
+    /**
+     * Handle cache on {{ $modelVariable }} change event.
+     */
+    public function handle{{ $model }}Cache({{ $model }}Cache $event): void
+    {
+        $this->repository
+            ->initCacheKey()
+            ->addCachePiece($event->{{ $modelVariable }}->id)
+            ->removeCacheContent();
+    }
+
+    /**
+     * Register the listeners for the subscriber.
+     */
+    public function subscribe(Dispatcher $events): void
+    {
+        $events->listen(
+            {{ $model }}Created::class,
+            [{{ $model }}Subscriber::class, 'handle{{ $model }}Created']
+        );
+
+        $events->listen(
+            {{ $model }}Updated::class,
+            [{{ $model }}Subscriber::class, 'handle{{ $model }}Updated']
+        );
+
+        $events->listen(
+            {{ $model }}Activated::class,
+            [{{ $model }}Subscriber::class, 'handle{{ $model }}Activated']
+        );
+
+        $events->listen(
+            {{ $model }}Deleting::class,
+            [{{ $model }}Subscriber::class, 'handle{{ $model }}Deleting']
+        );
+
+        $events->listen(
+            {{ $model }}Cache::class,
+            [{{ $model }}Subscriber::class, 'handle{{ $model }}Cache']
+        );
+    }
+}

@@ -240,13 +240,13 @@ class StubBuilder
     private function getStubPath(): string
     {
         $stubFile = $this->getStubArgument().'.stub';
-        $stubPath = base_path('/stubs') . 'StubBuilder.php/' .$stubFile;
+        $stubPath = base_path('/stubs').'/tripsy/'.$stubFile;
 
         if ($this->fileExists($stubPath) === true) {
             return $stubPath;
         }
 
-        $stubPath = config('stub-chain.stubs_path') . 'StubBuilder.php/' .$this->getStubArgument().'.stub';
+        $stubPath = config('stub-chain.stubs_path').'/'.$this->getStubArgument().'.stub';
 
         if ($this->fileExists($stubPath) === true) {
             return $stubPath;
@@ -375,7 +375,7 @@ class StubBuilder
     {
         $fileContent = $this->buildFileContent();
 
-        $filePath = $this->getDestinationFileFolder() . 'StubBuilder.php/' .$this->getDestinationFileName();
+        $filePath = $this->getDestinationFileFolder().'/'.$this->getDestinationFileName();
 
         if ($this->fileExists($filePath) === true) {
             if ($this->overwrite === true) {

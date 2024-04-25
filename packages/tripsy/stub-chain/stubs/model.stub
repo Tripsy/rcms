@@ -12,7 +12,7 @@ use App\Models\Traits\UpdatedByRelationTrait;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Project extends BaseModel
+class {{ $className }} extends BaseModel
 {
     use CreatedByRelationTrait;
     use UpdatedByRelationTrait;
@@ -23,7 +23,7 @@ class Project extends BaseModel
      *
      * @var string
      */
-    protected $table = 'project';
+    protected $table = '{{ $modelVariable }}';
 
     /**
      * The attributes that are mass assignable.
@@ -32,8 +32,6 @@ class Project extends BaseModel
      */
     protected $fillable = [
         'name',
-        'authority_name',
-        'authority_key',
         'status',
     ];
 

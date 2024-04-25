@@ -1,0 +1,42 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Queries;
+
+use App\Enums\CommonStatus;
+use App\Models\{{ $model }};
+use App\Queries\Traits\FilterByNameQueryTrait;
+use App\Queries\Traits\FilterByStatusQueryTrait;
+use Illuminate\Database\Eloquent\Builder;
+
+class {{ $className }}  extends AbstractReadQuery
+{
+    use FilterByStatusQueryTrait;
+    use FilterByNameQueryTrait;
+
+    public function __construct({{ $model }} $model)
+    {
+        $this->model = $model;
+
+        parent::__construct();
+    }
+
+    public function whereHasPermission(): self
+    {
+        $this->query->whereHas('permissions', function (Builder $query) {
+            $query->where('status', CommonStatus::ACTIVE);
+        });
+
+        return $this;
+    }
+
+    public function filterByAuthorityName(string $authority_name, string $operator = '='): self
+    {
+        if ($authority_name) {
+            $this->query->where('authority_name', $operator, $authority_name);
+        }
+
+        return $this;
+    }
+}

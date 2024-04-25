@@ -1,0 +1,34 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Actions;
+
+use App\Actions\Traits\AsAction;
+use App\Commands\{{ $model }}UpdateCommand;
+use App\Exceptions\ActionException;
+use App\Queries\{{ $model }}UpdateQuery;
+
+class {{ $className }}
+{
+    use AsAction;
+
+    private {{ $model }}UpdateQuery $query;
+
+    public function __construct({{ $model }}UpdateQuery $query)
+    {
+        $this->query = $query;
+    }
+
+    /**
+     * @throws ActionException
+     */
+    public function handle({{ $model }}UpdateCommand $command): void
+    {
+        $this->query
+            ->filterById($command->getId())
+            ->updateFirst([
+                'name' => $command->getName(),
+            ]);
+    }
+}

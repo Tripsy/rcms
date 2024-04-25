@@ -1,0 +1,49 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Observers;
+
+use App\Events\{{ $model }}Cache;
+use App\Events\{{ $model }}Created;
+use App\Events\{{ $model }}Deleting;
+use App\Events\{{ $model }}Updated;
+use App\Models\{{ $model }};
+use App\Observers\Traits\StandardCreating;
+use App\Observers\Traits\StandardUpdating;
+
+class {{ $className }}
+{
+    use StandardCreating;
+    use StandardUpdating;
+
+    /**
+     * Handle the Model "created" event.
+     */
+    public function created({{ $model }} ${{ $modelVariable }}): void
+    {
+        {{ $model }}Created::dispatch(${{ $modelVariable }});
+    }
+
+    /**
+     * Handle the Model "updated" event.
+     *
+     * When issuing an update or delete query via Eloquent, the saved, updated, deleting, and deleted model events
+     * will not be dispatched for the affected models. This is because the models are never actually retrieved when
+     * performing mass updates or deletes.
+     */
+    public function updated({{ $model }} ${{ $modelVariable }}): void
+    {
+        {{ $model }}Updated::dispatch(${{ $modelVariable }});
+        {{ $model }}Cache::dispatch(${{ $modelVariable }});
+    }
+
+    /**
+     * Handle the Model "deleting" event.
+     */
+    public function deleting({{ $model }} ${{ $modelVariable }}): void
+    {
+        {{ $model }}Deleting::dispatch(${{ $modelVariable }});
+        {{ $model }}Cache::dispatch(${{ $modelVariable }});
+    }
+}
