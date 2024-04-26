@@ -23,4 +23,8 @@ return [
     'file_already_exist' => 'File :fileName already exist in :fileFolder',
     'file_overwritten' => 'File :fileName was overwritten in :fileFolder',
     'file_generated' => 'Class :fileName created with success in :fileFolder from :stub.stub',
+
+    'count_generated' => ':count file(s) generated',
+    'count_overwritten' => ':count file(s) overwritten',
+    'count_skipped' => ':count file(s) already exist',
 ];

@@ -142,6 +142,11 @@ class StubBuilder
      */
     private bool $gitAdd = false;
 
+    /**
+     * Flag used to determine if the message is displayed when file already exist & overwrite is false
+     */
+    private bool $silence = true;
+
     public function __construct(Filesystem $fileSystem)
     {
         $this->fileSystem = $fileSystem;
@@ -308,7 +313,7 @@ class StubBuilder
      */
     public function getDestinationFileFolder(): string
     {
-        if (isset($this->destinationFileName)) {
+        if (isset($this->destinationFileFolder)) {
             return $this->destinationFileFolder;
         }
 
@@ -352,14 +357,36 @@ class StubBuilder
         return $folder;
     }
 
+    /**
+     * Setter for option --overwrite
+     *
+     * Note: When overwrite is true existing files will be overwritten
+     */
     public function setOverwrite(string $value): void
     {
         $this->overwrite = $this->getOptionAsBoolean($value);
     }
 
+    /**
+     * Setter for option --gitAdd
+     *
+     * Note: When value is true generated files will be staged for commit
+     */
     public function setGitAdd(string $value): void
     {
         $this->gitAdd = $this->getOptionAsBoolean($value);
+    }
+
+    /**
+     * Setter for option --silence
+     *
+     * Note:
+     *      When value is true & overwrite is false no message will be displayed for existing file.
+     *      This is mostly an output control and doesn't affect functionality in any way
+     */
+    public function setSilence(string $value): void
+    {
+        $this->silence = $this->getOptionAsBoolean($value);
     }
 
     /**
@@ -387,6 +414,7 @@ class StubBuilder
 
                 return [
                     'response' => 'warn',
+                    'count' => 'overwritten',
                     'message' => __('stub-chain::stub-chain.file_overwritten', [
                         'fileName' => $this->getDestinationFileName(),
                         'fileFolder' => $this->getDestinationFileFolder(),
@@ -394,14 +422,23 @@ class StubBuilder
                     ]),
                 ];
             } else {
-                return [
-                    'response' => 'warn',
-                    'message' => __('stub-chain::stub-chain.file_already_exist', [
-                        'fileName' => $this->getDestinationFileName(),
-                        'fileFolder' => $this->getDestinationFileFolder(),
-                        'stub' => $this->getStubArgument(),
-                    ]),
-                ];
+                if ($this->silence === false) {
+                    return [
+                        'response' => 'warn',
+                        'count' => 'skipped',
+                        'message' => __('stub-chain::stub-chain.file_already_exist', [
+                            'fileName' => $this->getDestinationFileName(),
+                            'fileFolder' => $this->getDestinationFileFolder(),
+                            'stub' => $this->getStubArgument(),
+                        ]),
+                    ];
+                } else {
+                    return [
+                        'response' => 'skip',
+                        'count' => 'skipped',
+                    ];
+                }
+
             }
         } else {
             $this->makeDirectory($filePath);
@@ -414,6 +451,7 @@ class StubBuilder
 
             return [
                 'response' => 'info',
+                'count' => 'generated',
                 'message' => __('stub-chain::stub-chain.file_generated', [
                     'fileName' => $this->getDestinationFileName(),
                     'fileFolder' => $this->getDestinationFileFolder(),

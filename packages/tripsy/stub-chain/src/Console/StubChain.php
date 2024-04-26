@@ -21,8 +21,10 @@ class StubChain extends Command implements PromptsForMissingInput
         {stub : Stub file}
         {model : The model name}
         {parentModel? : The parent model name}
+        {--init=true : This is a flag which mark the initial command}
         {--related=true : For related false related files are not generated}
         {--overwrite=false : For overwrite true files will be overwritten if they already exist}
+        {--silence=true : If overwrite is false & silence is true the existing files will be remain untouched and no output will be displayed}
         {--gitAdd=false : When true generated file is staged for commit}
     ';
 
@@ -32,6 +34,17 @@ class StubChain extends Command implements PromptsForMissingInput
      * @var string
      */
     protected $description = 'Create class file based on stub file';
+
+    /**
+     * Used to display output information
+     */
+    private array $files = [];
+
+    private array $counter = [
+        'overwritten' => 0,
+        'skipped' => 0,
+        'generated' => 0,
+    ];
 
     /**
      * Execute the console command.
@@ -85,12 +98,26 @@ class StubChain extends Command implements PromptsForMissingInput
             // Set flags
             $builder->setOverwrite($this->option('overwrite'));
             $builder->setGitAdd($this->option('gitAdd'));
+            $builder->setSilence($this->option('silence'));
 
             // Generate destination file
             $result = $builder->generate(); //the script doesn't stop if file is not generated because if already exists
 
             //output message as info OR warn
-            $this->{$result['response']}($result['message']);
+            if (in_array($result['response'], ['info', 'warn'])) {
+                $this->{$result['response']}($result['message']);
+            }
+
+            // needs to be declared before the `relatedStubFiles`
+            $isInit = $this->option('init') === 'true' ?? false;
+
+            // increment counter
+            $filePath = $builder->getDestinationFileFolder().'/'.$builder->getDestinationFileName();
+
+            if (in_array($filePath, $this->files) === false) {
+                $this->files[] = $filePath;
+                $this->counter[$result['count']]++;
+            }
 
             // Generate related dynamic classes
             if ($builder->getOptionAsBoolean($this->option('related')) === true) {
@@ -101,6 +128,19 @@ class StubChain extends Command implements PromptsForMissingInput
                         'stub' => $s,
                         'model' => $modelArgument,
                         'parentModel' => $parentModelArgument,
+                        '--init' => 'false',
+                        '--overwrite' => $this->option('overwrite'),
+                        '--silence' => $this->option('silence'),
+                        '--gitAdd' => $this->option('gitAdd'),
+                    ]));
+                }
+            }
+
+            // Final output
+            if ($isInit === true) {
+                foreach ($this->counter as $k => $v) {
+                    $this->info(__('stub-chain::stub-chain.count_'.$k, [
+                        'count' => $v,
                     ]));
                 }
             }
