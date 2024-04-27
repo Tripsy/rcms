@@ -215,7 +215,7 @@ class StubBuilder
      */
     public function hasExtension(string $extension, bool $exactMatch = false): bool
     {
-        if (isset($this->extension)) {
+        if (isset($this->extension) === false) {
             return false;
         }
 
@@ -336,8 +336,8 @@ class StubBuilder
     {
         $namespace = $this->extractNamespaceFromStubContent($this->getStubContent());
 
-        // Replace model
-        $namespace = str_replace('{{ $model }}', $model, $namespace);
+        // Replace stub data
+        $namespace = strtr($namespace, $this->getStubData());
 
         $fileFolder = $this->convertNamespaceToFolder($namespace);
 
@@ -545,6 +545,7 @@ class StubBuilder
      * Get an array list with related stub files - extracted based on "use" & "extra" dynamic classes
      *
      * @throws FileNotFoundException
+     * @throws Exception
      */
     public function getRelatedStubFiles(): array
     {
@@ -580,23 +581,15 @@ class StubBuilder
     private function determineStubFilesForRelatedDynamicClasses(array $relatedClasses): array
     {
         // Config var
-        $dynamicClassesNeedle = [
-            'Model' => '{{ $model }}',
-        ];
+        $classNeedle = '{{ $model }}';
 
         // Return only classes which contain specific needle
-        $dynamicClasses = array_filter($relatedClasses, function ($v) use ($dynamicClassesNeedle) {
-            foreach ($dynamicClassesNeedle as $needle) {
-                if (str_contains($v, $needle) === true) {
-                    return true;
-                }
-            }
-
-            return false;
+        $dynamicClasses = array_filter($relatedClasses, function ($v) use ($classNeedle) {
+            return str_contains($v, $classNeedle);
         });
 
         // Transform name for used class (eg: {{ $model }}Delete
-        return array_map(function ($v) use ($dynamicClassesNeedle) {
+        return array_map(function ($v) use ($classNeedle) {
             // $v ~ App\Commands\{{ $model }}DeleteCommand
             $parts = explode('\\', $v);
 
@@ -618,7 +611,7 @@ class StubBuilder
                     ]));
             }
 
-            $replaceNeedleInClass = strtr($dynamicClass, array_flip($dynamicClassesNeedle)); // ModelDeleteCommand
+            $replaceNeedleInClass = str_replace($classNeedle, 'Model', $dynamicClass); // ModelDeleteCommand
 
             $stub = Str::snake($replaceNeedleInClass, '-'); // model-delete-command
 

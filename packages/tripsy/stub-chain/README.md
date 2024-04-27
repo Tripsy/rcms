@@ -1,7 +1,7 @@
 
 # Description
 
-Create custom entities based on custom stubs by running an artisan command.
+Create classes based on custom stubs by running an artisan command.
 
 The signature for the console command is defined as:
 
@@ -16,7 +16,7 @@ The signature for the console command is defined as:
 The final scope is to avoid redundant work, especially creating multiple classes for a new model (eg: controllers, requests, events, listeners, policies, etc).
 
 *Please be aware that the generated classes are based on templates and further customization & configuration is needed based on requirements.
-The generate files, depending on how the stub content is defined, can be a fully functional code from start, but we are templating so feel free to 
+The generated files, depending on how the stub content is defined, can be a fully functional code from start, but we are templating so feel free to 
 add notes / hints in the stub file if is suitable; code from generated file can (& should be) cleaned / revised after.*
 
 # Requirements
@@ -69,10 +69,11 @@ If set as `true` and git is installed the new generated files will be staged for
 
 # Managing
 
-- The file name and also the class name are determined by the stub file name (ex: my-model-action.stub => MyModelAction.php)
-- The stubs which contain parent related placeholders should be named as model-controller.nested.stub
-- The command works with the premise that if you want to create a file ProjectPermission you will set
-model argument as `Permission` and the parentModel argument as `Project` and the stub file is `model.stub`
+- The generated file name and also the class name are determined by the stub file name (ex: my-model-action.stub => MyModelAction.php OR my-model-action.nested.stub => MyModelAction.php)
+- `model` from stub name is a special placeholder which will be replaced with the the argument value when building the class name
+- Stub files are allowed to have extension (eg: my-model-action.custom.stub OR my-model-action.custom.project.stub), which 
+will allow more specific customization for special classes
+- The stubs which contain parent related placeholders should contain the extension `nested` (eg: model-controller.nested.stub OR model-controller.nested.custom.stub)
 
 - The destination folder is determined based on the `namespace` defined in the stub file.
     
@@ -85,11 +86,15 @@ is just a notation to generate some dynamic classes which are not actually impor
 generated class (ex: Events, Listeners, etc); The `extra` lines needs to be removed manually, to obtain 
 a functional code in the end.
 
+- As a rule the class name from `use` & `extra` should only contain the {{ $model }} placeholder
+
+- Please note that the `model` & `parentModel` arguments naming (eg: camel case) is relevant 
+
 - By default, existing files will not be overwritten; see flag `--overwrite` to change the behaviour
 
 - For convenience if flag `--gitAdd=true` is set the generated files will be staged for commit (if git is installed)
 
-- If you provide `project` as parentModel argument and `permission` as model argument for a stub `api-model-controller`:
+- If you provide `project` as parentModel argument and `permission` as model argument for a stub `api-model-controller.nested.stub`:
 
   - {{ $className }} will be replaced with `ApiProjectPermissionController`
   - {{ $model }} will be replaced with `ProjectPermission`
@@ -97,25 +102,25 @@ a functional code in the end.
   - {{ $parentModel }} will be replaced with `Project`
   - {{ $parentVariable }} will be replaced with `project`
 
-- If you provide `project` as model argument and no parentModel argument for a stub `model-delete`:
+- If you provide `project` as model argument and no parentModel argument for a stub `model-delete.stub`:
 
   - {{ $className }} will be replaced with `ProjectDelete`
   - {{ $model }} will be replaced with `Project`
   - {{ $modelVariable }} will be replaced with `project`    
 
 # Examples
-
     $ php artisan tripsy:stub-chain api-model-controller project
 
-This command will generate an API controller (eg: app/Http/Controllers/Project/ApiProjectController.php)
+This command will generate an API controller (eg: app/Http/Controllers/Project/ApiProjectController.php) & related files
 
-    $ php artisan tripsy:stub-chain api-model-controller permission project
+    $ php artisan tripsy:stub-chain api-model-controller ProjectPermission
 
-This command will generate an API controller (eg: app/Http/Controllers/ProjectPermission/ApiProjectPermissionController.php)
+This command will generate a controller (eg: app/Http/Controllers/ProjectPermission/ApiProjectPermissionController.php) & related files
 
-*Note: In this example `project` is the argument parentModel and `permission` is set as the model argument, but on generation the actual 
-model is `ProjectPermission`*
+    $ php artisan tripsy:stub-chain api-model-controller.nested ProjectPermission Project --related=false --gitAdd=true
 
+This command will generate a controller (eg: app/Http/Controllers/ProjectPermission/ApiProjectPermissionController.php) but no related files,
+and the generated file will be automatically staged for commit.
 
 ## Stub Sample
 

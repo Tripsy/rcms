@@ -24,10 +24,10 @@ class StubChain extends Command implements PromptsForMissingInput
         {model : The model name}
         {parentModel? : The parent model name}
         {--init=true : This is a flag which mark the initial command}
-        {--related=true : For related false related files are not generated}
-        {--overwrite=false : For overwrite true files will be overwritten if they already exist}
-        {--silence=true : If overwrite is false & silence is true the existing files will remain untouched and no output will be displayed}
-        {--gitAdd=false : When true generated file is staged for commit}
+        {--related=true : For false related files are not generated}
+        {--overwrite=false : For true file(s) will be overwritten if they already exist}
+        {--silence=true : If false & silence is true the existing files will remain untouched and no output will be displayed}
+        {--gitAdd=false : When true generated file(s) is staged for commit}
     ';
 
     /**
@@ -74,14 +74,6 @@ class StubChain extends Command implements PromptsForMissingInput
                 }
 
                 $parentModel = ucfirst($builder->getArgumentValue($parentModelArgument));
-
-                /**
-                 * The command works with the premise that if you want to create a file ProjectPermission you will set
-                 * model argument as `Permission` and the parentModel argument as `Project`
-                 */
-                if ($parentModel) {
-                    $model = $parentModel.$model;
-                }
             }
 
             // Build class name
@@ -118,7 +110,7 @@ class StubChain extends Command implements PromptsForMissingInput
 
             // Determine file name & folder
             $builder->determineDestinationFileName($className);
-            $builder->determineDestinationFileFolder($model);
+            $builder->determineDestinationFileFolder();
 
             // Set flags
             $builder->setOverwrite($this->option('overwrite'));

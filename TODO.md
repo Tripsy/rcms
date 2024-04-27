@@ -1,6 +1,7 @@
 ## TO DO
 
-- projectpermission controller stub ?
+- see ??? 
+- run tests > a stub is missing
 - guide related to step needed to create a new model
     - update EventServiceProvider.php
     - language
