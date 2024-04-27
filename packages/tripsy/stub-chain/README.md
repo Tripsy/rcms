@@ -8,7 +8,7 @@ The signature for the console command is defined as:
     tripsy:stub-chain     
       {stub : Stub file}
       {model : The model name}
-      {parentModel? : The parent model name}
+      {parentModel? : The parent model name (only used by nested stubs)}
       {--related=true : For related false related files are not generated}
       {--overwrite=false : For overwrite true files will be overwritten if they already exist}
       {--gitAdd=false : When true generated file is staged for commit}
@@ -43,6 +43,15 @@ If you want just to create new stubs just place them in the `/stubs` directory a
 
 # Flags
 
+--init=true
+
+This is a flag which is used to control the output, there is no need to change it; it doesn't have any impact on functionality
+
+--silence=true
+
+Again this is a flag which is used to control the output; 
+If overwrite is false & silence is true the existing files will remain untouched and no output will be displayed
+
 --related=true
 
 If set as `true` the related dynamic classes, extracted based on "use" & "extra"
@@ -61,6 +70,7 @@ If set as `true` and git is installed the new generated files will be staged for
 # Managing
 
 - The file name and also the class name are determined by the stub file name (ex: my-model-action.stub => MyModelAction.php)
+- The stubs which contain parent related placeholders should be named as model-controller.nested.stub
 - The command works with the premise that if you want to create a file ProjectPermission you will set
 model argument as `Permission` and the parentModel argument as `Project` and the stub file is `model.stub`
 
@@ -75,24 +85,23 @@ is just a notation to generate some dynamic classes which are not actually impor
 generated class (ex: Events, Listeners, etc); The `extra` lines needs to be removed manually, to obtain 
 a functional code in the end.
 
-- By default existing files will not be overwritten; see flag `--overwrite` to change the behaviour
+- By default, existing files will not be overwritten; see flag `--overwrite` to change the behaviour
 
 - For convenience if flag `--gitAdd=true` is set the generated files will be staged for commit (if git is installed)
 
-- There are three variables (four if argument parentModel is provided) which can be used in the stub files. 
-
-If you provide `project` as parentModel argument and `permission` as model argument for a stub `api-model-controller`:
+- If you provide `project` as parentModel argument and `permission` as model argument for a stub `api-model-controller`:
 
   - {{ $className }} will be replaced with `ApiProjectPermissionController`
   - {{ $model }} will be replaced with `ProjectPermission`
-  - {{ $parentModel }} will be replaced with `Project`
   - {{ $modelVariable }} will be replaced with `projectPermission`
+  - {{ $parentModel }} will be replaced with `Project`
+  - {{ $parentVariable }} will be replaced with `project`
 
-If you provide `project` as model argument and no parentModel argument for a stub `model-delete`:
+- If you provide `project` as model argument and no parentModel argument for a stub `model-delete`:
 
-- {{ $className }} will be replaced with `ProjectDelete`
-- {{ $model }} will be replaced with `Project`
-- {{ $modelVariable }} will be replaced with `project`    
+  - {{ $className }} will be replaced with `ProjectDelete`
+  - {{ $model }} will be replaced with `Project`
+  - {{ $modelVariable }} will be replaced with `project`    
 
 # Examples
 

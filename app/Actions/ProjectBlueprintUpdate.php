@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Actions\Traits\AsAction;
 use App\Commands\ProjectBlueprintUpdateCommand;
+use App\Exceptions\ActionException;
 use App\Queries\ProjectBlueprintUpdateQuery;
 
 class ProjectBlueprintUpdate
@@ -19,6 +20,9 @@ class ProjectBlueprintUpdate
         $this->query = $query;
     }
 
+    /**
+     * @throws ActionException
+     */
     public function handle(ProjectBlueprintUpdateCommand $command): void
     {
         $this->query

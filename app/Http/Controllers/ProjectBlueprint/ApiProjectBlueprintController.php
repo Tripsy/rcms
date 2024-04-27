@@ -224,8 +224,6 @@ class ApiProjectBlueprintController extends Controller
 
         $this->apiWrapper->success(true);
         $this->apiWrapper->message(__('message.success'));
-        $this->apiWrapper->data($command->attributes());
-
         $this->apiWrapper->data(array_merge(
             $command->attributes(),
             [

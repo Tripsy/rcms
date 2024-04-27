@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Actions\Traits\AsAction;
 use App\Commands\BlueprintComponentUpdateCommand;
+use App\Exceptions\ActionException;
 use App\Queries\BlueprintComponentUpdateQuery;
 
 class BlueprintComponentUpdate
@@ -19,6 +20,9 @@ class BlueprintComponentUpdate
         $this->query = $query;
     }
 
+    /**
+     * @throws ActionException
+     */
     public function handle(BlueprintComponentUpdateCommand $command): void
     {
         $this->query

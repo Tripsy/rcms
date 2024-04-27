@@ -10,6 +10,8 @@ use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Tripsy\StubChain\Helpers\StubBuilder;
 
+use function Laravel\Prompts\text;
+
 class StubChain extends Command implements PromptsForMissingInput
 {
     /**
@@ -24,7 +26,7 @@ class StubChain extends Command implements PromptsForMissingInput
         {--init=true : This is a flag which mark the initial command}
         {--related=true : For related false related files are not generated}
         {--overwrite=false : For overwrite true files will be overwritten if they already exist}
-        {--silence=true : If overwrite is false & silence is true the existing files will be remain untouched and no output will be displayed}
+        {--silence=true : If overwrite is false & silence is true the existing files will remain untouched and no output will be displayed}
         {--gitAdd=false : When true generated file is staged for commit}
     ';
 
@@ -52,28 +54,40 @@ class StubChain extends Command implements PromptsForMissingInput
     public function handle(StubBuilder $builder): void
     {
         try {
-            $stubArgument = $this->argument('stub');
-            $modelArgument = $this->argument('model');
-            $parentModelArgument = $this->argument('parentModel') ?? '';
-
             // Set stub
-            $builder->setStubArgument($stubArgument);
+            $builder->setStubArgument($this->argument('stub'));
+
+            // Prepare model
+            $modelArgument = $this->argument('model');
 
             $model = ucfirst($builder->getArgumentValue($modelArgument));
-            $parentModel = ucfirst($builder->getArgumentValue($parentModelArgument));
 
-            /**
-             * The command works with the premise that if you want to create a file ProjectPermission you will set
-             * model argument as `Permission` and the parentModel argument as `Project`
-             */
-            if ($parentModel) {
-                $model = $parentModel.$model;
+            // Prepare parentModel
+            if ($builder->hasExtension('nested') === true) {
+                $parentModelArgument = $this->argument('parentModel');
+
+                if (empty($parentModelArgument) === true) {
+                    $parentModelArgument = text(
+                        label: 'Enter the parent model name',
+                        required: true
+                    );
+                }
+
+                $parentModel = ucfirst($builder->getArgumentValue($parentModelArgument));
+
+                /**
+                 * The command works with the premise that if you want to create a file ProjectPermission you will set
+                 * model argument as `Permission` and the parentModel argument as `Project`
+                 */
+                if ($parentModel) {
+                    $model = $parentModel.$model;
+                }
             }
 
             // Build class name
             $className = $builder->buildClassName(
                 model: $model,
-                parentModel: $parentModel
+                parentModel: $parentModel ?? ''
             );
 
             // First we need to ensure that the given name is not a reserved word within the PHP
@@ -88,8 +102,19 @@ class StubChain extends Command implements PromptsForMissingInput
             // Set the stub data
             $builder->addStubData('className', $className);
             $builder->addStubData('model', $model);
-            $builder->addStubData('parentModel', $parentModel);
             $builder->addStubData('modelVariable', lcfirst($model));
+
+            if (empty($parentModel) === false) {
+                $builder->addStubData('parentModel', $parentModel);
+                $builder->addStubData('parentVariable', lcfirst($parentModel));
+            }
+
+            // Inject additional stub data
+            $injectStubData = $this->injectStubData();
+
+            foreach ($injectStubData as $k => $v) {
+                $builder->addStubData($k, $v);
+            }
 
             // Determine file name & folder
             $builder->determineDestinationFileName($className);
@@ -127,7 +152,7 @@ class StubChain extends Command implements PromptsForMissingInput
                     $this->call('tripsy:stub-chain', array_filter([
                         'stub' => $s,
                         'model' => $modelArgument,
-                        'parentModel' => $parentModelArgument,
+                        'parentModel' => $parentModelArgument ?? '',
                         '--init' => 'false',
                         '--overwrite' => $this->option('overwrite'),
                         '--silence' => $this->option('silence'),
@@ -147,5 +172,13 @@ class StubChain extends Command implements PromptsForMissingInput
         } catch (Exception $exception) {
             $this->error($exception->getMessage());
         }
+    }
+
+    /**
+     * If class is extended this method can be used to inject additional stub data
+     */
+    public function injectStubData(): array
+    {
+        return [];
     }
 }

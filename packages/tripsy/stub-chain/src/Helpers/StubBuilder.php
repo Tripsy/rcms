@@ -122,6 +122,12 @@ class StubBuilder
     private string $stub;
 
     /**
+     * Extension for stub file
+     * `nested` is a special case - parent related vars are injected for it
+     */
+    private string $extension;
+
+    /**
      * Stub content
      */
     private string $stubContent;
@@ -173,7 +179,17 @@ class StubBuilder
      */
     public function setStubArgument(string $stubArgument): void
     {
-        $this->stub = $this->getArgumentValue($stubArgument);
+        $stub = $this->getArgumentValue($stubArgument); //ex: model-cache OR api-model-controller.nested OR model.custom.project
+
+        $stubParts = explode('.', $stub);
+
+        if (count($stubParts) > 1) {
+            array_shift($stubParts); //first element is stub name
+
+            $this->extension = implode('.', $stubParts);
+        }
+
+        $this->stub = $stub;
     }
 
     /**
@@ -181,13 +197,33 @@ class StubBuilder
      *
      * @throws Exception
      */
-    public function getStubArgument(): string
+    public function getStubArgument(bool $excludeExtension = false): string
     {
         if (isset($this->stub) === false) {
             throw new Exception(__('stub-chain::stub-chain.stub_argument_not_set'));
         }
 
+        if ($excludeExtension === true && isset($this->extension) === true) {
+            return str_replace('.'.$this->extension, '', $this->stub);
+        }
+
         return $this->stub;
+    }
+
+    /**
+     * Return `true` if stub extension matches
+     */
+    public function hasExtension(string $extension, bool $exactMatch = false): bool
+    {
+        if (isset($this->extension)) {
+            return false;
+        }
+
+        if ($exactMatch === true) {
+            return $this->extension === $extension;
+        }
+
+        return in_array($extension, explode('.', $this->extension));
     }
 
     /**
@@ -198,7 +234,7 @@ class StubBuilder
      */
     public function buildClassName(...$args): string
     {
-        $classNameParts = explode('-', $this->getStubArgument());
+        $classNameParts = explode('-', $this->getStubArgument(true));
 
         foreach ($classNameParts as &$v) {
             if (empty($args[$v]) === false) {
@@ -538,16 +574,18 @@ class StubBuilder
 
     /**
      * Return array with stub file names corresponding the use & extra classes extracted from stub currently processed
+     *
+     * @throws Exception
      */
-    private function determineStubFilesForRelatedDynamicClasses(array $usedClasses): array
+    private function determineStubFilesForRelatedDynamicClasses(array $relatedClasses): array
     {
+        // Config var
         $dynamicClassesNeedle = [
             'Model' => '{{ $model }}',
-            'Parentmodel' => '{{ $parentModel }}',
         ];
 
-        //return only classes which contain specific needle
-        $dynamicClasses = array_filter($usedClasses, function ($v) use ($dynamicClassesNeedle) {
+        // Return only classes which contain specific needle
+        $dynamicClasses = array_filter($relatedClasses, function ($v) use ($dynamicClassesNeedle) {
             foreach ($dynamicClassesNeedle as $needle) {
                 if (str_contains($v, $needle) === true) {
                     return true;
@@ -557,18 +595,38 @@ class StubBuilder
             return false;
         });
 
-        //transform name for used class (eg: {{ $model }}Delete
+        // Transform name for used class (eg: {{ $model }}Delete
         return array_map(function ($v) use ($dynamicClassesNeedle) {
             // $v ~ App\Commands\{{ $model }}DeleteCommand
             $parts = explode('\\', $v);
 
-            $dynamicClass = end($parts); // {{ $parentModel }}{{ $model }}DeleteCommand
+            $dynamicClass = end($parts); // {{ $model }}DeleteCommand::custom.extension
 
-            $replaceNeedleInClass = strtr($dynamicClass, array_flip($dynamicClassesNeedle)); // ParentmodelModelDeleteCommand
+            $dynamicClassParts = explode('::', $dynamicClass);
 
-            $dashedString = Str::snake($replaceNeedleInClass, '-'); // parentmodel-model-delete-command
+            switch (count($dynamicClassParts)) {
+                case 1:
+                    $extension = null;
+                    break;
+                case 2:
+                    $dynamicClass = array_shift($dynamicClassParts); // First part is class
+                    $extension = $dynamicClassParts[0];
+                    break;
+                default:
+                    throw new Exception(__('stub-chain::stub-chain.invalid_class_extension', [
+                        'class' => $dynamicClass,
+                    ]));
+            }
 
-            return str_replace('parentmodel', 'parentModel', $dashedString); //parentModel-model-delete-command
+            $replaceNeedleInClass = strtr($dynamicClass, array_flip($dynamicClassesNeedle)); // ModelDeleteCommand
+
+            $stub = Str::snake($replaceNeedleInClass, '-'); // model-delete-command
+
+            if (empty($extension) === false) {
+                $stub .= '.'.$extension;
+            }
+
+            return $stub;
         }, $dynamicClasses);
     }
 

@@ -19,6 +19,7 @@ return [
     'namespace_not_found' => 'Namespace not found in stub :stub.',
     'destination_file_name_not_determined' => 'Destination file name was not determined',
     'destination_file_folder_not_determined' => 'Destination file folder was not determined',
+    'invalid_class_extension' => 'Invalid extension (eg: :class)',
 
     'file_already_exist' => 'File :fileName already exist in :fileFolder',
     'file_overwritten' => 'File :fileName was overwritten in :fileFolder',

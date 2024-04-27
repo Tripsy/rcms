@@ -1,0 +1,212 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Http\Controllers\{{ $model }};
+
+use App\Actions\{{ $model }}Delete;
+use App\Actions\{{ $model }}Store;
+use App\Actions\{{ $model }}Update;
+use App\Commands\{{ $model }}DeleteCommand;
+use App\Commands\{{ $model }}StoreCommand;
+use App\Commands\{{ $model }}UpdateCommand;
+use App\Exceptions\ControllerException;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\{{ $model }}IndexRequest;
+use App\Http\Requests\{{ $model }}StoreRequest;
+use App\Http\Requests\{{ $model }}UpdateRequest;
+use App\Models\{{ $parentModel }};
+use App\Models\{{ $model }};
+use App\Queries\{{ $model }}ReadQuery;
+use App\Repositories\{{ $model }}Repository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
+use Symfony\Component\HttpFoundation\Response;
+use Tripsy\ApiWrapper\ApiWrapper;
+
+extra App\Http\{{ $model }}\Api{{ $model }}StatusController::nested;
+extra App\Events\{{ $model }}Activated;
+extra App\Events\{{ $model }}Cache;
+extra App\Events\{{ $model }}Created;
+extra App\Events\{{ $model }}Deleting;
+extra App\Events\{{ $model }}Updated;
+extra App\Listeners\{{ $model }}Subscriber;
+extra App\Observers\{{ $model }}Observer;
+extra App\Policies\{{ $model }}Policy;
+
+class {{ $className }} extends Controller
+{
+    private ApiWrapper $apiWrapper;
+
+    public function __construct(ApiWrapper $apiWrapper)
+    {
+        $this->apiWrapper = $apiWrapper;
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(
+        {{ $model }}IndexRequest $request,
+        {{ $parentModel }} ${{ $parentVariable }},
+        {{ $model }}ReadQuery $query
+    ): JsonResponse {
+        Gate::authorize('index', [{{ $model }}::class, ${{ $parentVariable }}]);
+
+        $validated = $request->validated();
+
+        $results = $query
+            ->filterBy{{ $parentModel }}Id(${{ $parentVariable }}->id)
+            ->filterByName('%'.$validated['filter']['name'].'%', 'LIKE')
+            ->filterByStatus($validated['filter']['status'])
+            ->withCreatedBy()
+            ->withUpdatedBy()
+            ->get($validated['page'], $validated['limit'])
+            ->makeHidden(['user_id']);
+
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data([
+            'results' => $results,
+            'count' => count($results),
+            'limit' => $validated['limit'],
+            'page' => $validated['page'],
+        ]);
+
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_OK);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @throws ControllerException
+     */
+    public function store(
+        {{ $model }}StoreRequest $request,
+        {{ $parentModel }} ${{ $parentVariable }},
+        {{ $model }}ReadQuery $query
+    ): JsonResponse {
+        Gate::authorize('create', [{{ $model }}::class, ${{ $parentVariable }}]);
+
+        $validated = $request->validated();
+
+        try {
+            $command{{ $model }} = new {{ $model }}StoreCommand(
+                ${{ $parentVariable }}->id,
+                $validated['name'],
+                $validated['description'],
+                $validated['status'],
+            );
+
+            {{ $model }}Store::run($command{{ $model }});
+
+            ${{ $modelVariable }} = $query
+                ->filterBy{{ $parentModel }}Id($command{{ $model }}->get{{ $parentModel }}Id())
+                ->filterByName($command{{ $model }}->getName())
+                ->firstOrFail();
+        } catch (ModelNotFoundException) {
+            throw new ControllerException(
+                __('message.??.store_fail'),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data(array_merge(
+            [
+                'id' => ${{ $modelVariable }}->id,
+            ],
+            $command{{ $model }}->attributes()
+        ));
+
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_CREATED);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(
+        {{ $parentModel }} ${{ $parentVariable }},
+        {{ $model }} ${{ $modelVariable }},
+        {{ $model }}ReadQuery $query,
+        {{ $model }}Repository $repository
+    ): JsonResponse {
+        Gate::authorize('view', [{{ $model }}::class, ${{ $parentVariable }}]);
+
+        $data = $repository->getViewCache(${{ $modelVariable }}->id, function () use ($query, ${{ $modelVariable }}) {
+            $result = $query
+                ->filterById(${{ $modelVariable }}->id)
+                ->withCreatedBy()
+                ->withUpdatedBy()
+                ->withComponents()
+                ->first();
+            }
+
+            return $result;
+        });
+
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->pushMeta('isCached', $repository->isCached());
+        $this->apiWrapper->data($data);
+
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_OK);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     * @throws ControllerException
+     */
+    public function update(
+        {{ $model }}UpdateRequest $request,
+        {{ $parentModel }} ${{ $parentVariable }},
+        {{ $model }} ${{ $modelVariable }}
+    ): JsonResponse {
+        Gate::authorize('update', [${{ $modelVariable }}, ${{ $parentVariable }}]);
+
+        $validated = $request->validated();
+
+        try {
+            $command = new {{ $model }}UpdateCommand(
+                ${{ $modelVariable }}->id,
+                $validated['name'],
+                $validated['description'],
+            );
+
+            {{ $model }}Update::run($command);
+        } catch (ModelNotFoundException) {
+            throw new ControllerException(
+                __('message.???.store_fail'),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data($command->attributes());
+
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_OK);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy({{ $parentModel }} ${{ $parentVariable }}, {{ $model }} ${{ $modelVariable }}): JsonResponse
+    {
+        Gate::authorize('delete', [{{ $model }}::class, ${{ $parentVariable }}]);
+
+        $command = new {{ $model }}DeleteCommand(
+            ${{ $modelVariable }}->id
+        );
+
+        {{ $model }}Delete::run($command);
+
+        $this->apiWrapper->success(true);
+        $this->apiWrapper->message(__('message.success'));
+        $this->apiWrapper->data($command->attributes());
+
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_NO_CONTENT);
+    }
+}

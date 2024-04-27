@@ -6,6 +6,7 @@ namespace App\Actions;
 
 use App\Actions\Traits\AsAction;
 use App\Commands\ProjectPermissionUpdateCommand;
+use App\Exceptions\ActionException;
 use App\Queries\ProjectPermissionUpdateQuery;
 
 class ProjectPermissionUpdate
@@ -19,6 +20,9 @@ class ProjectPermissionUpdate
         $this->query = $query;
     }
 
+    /**
+     * @throws ActionException
+     */
     public function handle(ProjectPermissionUpdateCommand $command): void
     {
         $this->query
