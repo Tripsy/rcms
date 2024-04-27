@@ -332,12 +332,12 @@ class StubBuilder
      * @throws FileNotFoundException
      * @throws Exception
      */
-    public function determineDestinationFileFolder(string $model): void
+    public function determineDestinationFileFolder(): void
     {
         $namespace = $this->extractNamespaceFromStubContent($this->getStubContent());
 
         // Replace stub data
-        $namespace = strtr($namespace, $this->getStubData());
+        $namespace = strtr($namespace, $this->prepareStubData());
 
         $fileFolder = $this->convertNamespaceToFolder($namespace);
 
