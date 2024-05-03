@@ -163,7 +163,7 @@ class StubBuilder
      */
     public function getArgumentValue(string $value): string
     {
-        return strtolower(trim($value));
+        return trim($value);
     }
 
     /**
