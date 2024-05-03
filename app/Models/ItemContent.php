@@ -27,8 +27,8 @@ class ItemContent extends Model
      * @var array
      */
     protected $fillable = [
-        'uuid',
-        'component_name',
+        'blueprint_item_id',
+        'blueprint_component_id',
         'content',
         'is_active',
     ];
@@ -47,15 +47,15 @@ class ItemContent extends Model
      */
     public function item(): BelongsTo
     {
-        return $this->belongsTo(ProjectItem::class, 'uuid', 'uuid');
+        return $this->belongsTo(BlueprintItem::class, 'blueprint_item_id', 'id');
     }
 
     /**
      * Scope a query to select items with selected label
      */
-    public function scopeComponent(Builder $query, string $component_name): void
+    public function component(): BelongsTo
     {
-        $query->where('component_name', $component_name);
+        return $this->belongsTo(BlueprintComponent::class, 'blueprint_component_id', 'id');
     }
 
     /**

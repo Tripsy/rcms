@@ -54,8 +54,8 @@ return [
         'already_exist' => 'Blueprint component with selected name already exist',
     ],
 
-//    'item' => [
-//        'not_found' => 'Item #:uuid does not exist',
-//        'cannot_create_data' => 'Cannot create data item. Item #:uuid does not exist',
-//    ],
+    //    'item' => [
+    //        'not_found' => 'Item #:uuid does not exist',
+    //        'cannot_create_data' => 'Cannot create data item. Item #:uuid does not exist',
+    //    ],
 ];

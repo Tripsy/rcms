@@ -19,8 +19,8 @@ return new class extends Migration
 
             $table->id();
 
-            $table->uuid();
-            $table->char('component_name', 64);
+            $table->bigInteger('blueprint_item_id', false, true);
+            $table->bigInteger('blueprint_component_id', false, true);
             $table->text('content');
             $table->enum('is_active', DefaultOption::justKeys())->default(DefaultOption::YES->value);
 
@@ -29,13 +29,19 @@ return new class extends Migration
             $table->dateTime('updated_at')->nullable();
             $table->bigInteger('updated_by', false, true)->nullable();
 
-            $table->foreign('uuid')
-                ->references('uuid')
+            $table->foreign('blueprint_item_id')
+                ->references('id')
                 ->on('blueprint_item')
                 ->onUpdate('no action')
                 ->onDelete('cascade');
 
-            $table->index(['uuid', 'component_name', 'is_active']);
+            $table->foreign('blueprint_component_id')
+                ->references('id')
+                ->on('blueprint_component')
+                ->onUpdate('no action')
+                ->onDelete('cascade');
+
+            $table->index(['blueprint_item_id', 'blueprint_component_id', 'is_active'], 'item_content_active');
 
             $table->foreign('created_by')
                 ->references('id')

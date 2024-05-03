@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Item\ApiConsumerItemController;
 use App\Http\Controllers\Project\ApiProjectController;
 use App\Http\Controllers\Project\ApiProjectStatusController;
 use App\Http\Controllers\ProjectBlueprint\ApiProjectBlueprintController;
@@ -29,10 +28,6 @@ Route::group([
         'auth:sanctum',
     ],
 ], function () {
-    Route::post('/item/new', [ApiConsumerItemController::class, 'store']);
-    Route::put('/item/{uuid}', [ApiConsumerItemController::class, 'update']);
-    Route::get('/item/{uuid}', [ApiConsumerItemController::class, 'show']);
-
     Route::controller(ApiProjectController::class)->group(function () {
         Route::get('/project', 'index');
 

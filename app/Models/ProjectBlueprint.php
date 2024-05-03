@@ -6,7 +6,6 @@ use App\Enums\CommonStatus;
 use App\Models\Traits\CreatedByRelationTrait;
 use App\Models\Traits\StatusScopeTrait;
 use App\Models\Traits\UpdatedByRelationTrait;
-use App\Models\Traits\UuidScopeTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 

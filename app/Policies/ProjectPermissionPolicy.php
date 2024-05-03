@@ -21,7 +21,7 @@ class ProjectPermissionPolicy
      * The before method of a policy class will not be called if the class doesn't contain a method with a name matching the name of the ability being checked.
      * https://laravel.com/docs/10.x/authorization#policy-filters
      */
-    public function before(User $user, string $ability): bool|null
+    public function before(User $user, string $ability): ?bool
     {
         if ($user->isAdmin()) {
             return true;

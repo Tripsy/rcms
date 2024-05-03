@@ -118,17 +118,17 @@ class StubChain extends Command implements PromptsForMissingInput
             $builder->setSilence($this->option('silence'));
 
             // Generate destination file
-            $result = $builder->generate(); //the script doesn't stop if file is not generated because if already exists
+            $result = $builder->generate(); //the script doesn't stop if file is not generated if already exists
 
-            //output message as info OR warn
+            // Output message as info OR warn
             if (in_array($result['response'], ['info', 'warn'])) {
                 $this->{$result['response']}($result['message']);
             }
 
             // needs to be declared before the `relatedStubFiles`
-            $isInit = $this->option('init') === 'true' ?? false;
+            $isInit = $this->option('init') === 'true' ?? false; //TODO - why before?
 
-            // increment counter
+            // Increment counter
             $filePath = $builder->getDestinationFileFolder().'/'.$builder->getDestinationFileName();
 
             if (in_array($filePath, $this->files) === false) {

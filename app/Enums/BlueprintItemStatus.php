@@ -6,7 +6,7 @@ namespace App\Enums;
 
 use App\Enums\Traits\EnumTrait;
 
-enum ProjectItemStatus: string
+enum BlueprintItemStatus: string
 {
     use EnumTrait;
 

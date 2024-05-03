@@ -184,7 +184,7 @@ class StubBuilder
         $stubParts = explode('.', $stub);
 
         if (count($stubParts) > 1) {
-            array_shift($stubParts); //first element is stub name
+            array_shift($stubParts); // First element is stub name
 
             $this->extension = implode('.', $stubParts);
         }
@@ -517,7 +517,8 @@ class StubBuilder
     }
 
     /**
-     * `stubData` is an associate array;
+     * `stubData` is an associative array;
+     *
      *  This method replace key with the pattern used in stub content file (eg: {{ $value }}
      */
     private function prepareStubData(): array
@@ -542,7 +543,7 @@ class StubBuilder
     }
 
     /**
-     * Get an array list with related stub files - extracted based on "use" & "extra" dynamic classes
+     * Get an array list with related stub files - extracted based on "use" & "extra"
      *
      * @throws FileNotFoundException
      * @throws Exception
@@ -555,7 +556,7 @@ class StubBuilder
     }
 
     /**
-     * Extract used classes from stub file content
+     * Extract related classes from stub file content
      *
      * @throws FileNotFoundException
      */

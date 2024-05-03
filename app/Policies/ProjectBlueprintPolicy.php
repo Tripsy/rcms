@@ -75,6 +75,10 @@ class ProjectBlueprintPolicy
      */
     public function delete(User $user, ProjectBlueprint $projectBlueprint, Project $project): Response
     {
+        //        if ($projectBlueprint->createdBy === $user->id) {
+        //            return Response::allow();
+        //        }
+
         if ($project->hasRole($user, ProjectPermissionRole::MANAGER) === false) {
             return Response::deny(__('message.exception.access_denied'));
         }

@@ -19,7 +19,7 @@ return new class extends Migration
 
             $table->id();
 
-            $table->uuid()->unique();
+            $table->char('uuid', 64)->unique();
             $table->bigInteger('project_blueprint_id', false, true);
             $table->text('description');
 

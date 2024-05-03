@@ -1,7 +1,9 @@
-php artisan vendor:publish --tag=sanctum-migrations
-php artisan vendor:publish --tag=telescope-migrations
 
+## GUIDE
 
-Laravel 11 Upgrade
+### New model
 
-https://github.com/Tripsy/rcms/commit/571aa4e950c59237a6f08075b1bbf17f44323f57
+- php artisan tripsy:stub-chain api-model-controller.nested Test Project --related=true --overwrite=false
+- update EventServiceProvider.php
+- language
+- routes

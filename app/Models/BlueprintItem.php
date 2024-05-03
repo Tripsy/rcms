@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use App\Enums\ProjectItemStatus;
+use App\Enums\BlueprintItemStatus;
 use App\Models\Traits\StatusScopeTrait;
 use App\Models\Traits\UuidScopeTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
-class ProjectItem extends BaseModel
+class BlueprintItem extends BaseModel
 {
     use UuidScopeTrait;
     use StatusScopeTrait;
@@ -19,7 +19,7 @@ class ProjectItem extends BaseModel
      *
      * @var string
      */
-    protected $table = 'project_item';
+    protected $table = 'blueprint_item';
 
     /**
      * The attributes that are mass assignable.
@@ -39,7 +39,7 @@ class ProjectItem extends BaseModel
      * @var array
      */
     protected $casts = [
-        'status' => ProjectItemStatus::class,
+        'status' => BlueprintItemStatus::class,
     ];
 
     /**
