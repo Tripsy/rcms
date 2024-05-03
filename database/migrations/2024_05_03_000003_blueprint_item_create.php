@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\DefaultOption;
+use App\Enums\BlueprintItemStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,30 +12,29 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('item_content', function (Blueprint $table) {
+        Schema::create('blueprint_item', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
 
             $table->id();
 
-            $table->uuid();
-            $table->char('component_name', 64);
-            $table->text('content');
-            $table->enum('is_active', DefaultOption::justKeys())->default(DefaultOption::YES->value);
+            $table->uuid()->unique();
+            $table->bigInteger('project_blueprint_id', false, true);
+            $table->text('description');
+
+            $table->enum('status', BlueprintItemStatus::justKeys())->default(BlueprintItemStatus::DRAFT->value);
 
             $table->dateTime('created_at');
             $table->bigInteger('created_by', false, true)->nullable();
             $table->dateTime('updated_at')->nullable();
             $table->bigInteger('updated_by', false, true)->nullable();
 
-            $table->foreign('uuid')
-                ->references('uuid')
-                ->on('project_item')
+            $table->foreign('project_blueprint_id')
+                ->references('id')
+                ->on('project_blueprint')
                 ->onUpdate('no action')
                 ->onDelete('cascade');
-
-            $table->index(['uuid', 'component_name', 'is_active']);
 
             $table->foreign('created_by')
                 ->references('id')
@@ -56,6 +55,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('item_content');
+        Schema::dropIfExists('blueprint_item');
     }
 };
