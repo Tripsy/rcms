@@ -2,40 +2,30 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\{{ $model }};
+namespace App\Http\Controllers\BlueprintComponent;
 
-use App\Actions\{{ $model }}Delete;
-use App\Actions\{{ $model }}Store;
-use App\Actions\{{ $model }}Update;
-use App\Commands\{{ $model }}DeleteCommand;
-use App\Commands\{{ $model }}StoreCommand;
-use App\Commands\{{ $model }}UpdateCommand;
+use App\Actions\BlueprintComponentDelete;
+use App\Actions\BlueprintComponentStore;
+use App\Actions\BlueprintComponentUpdate;
+use App\Commands\BlueprintComponentDeleteCommand;
+use App\Commands\BlueprintComponentStoreCommand;
+use App\Commands\BlueprintComponentUpdateCommand;
 use App\Exceptions\ControllerException;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\{{ $model }}IndexRequest;
-use App\Http\Requests\{{ $model }}StoreRequest;
-use App\Http\Requests\{{ $model }}UpdateRequest;
-use App\Models\{{ $parentModel }};
-use App\Models\{{ $model }};
-use App\Queries\{{ $model }}ReadQuery;
-use App\Repositories\{{ $model }}Repository;
+use App\Http\Requests\BlueprintComponentIndexRequest;
+use App\Http\Requests\BlueprintComponentStoreRequest;
+use App\Http\Requests\BlueprintComponentUpdateRequest;
+use App\Models\BlueprintComponent;
+use App\Models\ProjectBlueprint;
+use App\Queries\BlueprintComponentReadQuery;
+use App\Repositories\BlueprintComponentRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
 use Tripsy\ApiWrapper\ApiWrapper;
 
-extra App\Http\{{ $model }}\Api{{ $model }}StatusController::nested;
-extra App\Events\{{ $model }}Activated;
-extra App\Events\{{ $model }}Cache;
-extra App\Events\{{ $model }}Created;
-extra App\Events\{{ $model }}Deleting;
-extra App\Events\{{ $model }}Updated;
-extra App\Listeners\{{ $model }}Subscriber;
-extra App\Observers\{{ $model }}Observer;
-extra App\Policies\{{ $model }}Policy;
-
-class {{ $className }} extends Controller
+class ApiBlueprintComponentController extends Controller
 {
     private ApiWrapper $apiWrapper;
 
@@ -48,17 +38,22 @@ class {{ $className }} extends Controller
      * Display a listing of the resource.
      */
     public function index(
-        {{ $model }}IndexRequest $request,
-        {{ $parentModel }} ${{ $parentVariable }},
-        {{ $model }}ReadQuery $query
+        BlueprintComponentIndexRequest $request,
+        ProjectBlueprint $projectBlueprint,
+        BlueprintComponentReadQuery $query
     ): JsonResponse {
-        Gate::authorize('index', [{{ $model }}::class, ${{ $parentVariable }}]);
+        Gate::authorize('index', [BlueprintComponent::class, $projectBlueprint->project()->first()]);
 
         $validated = $request->validated();
 
         $results = $query
-            ->filterBy{{ $parentModel }}Id(${{ $parentVariable }}->id)
+            ->filterByProjectBlueprintId($projectBlueprint->id)
+            ->filterByComponentType($validated['filter']['component_type']) ??
+            ->filterByComponentFormat($validated['filter']['component_format'])
+            ->isRequired($validated['filter']['is_required'])
             ->filterByName('%'.$validated['filter']['name'].'%', 'LIKE')
+            ->filterByDescription('%'.$validated['filter']['description'].'%', 'LIKE')
+            ->filterByInfo('%'.$validated['filter']['info'].'%', 'LIKE')
             ->filterByStatus($validated['filter']['status'])
             ->withCreatedBy()
             ->withUpdatedBy()
@@ -83,27 +78,27 @@ class {{ $className }} extends Controller
      * @throws ControllerException
      */
     public function store(
-        {{ $model }}StoreRequest $request,
-        {{ $parentModel }} ${{ $parentVariable }},
-        {{ $model }}ReadQuery $query
+        BlueprintComponentStoreRequest $request,
+        ProjectBlueprint $projectBlueprint,
+        BlueprintComponentReadQuery $query
     ): JsonResponse {
-        Gate::authorize('create', [{{ $model }}::class, ${{ $parentVariable }}]);
+        Gate::authorize('create', [BlueprintComponent::class, $projectBlueprint]);
 
         $validated = $request->validated();
 
         try {
-            $command{{ $model }} = new {{ $model }}StoreCommand(
-                ${{ $parentVariable }}->id,
+            $commandBlueprintComponent = new BlueprintComponentStoreCommand(
+                $projectBlueprint->id,
                 $validated['name'],
                 $validated['description'],
                 $validated['status'],
             );
 
-            {{ $model }}Store::run($command{{ $model }});
+            BlueprintComponentStore::run($commandBlueprintComponent);
 
-            ${{ $modelVariable }} = $query
-                ->filterBy{{ $parentModel }}Id($command{{ $model }}->get{{ $parentModel }}Id())
-                ->filterByName($command{{ $model }}->getName())
+            $blueprintComponent = $query
+                ->filterByProjectBlueprintId($commandBlueprintComponent->getProjectBlueprintId())
+                ->filterByName($commandBlueprintComponent->getName())
                 ->firstOrFail();
         } catch (ModelNotFoundException) {
             throw new ControllerException(
@@ -116,9 +111,9 @@ class {{ $className }} extends Controller
         $this->apiWrapper->message(__('message.success'));
         $this->apiWrapper->data(array_merge(
             [
-                'id' => ${{ $modelVariable }}->id,
+                'id' => $blueprintComponent->id,
             ],
-            $command{{ $model }}->attributes()
+            $commandBlueprintComponent->attributes()
         ));
 
         return response()->json($this->apiWrapper->resultArray(), Response::HTTP_CREATED);
@@ -128,21 +123,20 @@ class {{ $className }} extends Controller
      * Display the specified resource.
      */
     public function show(
-        {{ $parentModel }} ${{ $parentVariable }},
-        {{ $model }} ${{ $modelVariable }},
-        {{ $model }}ReadQuery $query,
-        {{ $model }}Repository $repository
+        ProjectBlueprint $projectBlueprint,
+        BlueprintComponent $blueprintComponent,
+        BlueprintComponentReadQuery $query,
+        BlueprintComponentRepository $repository
     ): JsonResponse {
-        Gate::authorize('view', [{{ $model }}::class, ${{ $parentVariable }}]);
+        Gate::authorize('view', [BlueprintComponent::class, $projectBlueprint]);
 
-        $data = $repository->getViewCache(${{ $modelVariable }}->id, function () use ($query, ${{ $modelVariable }}) {
+        $data = $repository->getViewCache($blueprintComponent->id, function () use ($query, $blueprintComponent) {
             return $query
-                ->filterById(${{ $modelVariable }}->id)
+                ->filterById($blueprintComponent->id)
                 ->withCreatedBy()
                 ->withUpdatedBy()
                 ->withComponents()
                 ->first();
-            }
         });
 
         $this->apiWrapper->success(true);
@@ -155,25 +149,26 @@ class {{ $className }} extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
      * @throws ControllerException
      */
     public function update(
-        {{ $model }}UpdateRequest $request,
-        {{ $parentModel }} ${{ $parentVariable }},
-        {{ $model }} ${{ $modelVariable }}
+        BlueprintComponentUpdateRequest $request,
+        ProjectBlueprint $projectBlueprint,
+        BlueprintComponent $blueprintComponent
     ): JsonResponse {
-        Gate::authorize('update', [${{ $modelVariable }}, ${{ $parentVariable }}]);
+        Gate::authorize('update', [$blueprintComponent, $projectBlueprint]);
 
         $validated = $request->validated();
 
         try {
-            $command = new {{ $model }}UpdateCommand(
-                ${{ $modelVariable }}->id,
+            $command = new BlueprintComponentUpdateCommand(
+                $blueprintComponent->id,
                 $validated['name'],
                 $validated['description'],
             );
 
-            {{ $model }}Update::run($command);
+            BlueprintComponentUpdate::run($command);
         } catch (ModelNotFoundException) {
             throw new ControllerException(
                 __('message.???.store_fail'),
@@ -191,15 +186,15 @@ class {{ $className }} extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy({{ $parentModel }} ${{ $parentVariable }}, {{ $model }} ${{ $modelVariable }}): JsonResponse
+    public function destroy(ProjectBlueprint $projectBlueprint, BlueprintComponent $blueprintComponent): JsonResponse
     {
-        Gate::authorize('delete', [{{ $model }}::class, ${{ $parentVariable }}]);
+        Gate::authorize('delete', [BlueprintComponent::class, $projectBlueprint]);
 
-        $command = new {{ $model }}DeleteCommand(
-            ${{ $modelVariable }}->id
+        $command = new BlueprintComponentDeleteCommand(
+            $blueprintComponent->id
         );
 
-        {{ $model }}Delete::run($command);
+        BlueprintComponentDelete::run($command);
 
         $this->apiWrapper->success(true);
         $this->apiWrapper->message(__('message.success'));

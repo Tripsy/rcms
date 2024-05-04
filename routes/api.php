@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BlueprintComponent\ApiBlueprintComponentController;
+use App\Http\Controllers\BlueprintComponent\ApiBlueprintComponentStatusController;
 use App\Http\Controllers\Project\ApiProjectController;
 use App\Http\Controllers\Project\ApiProjectStatusController;
 use App\Http\Controllers\ProjectBlueprint\ApiProjectBlueprintController;
@@ -28,75 +30,111 @@ Route::group([
         'auth:sanctum',
     ],
 ], function () {
-    Route::controller(ApiProjectController::class)->group(function () {
-        Route::get('/project', 'index');
+    Route::prefix('/project')->group(function () {
+        Route::controller(ApiProjectController::class)->group(function () {
+            Route::get('', 'index');
 
-        Route::get('/project/{project}', 'show')
-            ->where('project', '[0-9]+');
+            Route::get('/{project}', 'show')
+                ->where('project', '[0-9]+');
 
-        Route::post('/project', 'store');
+            Route::post('', 'store');
 
-        Route::put('/project/{project}', 'update')
-            ->where('project', '[0-9]+');
+            Route::put('{project}', 'update')
+                ->where('project', '[0-9]+');
 
-        Route::delete('/project/{project}', 'destroy')
+            Route::delete('/{project}', 'destroy')
+                ->where('project', '[0-9]+');
+        });
+
+        Route::patch('/{project}/{status}', ApiProjectStatusController::class)
             ->where('project', '[0-9]+');
     });
 
-    Route::patch('/project/{project}/{status}', ApiProjectStatusController::class)
-        ->where('project', '[0-9]+');
+    Route::prefix('/project-permission')->group(function () {
+        Route::controller(ApiProjectPermissionController::class)->group(function () {
+            Route::get('/{project}', 'index')
+                ->where('project', '[0-9]+');
 
-    Route::controller(ApiProjectPermissionController::class)->group(function () {
-        Route::get('/project-permission/{project}', 'index')
-            ->where('project', '[0-9]+');
+            Route::get('/{project}/{projectPermission}', 'show')
+                ->where('project', '[0-9]+')
+                ->where('projectPermission', '[0-9]+');
 
-        Route::get('/project-permission/{project}/{projectPermission}', 'show')
-            ->where('project', '[0-9]+')
-            ->where('projectPermission', '[0-9]+');
+            Route::post('/{project}', 'store')
+                ->where('project', '[0-9]+');
 
-        Route::post('/project-permission/{project}', 'store')
-            ->where('project', '[0-9]+');
+            Route::put('/{project}/{projectPermission}', 'update')
+                ->where('project', '[0-9]+')
+                ->where('projectPermission', '[0-9]+');
 
-        Route::put('/project-permission/{project}/{projectPermission}', 'update')
-            ->where('project', '[0-9]+')
-            ->where('projectPermission', '[0-9]+');
+            Route::delete('/{project}/{projectPermission}', 'destroy')
+                ->where('project', '[0-9]+')
+                ->where('projectPermission', '[0-9]+');
+        });
 
-        Route::delete('/project-permission/{project}/{projectPermission}', 'destroy')
+        Route::patch(
+            '/{project}/{projectPermission}/{status}',
+            ApiProjectPermissionStatusController::class
+        )
             ->where('project', '[0-9]+')
             ->where('projectPermission', '[0-9]+');
     });
 
-    Route::patch(
-        '/project-permission/{project}/{projectPermission}/{status}',
-        ApiProjectPermissionStatusController::class
-    )
-        ->where('project', '[0-9]+')
-        ->where('projectPermission', '[0-9]+');
+    Route::prefix('/project-blueprint')->group(function () {
+        Route::controller(ApiProjectBlueprintController::class)
+            ->group(function () {
+                Route::get('/{project}', 'index')
+                    ->where('project', '[0-9]+');
 
-    Route::controller(ApiProjectBlueprintController::class)->group(function () {
-        Route::get('/project-blueprint/{project}', 'index')
-            ->where('project', '[0-9]+');
+                Route::get('/{project}/{projectBlueprint}', 'show')
+                    ->where('project', '[0-9]+')
+                    ->where('projectBlueprint', '[0-9]+');
 
-        Route::get('/project-blueprint/{project}/{projectBlueprint}', 'show')
-            ->where('project', '[0-9]+')
-            ->where('projectBlueprint', '[0-9]+');
+                Route::post('/{project}', 'store')
+                    ->where('project', '[0-9]+');
 
-        Route::post('/project-blueprint/{project}', 'store')
-            ->where('project', '[0-9]+');
+                Route::put('/{project}/{projectBlueprint}', 'update')
+                    ->where('project', '[0-9]+')
+                    ->where('projectBlueprint', '[0-9]+');
 
-        Route::put('/project-blueprint/{project}/{projectBlueprint}', 'update')
-            ->where('project', '[0-9]+')
-            ->where('projectBlueprint', '[0-9]+');
+                Route::delete('/{project}/{projectBlueprint}', 'destroy')
+                    ->where('project', '[0-9]+')
+                    ->where('projectBlueprint', '[0-9]+');
+            });
 
-        Route::delete('/project-blueprint/{project}/{projectBlueprint}', 'destroy')
+        Route::patch(
+            '/{project}/{projectBlueprint}/{status}',
+            ApiProjectBlueprintStatusController::class
+        )
             ->where('project', '[0-9]+')
             ->where('projectBlueprint', '[0-9]+');
     });
 
-    Route::patch(
-        '/project-blueprint/{project}/{projectBlueprint}/{status}',
-        ApiProjectBlueprintStatusController::class
-    )
-        ->where('project', '[0-9]+')
-        ->where('projectBlueprint', '[0-9]+');
+    Route::prefix('/blueprint-component')->group(function () {
+        Route::controller(ApiBlueprintComponentController::class)->group(function () {
+            Route::get('/{projectBlueprint}', 'index')
+                ->where('projectBlueprint', '[0-9]+');
+
+            Route::get('/{projectBlueprint}/{blueprintComponent}', 'show')
+                ->where('projectBlueprint', '[0-9]+')
+                ->where('blueprintComponent', '[0-9]+');
+
+            Route::post('/{projectBlueprint}', 'store')
+                ->where('projectBlueprint', '[0-9]+');
+
+            Route::put('/{projectBlueprint}/{blueprintComponent}', 'update')
+                ->where('projectBlueprint', '[0-9]+')
+                ->where('blueprintComponent', '[0-9]+');
+
+            Route::delete('/{projectBlueprint}/{blueprintComponent}', 'destroy')
+                ->where('projectBlueprint', '[0-9]+')
+                ->where('blueprintComponent', '[0-9]+');
+        });
+
+        Route::patch(
+            '/{projectBlueprint}/{blueprintComponent}/{status}',
+            ApiBlueprintComponentStatusController::class
+        )
+            ->where('projectBlueprint', '[0-9]+')
+            ->where('blueprintComponent', '[0-9]+');
+    });
 });

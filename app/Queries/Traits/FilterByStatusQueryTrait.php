@@ -6,12 +6,10 @@ namespace App\Queries\Traits;
 
 trait FilterByStatusQueryTrait
 {
-    public function filterByStatus(string $status, string $operator = '='): self
-    {
-        if ($status) {
-            $this->query->where('status', $operator, $status);
-        }
+    use FilterByQueryTrait;
 
-        return $this;
+    public function filterByStatus(string $status): self
+    {
+        return $this->filterBy('status', $status, '=');
     }
 }

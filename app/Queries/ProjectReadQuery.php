@@ -7,11 +7,13 @@ namespace App\Queries;
 use App\Enums\CommonStatus;
 use App\Models\Project;
 use App\Queries\Traits\FilterByNameQueryTrait;
+use App\Queries\Traits\FilterByQueryTrait;
 use App\Queries\Traits\FilterByStatusQueryTrait;
 use Illuminate\Database\Eloquent\Builder;
 
 class ProjectReadQuery extends AbstractReadQuery
 {
+    use FilterByQueryTrait;
     use FilterByStatusQueryTrait;
     use FilterByNameQueryTrait;
 
@@ -33,19 +35,11 @@ class ProjectReadQuery extends AbstractReadQuery
 
     public function filterByAuthorityName(string $authority_name, string $operator = '='): self
     {
-        if ($authority_name) {
-            $this->query->where('authority_name', $operator, $authority_name);
-        }
-
-        return $this;
+        return $this->filterBy('authority_name', $authority_name, $operator);
     }
 
     public function filterByAuthorityKey(string $authority_key, string $operator = '='): self
     {
-        if ($authority_key) {
-            $this->query->where('authority_key', $operator, $authority_key);
-        }
-
-        return $this;
+        return $this->filterBy('authority_key', $authority_key, $operator);
     }
 }

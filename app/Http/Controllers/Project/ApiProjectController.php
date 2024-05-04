@@ -50,6 +50,7 @@ class ApiProjectController extends Controller
 
         $results = $query
             ->whereHasPermission()
+            ->filterByName($validated['filter']['name'])
             ->filterByAuthorityName($validated['filter']['authority_name'])
             ->filterByStatus($validated['filter']['status'])
             ->withCreatedBy()

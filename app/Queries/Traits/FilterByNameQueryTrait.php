@@ -8,10 +8,6 @@ trait FilterByNameQueryTrait
 {
     public function filterByName(string $name, string $operator = '='): self
     {
-        if ($name) {
-            $this->query->where('name', $operator, $name);
-        }
-
-        return $this;
+        return $this->filterBy('name', $name, $operator);
     }
 }

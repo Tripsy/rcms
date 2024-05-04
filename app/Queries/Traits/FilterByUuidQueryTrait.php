@@ -6,12 +6,10 @@ namespace App\Queries\Traits;
 
 trait FilterByUuidQueryTrait
 {
+    use FilterByQueryTrait;
+
     public function filterByUuid(string $uuid, string $operator = '='): self
     {
-        if ($uuid) {
-            $this->query->where('uuid', $operator, $uuid);
-        }
-
-        return $this;
+        return $this->filterBy('uuid', $uuid, $operator);
     }
 }

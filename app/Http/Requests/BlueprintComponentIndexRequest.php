@@ -6,7 +6,7 @@ use App\Enums\CommonStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ProjectIndexRequest extends FormRequest
+class BlueprintComponentIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,8 +25,6 @@ class ProjectIndexRequest extends FormRequest
             'page' => (int) $this->page ?? 1,
             'limit' => (int) $this->limit ?? 5,
             'filter' => [
-                'name' => $this->filter['name'] ?? '',
-                'authority_name' => $this->filter['authority_name'] ?? '',
                 'status' => $this->filter['status'] ?? '',
             ],
         ]);
@@ -40,8 +38,6 @@ class ProjectIndexRequest extends FormRequest
         return [
             'page' => ['required', 'integer'],
             'limit' => ['required', 'integer', 'max:15'],
-            'filter.name' => ['sometimes', 'nullable', 'string'],
-            'filter.authority_name' => ['sometimes', 'nullable', 'string'],
             'filter.status' => ['sometimes', Rule::enum(CommonStatus::class)],
         ];
     }

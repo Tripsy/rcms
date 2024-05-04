@@ -31,12 +31,8 @@ class {{ $className }}  extends AbstractReadQuery
         return $this;
     }
 
-    public function filterByAuthorityName(string $authority_name, string $operator = '='): self
+    public function filterByInfo(string $info, string $operator = '='): self
     {
-        if ($authority_name) {
-            $this->query->where('authority_name', $operator, $authority_name);
-        }
-
-        return $this;
+        return $this->filterBy('info', $info, $operator);
     }
 }

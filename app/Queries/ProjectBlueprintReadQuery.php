@@ -24,13 +24,9 @@ class ProjectBlueprintReadQuery extends AbstractReadQuery
         parent::__construct();
     }
 
-    public function filterByProjectId(int $project_id, string $operator = '='): self
+    public function filterByProjectId(int $project_id): self
     {
-        if ($project_id) {
-            $this->query->where('project_id', $operator, $project_id);
-        }
-
-        return $this;
+        return $this->filterBy('project_id', $project_id);
     }
 
     /**

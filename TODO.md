@@ -1,12 +1,16 @@
 ## TO DO
 
+- filterByInfo & filterByName & filterByDescription to return same method but with params field & value
 - create app/Http/Controllers/BlueprintComponent/ApiBlueprintComponentController.php
-
+- postman documentation & tests
 
 # PACKAGES
-lu
+
+Excel
+
 # IDEAS
 
+- https://github.com/spatie/laravel-responsecache
 - unit tests
 
 # READ

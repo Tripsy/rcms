@@ -6,12 +6,10 @@ namespace App\Queries\Traits;
 
 trait FilterByDescriptionQueryTrait
 {
+    use FilterByQueryTrait;
+
     public function filterByDescription(string $description, string $operator = '='): self
     {
-        if ($description) {
-            $this->query->where('description', $operator, $description);
-        }
-
-        return $this;
+        return $this->filterBy('description', $description, $operator);
     }
 }
