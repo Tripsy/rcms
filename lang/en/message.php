@@ -54,6 +54,12 @@ return [
         'already_exist' => 'Blueprint component with selected name already exist',
     ],
 
+    'tags' => [
+        'not_found' => 'Blueprint component #:id does not exist',
+        'store_fail' => 'Failed to store blueprint component!',
+        'already_exist' => 'Blueprint component with selected name already exist',
+    ],
+
     //    'item' => [
     //        'not_found' => 'Item #:uuid does not exist',
     //        'cannot_create_data' => 'Cannot create data item. Item #:uuid does not exist',

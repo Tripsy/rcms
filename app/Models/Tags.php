@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\CommonStatus;
+use App\Enums\DefaultOption;
 use App\Models\Traits\CreatedByRelationTrait;
 use App\Models\Traits\StatusScopeTrait;
 use App\Models\Traits\UpdatedByRelationTrait;
@@ -31,6 +32,7 @@ class Tags extends BaseModel
         'project_id',
         'name',
         'description',
+        'is_category',
         'status',
     ];
 
@@ -40,6 +42,7 @@ class Tags extends BaseModel
      * @var array
      */
     protected $casts = [
+        'is_category' => DefaultOption::class,
         'status' => CommonStatus::class,
     ];
 

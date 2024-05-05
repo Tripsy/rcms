@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\CommonStatus;
+use App\Enums\DefaultOption;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -23,6 +24,7 @@ return new class extends Migration
             $table->char('name', 64);
             $table->text('description');
 
+            $table->enum('is_category', DefaultOption::justKeys())->default(DefaultOption::NO->value);
             $table->enum('status', CommonStatus::justKeys())->default(CommonStatus::ACTIVE->value);
 
             $table->dateTime('created_at');
@@ -31,6 +33,7 @@ return new class extends Migration
             $table->bigInteger('updated_by', false, true)->nullable();
 
             $table->unique(['project_id', 'name']);
+            $table->index(['project_id', 'is_category']);
 
             $table->foreign('project_id')
                 ->references('id')

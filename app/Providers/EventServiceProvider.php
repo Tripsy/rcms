@@ -6,14 +6,17 @@ use App\Listeners\BlueprintComponentSubscriber;
 use App\Listeners\ProjectBlueprintSubscriber;
 use App\Listeners\ProjectPermissionSubscriber;
 use App\Listeners\ProjectSubscriber;
+use App\Listeners\TagsSubscriber;
 use App\Models\BlueprintComponent;
 use App\Models\Project;
 use App\Models\ProjectBlueprint;
 use App\Models\ProjectPermission;
+use App\Models\Tags;
 use App\Observers\BlueprintComponentObserver;
 use App\Observers\ProjectBlueprintObserver;
 use App\Observers\ProjectObserver;
 use App\Observers\ProjectPermissionObserver;
+use App\Observers\TagsObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -50,6 +53,7 @@ class EventServiceProvider extends ServiceProvider
         ProjectPermissionSubscriber::class,
         ProjectBlueprintSubscriber::class,
         BlueprintComponentSubscriber::class,
+        TagsSubscriber::class,
     ];
 
     /**
@@ -76,6 +80,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         BlueprintComponent::class => [
             BlueprintComponentObserver::class,
+        ],
+        Tags::class => [
+            TagsObserver::class,
         ],
     ];
 
