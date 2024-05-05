@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
-class BlueprintItem extends BaseModel
+class Item extends BaseModel
 {
     use UuidScopeTrait;
     use StatusScopeTrait;
@@ -19,7 +19,7 @@ class BlueprintItem extends BaseModel
      *
      * @var string
      */
-    protected $table = 'blueprint_item';
+    protected $table = 'item';
 
     /**
      * The attributes that are mass assignable.

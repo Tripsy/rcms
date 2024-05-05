@@ -27,7 +27,7 @@ class ItemContent extends Model
      * @var array
      */
     protected $fillable = [
-        'blueprint_item_id',
+        'item_id',
         'blueprint_component_id',
         'content',
         'is_active',
@@ -43,15 +43,15 @@ class ItemContent extends Model
     ];
 
     /**
-     * Get the item that owns this item data.
+     * Get the item that owns this.
      */
     public function item(): BelongsTo
     {
-        return $this->belongsTo(BlueprintItem::class, 'blueprint_item_id', 'id');
+        return $this->belongsTo(Item::class, 'item_id', 'id');
     }
 
     /**
-     * Scope a query to select items with selected label
+     * Get the blueprint component that owns this.
      */
     public function component(): BelongsTo
     {
@@ -59,7 +59,7 @@ class ItemContent extends Model
     }
 
     /**
-     * Scope a query to select items marked as active
+     * Scope a query to select content marked as active
      */
     public function scopeActive(Builder $query): void
     {

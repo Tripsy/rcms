@@ -77,18 +77,6 @@ class EventServiceProvider extends ServiceProvider
         BlueprintComponent::class => [
             BlueprintComponentObserver::class,
         ],
-        //        Item::class => [
-        //            ItemObserver::class,
-        //        ],
-        //        ItemData::class => [
-        //            ItemObserver::class,
-        //        ],
-        //        ItemType::class => [
-        //            ItemObserver::class,
-        //        ],
-        //        ItemTypeLabel::class => [
-        //            ItemObserver::class,
-        //        ],
     ];
 
     /**

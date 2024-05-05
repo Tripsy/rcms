@@ -1,6 +1,6 @@
 <?php
 
-use App\Enums\BlueprintItemStatus;
+use App\Enums\CommonStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,27 +12,29 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('blueprint_item', function (Blueprint $table) {
+        Schema::create('tags', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->charset = 'utf8mb4';
             $table->collation = 'utf8mb4_general_ci';
 
             $table->id();
 
-            $table->char('uuid', 64)->unique();
-            $table->bigInteger('project_blueprint_id', false, true);
+            $table->bigInteger('project_id', false, true);
+            $table->char('name', 64);
             $table->text('description');
 
-            $table->enum('status', BlueprintItemStatus::justKeys())->default(BlueprintItemStatus::DRAFT->value);
+            $table->enum('status', CommonStatus::justKeys())->default(CommonStatus::ACTIVE->value);
 
             $table->dateTime('created_at');
             $table->bigInteger('created_by', false, true)->nullable();
             $table->dateTime('updated_at')->nullable();
             $table->bigInteger('updated_by', false, true)->nullable();
 
-            $table->foreign('project_blueprint_id')
+            $table->unique(['project_id', 'name']);
+
+            $table->foreign('project_id')
                 ->references('id')
-                ->on('project_blueprint')
+                ->on('project')
                 ->onUpdate('no action')
                 ->onDelete('cascade');
 
@@ -55,6 +57,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('blueprint_item');
+        Schema::dropIfExists('tags');
     }
 };
