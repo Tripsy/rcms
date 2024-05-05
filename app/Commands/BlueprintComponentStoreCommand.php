@@ -68,7 +68,7 @@ class BlueprintComponentStoreCommand
         }
     }
 
-    public function getBlueprintProjectId(): int
+    public function getProjectBlueprintId(): int
     {
         return $this->project_blueprint_id;
     }

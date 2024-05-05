@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\BlueprintComponentFormat;
+use App\Enums\BlueprintComponentType;
 use App\Enums\CommonStatus;
+use App\Enums\DefaultOption;
 use App\Queries\BlueprintComponentReadQuery;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -35,6 +38,12 @@ class BlueprintComponentStoreRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
+            'description' => ['required', 'string'],
+            'info' => ['sometimes', 'nullable', 'string'],
+            'component_type' => ['required', Rule::enum(BlueprintComponentType::class)],
+            'component_format' => ['required', Rule::enum(BlueprintComponentFormat::class)],
+            'type_options' => ['sometimes', 'nullable', 'array'],
+            'is_required' => ['required', Rule::enum(DefaultOption::class)],
             'status' => ['sometimes', Rule::enum(CommonStatus::class)],
         ];
     }
@@ -57,13 +66,14 @@ class BlueprintComponentStoreRequest extends FormRequest
     protected function checkBlueprintComponentExist(\Illuminate\Contracts\Validation\Validator $validator): void
     {
         $blueprintComponent = app(BlueprintComponentReadQuery::class)
-            ->filterByName($validator->safe()->name)
+            ->filterByProjectBlueprintId($this->route('projectBlueprint')->id)
+            ->filterByName($this->validator->safe()->name)
             ->isUnique();
 
         if ($blueprintComponent === false) {
             $validator->errors()->add(
                 'other',
-                __('message.blueprintComponent.already_exist')
+                __('message.blueprint_component.already_exist')
             );
         }
     }

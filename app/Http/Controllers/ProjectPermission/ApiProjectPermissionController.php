@@ -186,6 +186,6 @@ class ApiProjectPermissionController extends Controller
         $this->apiWrapper->message(__('message.success'));
         $this->apiWrapper->data($command->attributes());
 
-        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_NO_CONTENT);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_ACCEPTED);
     }
 }

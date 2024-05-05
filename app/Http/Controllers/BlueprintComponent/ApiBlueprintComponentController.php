@@ -48,13 +48,13 @@ class ApiBlueprintComponentController extends Controller
 
         $results = $query
             ->filterByProjectBlueprintId($projectBlueprint->id)
-            ->filterByComponentType($validated['filter']['component_type']) ??
+            ->filterByStatus($validated['filter']['status'])
+            ->filterByComponentType($validated['filter']['component_type'])
             ->filterByComponentFormat($validated['filter']['component_format'])
             ->isRequired($validated['filter']['is_required'])
             ->filterByName('%'.$validated['filter']['name'].'%', 'LIKE')
             ->filterByDescription('%'.$validated['filter']['description'].'%', 'LIKE')
             ->filterByInfo('%'.$validated['filter']['info'].'%', 'LIKE')
-            ->filterByStatus($validated['filter']['status'])
             ->withCreatedBy()
             ->withUpdatedBy()
             ->get($validated['page'], $validated['limit'])
@@ -82,7 +82,7 @@ class ApiBlueprintComponentController extends Controller
         ProjectBlueprint $projectBlueprint,
         BlueprintComponentReadQuery $query
     ): JsonResponse {
-        Gate::authorize('create', [BlueprintComponent::class, $projectBlueprint]);
+        Gate::authorize('create', [BlueprintComponent::class, $projectBlueprint->project()->first()]);
 
         $validated = $request->validated();
 
@@ -91,6 +91,11 @@ class ApiBlueprintComponentController extends Controller
                 $projectBlueprint->id,
                 $validated['name'],
                 $validated['description'],
+                $validated['info'],
+                $validated['component_type'],
+                $validated['component_format'],
+                $validated['type_options'] ?? [], //is not a required field
+                $validated['is_required'],
                 $validated['status'],
             );
 
@@ -102,7 +107,7 @@ class ApiBlueprintComponentController extends Controller
                 ->firstOrFail();
         } catch (ModelNotFoundException) {
             throw new ControllerException(
-                __('message.??.store_fail'),
+                __('message.blueprint_component.store_fail'),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -128,14 +133,13 @@ class ApiBlueprintComponentController extends Controller
         BlueprintComponentReadQuery $query,
         BlueprintComponentRepository $repository
     ): JsonResponse {
-        Gate::authorize('view', [BlueprintComponent::class, $projectBlueprint]);
+        Gate::authorize('view', [BlueprintComponent::class, $projectBlueprint->project()->first()]);
 
         $data = $repository->getViewCache($blueprintComponent->id, function () use ($query, $blueprintComponent) {
             return $query
                 ->filterById($blueprintComponent->id)
                 ->withCreatedBy()
                 ->withUpdatedBy()
-                ->withComponents()
                 ->first();
         });
 
@@ -157,7 +161,7 @@ class ApiBlueprintComponentController extends Controller
         ProjectBlueprint $projectBlueprint,
         BlueprintComponent $blueprintComponent
     ): JsonResponse {
-        Gate::authorize('update', [$blueprintComponent, $projectBlueprint]);
+        Gate::authorize('update', [BlueprintComponent::class, $projectBlueprint->project()->first()]);
 
         $validated = $request->validated();
 
@@ -166,12 +170,17 @@ class ApiBlueprintComponentController extends Controller
                 $blueprintComponent->id,
                 $validated['name'],
                 $validated['description'],
+                $validated['info'],
+                $validated['component_type'],
+                $validated['component_format'],
+                $validated['type_options'] ?? [],
+                $validated['is_required']
             );
 
             BlueprintComponentUpdate::run($command);
         } catch (ModelNotFoundException) {
             throw new ControllerException(
-                __('message.???.store_fail'),
+                __('message.blueprint_component.store_fail'),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -188,7 +197,7 @@ class ApiBlueprintComponentController extends Controller
      */
     public function destroy(ProjectBlueprint $projectBlueprint, BlueprintComponent $blueprintComponent): JsonResponse
     {
-        Gate::authorize('delete', [BlueprintComponent::class, $projectBlueprint]);
+        Gate::authorize('delete', [BlueprintComponent::class, $projectBlueprint->project()->first()]);
 
         $command = new BlueprintComponentDeleteCommand(
             $blueprintComponent->id
@@ -200,6 +209,6 @@ class ApiBlueprintComponentController extends Controller
         $this->apiWrapper->message(__('message.success'));
         $this->apiWrapper->data($command->attributes());
 
-        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_NO_CONTENT);
+        return response()->json($this->apiWrapper->resultArray(), Response::HTTP_ACCEPTED);
     }
 }

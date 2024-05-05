@@ -20,7 +20,7 @@ class BlueprintComponentStore
     public function handle(BlueprintComponentStoreCommand $command): void
     {
         $this->query->create([
-            'project_blueprint_id' => $command->getBlueprintProjectId(),
+            'project_blueprint_id' => $command->getProjectBlueprintId(),
             'name' => $command->getName(),
             'description' => $command->getDescription(),
             'info' => $command->getInfo(),

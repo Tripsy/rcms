@@ -1,7 +1,7 @@
 ## TO DO
 
-- filterByInfo & filterByName & filterByDescription to return same method but with params field & value
-- create app/Http/Controllers/BlueprintComponent/ApiBlueprintComponentController.php
+BlueprintItem
+
 - postman documentation & tests
 
 # PACKAGES
