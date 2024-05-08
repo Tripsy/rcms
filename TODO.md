@@ -2,8 +2,6 @@
 
 BlueprintItem > Item
 
-project_tags
-item_tags
 
 - postman documentation & tests
 

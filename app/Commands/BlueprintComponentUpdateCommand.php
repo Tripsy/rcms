@@ -65,7 +65,7 @@ class BlueprintComponentUpdateCommand
 
     public function getInfo(): string
     {
-        return $this->description;
+        return $this->info;
     }
 
     public function getComponentType(): BlueprintComponentType

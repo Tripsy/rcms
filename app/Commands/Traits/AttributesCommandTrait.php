@@ -31,7 +31,11 @@ trait AttributesCommandTrait
             $methodName = Str::camel('get_'.$attributeName);
 
             if (method_exists($this, $methodName)) {
-                $result[$attributeName] = call_user_func([$this, $methodName]);
+                $value = call_user_func([$this, $methodName]);
+
+                if (is_null($value) === false) {
+                    $result[$attributeName] = $value;
+                }
             } else {
                 throw new BadMethodCallException(__('message.exception.class_method_not_found', [
                     'method' => $methodName,

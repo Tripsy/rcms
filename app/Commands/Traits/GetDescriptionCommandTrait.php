@@ -7,7 +7,7 @@ namespace App\Commands\Traits;
 trait GetDescriptionCommandTrait
 {
     /**
-     * Return attribute `name`
+     * Return attribute `description`
      */
     public function getDescription(): string
     {

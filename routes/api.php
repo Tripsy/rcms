@@ -8,6 +8,8 @@ use App\Http\Controllers\ProjectBlueprint\ApiProjectBlueprintController;
 use App\Http\Controllers\ProjectBlueprint\ApiProjectBlueprintStatusController;
 use App\Http\Controllers\ProjectPermission\ApiProjectPermissionController;
 use App\Http\Controllers\ProjectPermission\ApiProjectPermissionStatusController;
+use App\Http\Controllers\Tags\ApiTagsController;
+use App\Http\Controllers\Tags\ApiTagsStatusController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -136,5 +138,34 @@ Route::group([
         )
             ->where('projectBlueprint', '[0-9]+')
             ->where('blueprintComponent', '[0-9]+');
+    });
+
+    Route::prefix('/tags')->group(function () {
+        Route::controller(ApiTagsController::class)->group(function () {
+            Route::get('/{project}', 'index')
+                ->where('project', '[0-9]+');
+
+            Route::get('/{project}/{tags}', 'show')
+                ->where('project', '[0-9]+')
+                ->where('tags', '[0-9]+');
+
+            Route::post('/{project}', 'store')
+                ->where('project', '[0-9]+');
+
+            Route::put('/{project}/{tags}', 'update')
+                ->where('project', '[0-9]+')
+                ->where('tags', '[0-9]+');
+
+            Route::delete('/{project}/{tags}', 'destroy')
+                ->where('project', '[0-9]+')
+                ->where('tags', '[0-9]+');
+        });
+
+        Route::patch(
+            '/{project}/{tags}/{status}',
+            ApiTagsStatusController::class
+        )
+            ->where('project', '[0-9]+')
+            ->where('tags', '[0-9]+');
     });
 });

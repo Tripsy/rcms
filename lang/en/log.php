@@ -40,4 +40,11 @@ return [
         'activated' => 'Project blueprint #:project_blueprint_id component #:blueprint_component_id activated by user #:action_by',
         'deleting' => 'Project blueprint #:project_blueprint_id component #:blueprint_component_id delete init by user #:action_by',
     ],
+
+    'tags' => [
+        'created' => 'Project #:project_id tag `:name` (eg: #:tags_id) created by user #:action_by ',
+        'updated' => 'Project #:project_id tag #:tags_id updated by user #:action_by',
+        'activated' => 'Project #:project_id tag #:tags_id activated by user #:action_by',
+        'deleting' => 'Project #:project_id tag #:tags_id delete init by user #:action_by',
+    ],
 ];

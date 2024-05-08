@@ -28,7 +28,7 @@ class {{ $className }}
      */
     public function handle{{ $model }}Created({{ $model }}Created $event): void
     {
-        Log::channel('{{ $modelVariable }}')->info(
+        Log::channel('project')->info(
             __('log.{{ $modelVariable }}.created', [
                 '{{ $modelVariable }}_id' => $event->{{ $modelVariable }}->id,
                 'name' => $event->{{ $modelVariable }}->name,
@@ -42,7 +42,7 @@ class {{ $className }}
      */
     public function handle{{ $model }}Updated({{ $model }}Updated $event): void
     {
-        Log::channel('{{ $modelVariable }}')->info(
+        Log::channel('project')->info(
             __('log.{{ $modelVariable }}.updated', [
                 '{{ $modelVariable }}_id' => $event->{{ $modelVariable }}->id,
                 'action_by' => $event->{{ $modelVariable }}->updated_by,
@@ -60,7 +60,7 @@ class {{ $className }}
      */
     public function handle{{ $model }}Activated({{ $model }}Activated $event): void
     {
-        Log::channel('{{ $modelVariable }}')->info(
+        Log::channel('project')->info(
             __('log.{{ $modelVariable }}.activated', [
                 '{{ $modelVariable }}_id' => $event->{{ $modelVariable }}->id,
                 'action_by' => $event->{{ $modelVariable }}->updated_by,
@@ -73,7 +73,7 @@ class {{ $className }}
      */
     public function handle{{ $model }}Deleting({{ $model }}Deleting $event): void
     {
-        Log::channel('{{ $modelVariable }}')->info(
+        Log::channel('project')->info(
             __('log.{{ $modelVariable }}.deleting', [
                 '{{ $modelVariable }}_id' => $event->{{ $modelVariable }}->id,
                 'action_by' => auth()->id(),

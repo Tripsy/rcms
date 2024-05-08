@@ -32,10 +32,6 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        //        ProjectCreated::class => [
-        //            ProjectCreatedLog::class,
-        ////            ProjectCacheRefresh::class,
-        //        ],
     ];
 
     /**

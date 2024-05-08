@@ -55,9 +55,9 @@ return [
     ],
 
     'tags' => [
-        'not_found' => 'Blueprint component #:id does not exist',
-        'store_fail' => 'Failed to store blueprint component!',
-        'already_exist' => 'Blueprint component with selected name already exist',
+        'not_found' => 'Tag #:id does not exist',
+        'store_fail' => 'Failed to store tag!',
+        'already_exist' => 'A tag with selected name already exist',
     ],
 
     //    'item' => [
