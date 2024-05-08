@@ -24,7 +24,7 @@ class ApiTagsStatusController extends Controller
         Tags $tags,
         CommonStatus $status
     ): JsonResponse {
-        Gate::authorize('update', [$tags, $project]);
+        Gate::authorize('update', [Tags::class, $project]);
 
         $command = new TagsStatusUpdateCommand(
             $tags->id,
