@@ -7,15 +7,15 @@ namespace App\Actions;
 use App\Actions\Traits\AsAction;
 use App\Commands\ProjectPermissionUpdateCommand;
 use App\Exceptions\ActionException;
-use App\Queries\ProjectPermissionUpdateQuery;
+use App\Queries\ProjectPermissionQuery;
 
 class ProjectPermissionUpdate
 {
     use AsAction;
 
-    private ProjectPermissionUpdateQuery $query;
+    private ProjectPermissionQuery $query;
 
-    public function __construct(ProjectPermissionUpdateQuery $query)
+    public function __construct(ProjectPermissionQuery $query)
     {
         $this->query = $query;
     }

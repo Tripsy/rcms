@@ -5,15 +5,15 @@ namespace App\Actions;
 use App\Actions\Traits\AsAction;
 use App\Commands\ProjectDeleteCommand;
 use App\Exceptions\ActionException;
-use App\Queries\ProjectDeleteQuery;
+use App\Queries\ProjectQuery;
 
 class ProjectDelete
 {
     use AsAction;
 
-    private ProjectDeleteQuery $query;
+    private ProjectQuery $query;
 
-    public function __construct(ProjectDeleteQuery $query)
+    public function __construct(ProjectQuery $query)
     {
         $this->query = $query;
     }

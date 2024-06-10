@@ -4,15 +4,15 @@ namespace App\Actions;
 
 use App\Actions\Traits\AsAction;
 use App\Commands\ProjectPermissionStoreCommand;
-use App\Queries\ProjectPermissionCreateQuery;
+use App\Queries\ProjectPermissionQuery;
 
 class ProjectPermissionStore
 {
     use AsAction;
 
-    private ProjectPermissionCreateQuery $query;
+    private ProjectPermissionQuery $query;
 
-    public function __construct(ProjectPermissionCreateQuery $query)
+    public function __construct(ProjectPermissionQuery $query)
     {
         $this->query = $query;
     }

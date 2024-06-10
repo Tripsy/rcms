@@ -5,15 +5,15 @@ namespace App\Actions;
 use App\Actions\Traits\AsAction;
 use App\Commands\ProjectBlueprintDeleteCommand;
 use App\Exceptions\ActionException;
-use App\Queries\ProjectBlueprintDeleteQuery;
+use App\Queries\ProjectBlueprintQuery;
 
 class ProjectBlueprintDelete
 {
     use AsAction;
 
-    private ProjectBlueprintDeleteQuery $query;
+    private ProjectBlueprintQuery $query;
 
-    public function __construct(ProjectBlueprintDeleteQuery $query)
+    public function __construct(ProjectBlueprintQuery $query)
     {
         $this->query = $query;
     }

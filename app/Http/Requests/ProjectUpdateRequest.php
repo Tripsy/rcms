@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Queries\ProjectReadQuery;
+use App\Queries\ProjectQuery;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -45,7 +45,7 @@ class ProjectUpdateRequest extends FormRequest
      */
     protected function checkProjectExist(\Illuminate\Contracts\Validation\Validator $validator): void
     {
-        $project = app(ProjectReadQuery::class)
+        $project = app(ProjectQuery::class)
             ->filterByAuthorityName($validator->safe()->authority_name)
             ->filterByName($validator->safe()->name)
             ->filterById($this->route('project')->id, '<>') //ignore updated entry

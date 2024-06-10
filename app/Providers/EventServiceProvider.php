@@ -3,16 +3,19 @@
 namespace App\Providers;
 
 use App\Listeners\BlueprintComponentSubscriber;
+use App\Listeners\ItemSubscriber;
 use App\Listeners\ProjectBlueprintSubscriber;
 use App\Listeners\ProjectPermissionSubscriber;
 use App\Listeners\ProjectSubscriber;
 use App\Listeners\TagsSubscriber;
 use App\Models\BlueprintComponent;
+use App\Models\Item;
 use App\Models\Project;
 use App\Models\ProjectBlueprint;
 use App\Models\ProjectPermission;
 use App\Models\Tags;
 use App\Observers\BlueprintComponentObserver;
+use App\Observers\ItemObserver;
 use App\Observers\ProjectBlueprintObserver;
 use App\Observers\ProjectObserver;
 use App\Observers\ProjectPermissionObserver;
@@ -50,6 +53,7 @@ class EventServiceProvider extends ServiceProvider
         ProjectBlueprintSubscriber::class,
         BlueprintComponentSubscriber::class,
         TagsSubscriber::class,
+        ItemSubscriber::class,
     ];
 
     /**
@@ -79,6 +83,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         Tags::class => [
             TagsObserver::class,
+        ],
+        Item::class => [
+            ItemObserver::class,
         ],
     ];
 

@@ -19,7 +19,7 @@ use App\Http\Requests\ProjectBlueprintStoreRequest;
 use App\Http\Requests\ProjectBlueprintUpdateRequest;
 use App\Models\Project;
 use App\Models\ProjectBlueprint;
-use App\Queries\ProjectBlueprintReadQuery;
+use App\Queries\ProjectBlueprintQuery;
 use App\Repositories\BlueprintComponentRepository;
 use App\Repositories\ProjectBlueprintRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -44,7 +44,7 @@ class ApiProjectBlueprintController extends Controller
     public function index(
         ProjectBlueprintIndexRequest $request,
         Project $project,
-        ProjectBlueprintReadQuery $query
+        ProjectBlueprintQuery $query
     ): JsonResponse {
         Gate::authorize('index', [ProjectBlueprint::class, $project]);
 
@@ -80,7 +80,7 @@ class ApiProjectBlueprintController extends Controller
     public function store(
         ProjectBlueprintStoreRequest $request,
         Project $project,
-        ProjectBlueprintReadQuery $query
+        ProjectBlueprintQuery $query
     ): JsonResponse {
         Gate::authorize('create', [ProjectBlueprint::class, $project]);
 
@@ -148,9 +148,9 @@ class ApiProjectBlueprintController extends Controller
      * Display the specified resource.
      */
     public function show(
-        Project $project,
-        ProjectBlueprint $projectBlueprint,
-        ProjectBlueprintReadQuery $query,
+        Project                    $project,
+        ProjectBlueprint           $projectBlueprint,
+        ProjectBlueprintQuery      $query,
         ProjectBlueprintRepository $repository
     ): JsonResponse {
         Gate::authorize('view', [ProjectBlueprint::class, $project]);

@@ -4,15 +4,15 @@ namespace App\Actions;
 
 use App\Actions\Traits\AsAction;
 use App\Commands\ProjectBlueprintStoreCommand;
-use App\Queries\ProjectBlueprintCreateQuery;
+use App\Queries\ProjectBlueprintQuery;
 
 class ProjectBlueprintStore
 {
     use AsAction;
 
-    private ProjectBlueprintCreateQuery $query;
+    private ProjectBlueprintQuery $query;
 
-    public function __construct(ProjectBlueprintCreateQuery $query)
+    public function __construct(ProjectBlueprintQuery $query)
     {
         $this->query = $query;
     }

@@ -1,10 +1,13 @@
+## BUGS
+
+https://web.postman.co/workspace/My-Workspace~05d3a0fa-96f0-4398-8abf-7f992d9c6d6d/request/18623077-ae20f5ee-3bd2-4a2e-acbb-9c1947225b8c?tab=scripts
+
+Status can be updated without a proper project_blueprint_id
+Same goes for update ..seems like a general issue !!!
+
 ## TO DO
 
-
-ApiTagsStatusController.php
-
 Item
-
 
 - postman documentation & tests
 

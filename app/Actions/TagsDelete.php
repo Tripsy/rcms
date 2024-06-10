@@ -7,15 +7,15 @@ namespace App\Actions;
 use App\Actions\Traits\AsAction;
 use App\Commands\TagsDeleteCommand;
 use App\Exceptions\ActionException;
-use App\Queries\TagsDeleteQuery;
+use App\Queries\TagsQuery;
 
 class TagsDelete
 {
     use AsAction;
 
-    private TagsDeleteQuery $query;
+    private TagsQuery $query;
 
-    public function __construct(TagsDeleteQuery $query)
+    public function __construct(TagsQuery $query)
     {
         $this->query = $query;
     }

@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\CommonStatus;
 use App\Enums\ProjectPermissionRole;
-use App\Queries\ProjectPermissionReadQuery;
+use App\Queries\ProjectPermissionQuery;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -59,7 +59,7 @@ class ProjectPermissionStoreRequest extends FormRequest
      */
     protected function checkProjectPermissionExist(\Illuminate\Contracts\Validation\Validator $validator): void
     {
-        $projectPermission = app(ProjectPermissionReadQuery::class)
+        $projectPermission = app(ProjectPermissionQuery::class)
             ->filterByProjectId($this->route('project')->id)
             ->filterByUserId($this->validator->safe()->user_id)
             ->isUnique();

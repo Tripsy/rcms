@@ -6,7 +6,7 @@ namespace App\Http\Controllers\Project;
 
 use App\Http\Controllers\Controller;
 use App\Models\Project;
-use App\Queries\ProjectReadQuery;
+use App\Queries\ProjectQuery;
 
 class ProjectController extends Controller
 {
@@ -29,7 +29,7 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project, ProjectReadQuery $query): array
+    public function show(Project $project, ProjectQuery $query): array
     {
         //        return projectReadQuery->showData($project_id);
     }

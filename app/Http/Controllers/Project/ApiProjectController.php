@@ -20,7 +20,7 @@ use App\Http\Requests\ProjectIndexRequest;
 use App\Http\Requests\ProjectStoreRequest;
 use App\Http\Requests\ProjectUpdateRequest;
 use App\Models\Project;
-use App\Queries\ProjectReadQuery;
+use App\Queries\ProjectQuery;
 use App\Repositories\ProjectRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -42,7 +42,7 @@ class ApiProjectController extends Controller
      */
     public function index(
         ProjectIndexRequest $request,
-        ProjectReadQuery $query
+        ProjectQuery $query
     ): JsonResponse {
         Gate::authorize('index', Project::class);
 
@@ -74,7 +74,7 @@ class ApiProjectController extends Controller
      *
      * @throws ControllerException
      */
-    public function store(ProjectStoreRequest $request, ProjectReadQuery $query): JsonResponse
+    public function store(ProjectStoreRequest $request, ProjectQuery $query): JsonResponse
     {
         Gate::authorize('create', Project::class);
 
@@ -122,7 +122,7 @@ class ApiProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Project $project, ProjectReadQuery $query, ProjectRepository $repository): JsonResponse
+    public function show(Project $project, ProjectQuery $query, ProjectRepository $repository): JsonResponse
     {
         Gate::authorize('view', $project);
 

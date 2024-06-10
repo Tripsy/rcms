@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use App\Enums\BlueprintComponentFormat;
 use App\Enums\BlueprintComponentType;
 use App\Enums\DefaultOption;
-use App\Queries\ProjectBlueprintReadQuery;
+use App\Queries\ProjectBlueprintQuery;
 use App\Repositories\BlueprintComponentRepository;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -110,7 +110,7 @@ class ProjectBlueprintUpdateRequest extends FormRequest
      */
     protected function checkProjectBlueprintExist(\Illuminate\Contracts\Validation\Validator $validator): void
     {
-        $projectBlueprint = app(ProjectBlueprintReadQuery::class)
+        $projectBlueprint = app(ProjectBlueprintQuery::class)
             ->filterByProjectId($this->route('project')->id)
             ->filterByName($this->validator->safe()->name)
             ->filterById($this->route('projectBlueprint')->id, '<>') //ignore updated entry

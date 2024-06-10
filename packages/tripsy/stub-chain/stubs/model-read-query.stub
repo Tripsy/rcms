@@ -10,7 +10,7 @@ use App\Queries\Traits\FilterByNameQueryTrait;
 use App\Queries\Traits\FilterByStatusQueryTrait;
 use Illuminate\Database\Eloquent\Builder;
 
-class {{ $className }}  extends AbstractReadQuery
+class {{ $className }}  extends AbstractQuery
 {
     use FilterByStatusQueryTrait;
     use FilterByNameQueryTrait;

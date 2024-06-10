@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\CommonStatus;
-use App\Queries\ProjectReadQuery;
+use App\Queries\ProjectQuery;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -58,7 +58,7 @@ class ProjectStoreRequest extends FormRequest
      */
     protected function checkProjectExist(\Illuminate\Contracts\Validation\Validator $validator): void
     {
-        $project = app(ProjectReadQuery::class)
+        $project = app(ProjectQuery::class)
             ->filterByAuthorityName($validator->safe()->authority_name)
             ->filterByName($validator->safe()->name)
             ->isUnique();

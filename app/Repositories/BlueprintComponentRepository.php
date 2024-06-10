@@ -11,7 +11,7 @@ use App\Commands\BlueprintComponentDeleteCommand;
 use App\Commands\BlueprintComponentStoreCommand;
 use App\Commands\BlueprintComponentUpdateCommand;
 use App\Enums\BlueprintComponentType;
-use App\Queries\BlueprintComponentReadQuery;
+use App\Queries\BlueprintComponentQuery;
 use App\Repositories\Traits\CacheRepositoryTrait;
 
 class BlueprintComponentRepository
@@ -76,7 +76,7 @@ class BlueprintComponentRepository
     {
         $componentsName = array_column($validatedComponents, 'name');
 
-        $queryBlueprintComponent = app(BlueprintComponentReadQuery::class)
+        $queryBlueprintComponent = app(BlueprintComponentQuery::class)
             ->filterByProjectBlueprintId($project_blueprint_id)
             ->asQuery();
 
@@ -117,7 +117,7 @@ class BlueprintComponentRepository
      */
     private function saveComponent(int $project_blueprint_id, array $component): void
     {
-        $blueprintComponent = app(BlueprintComponentReadQuery::class)
+        $blueprintComponent = app(BlueprintComponentQuery::class)
             ->filterByProjectBlueprintId($project_blueprint_id)
             ->filterByName($component['name'])
             ->first();

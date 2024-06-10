@@ -4,15 +4,15 @@ namespace App\Actions;
 
 use App\Actions\Traits\AsAction;
 use App\Commands\BlueprintComponentStoreCommand;
-use App\Queries\BlueprintComponentCreateQuery;
+use App\Queries\BlueprintComponentQuery;
 
 class BlueprintComponentStore
 {
     use AsAction;
 
-    private BlueprintComponentCreateQuery $query;
+    private BlueprintComponentQuery $query;
 
-    public function __construct(BlueprintComponentCreateQuery $query)
+    public function __construct(BlueprintComponentQuery $query)
     {
         $this->query = $query;
     }

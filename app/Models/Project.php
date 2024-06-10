@@ -14,9 +14,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends BaseModel
 {
+    use StatusScopeTrait;
     use CreatedByRelationTrait;
     use UpdatedByRelationTrait;
-    use StatusScopeTrait;
 
     /**
      * The table associated with the model.

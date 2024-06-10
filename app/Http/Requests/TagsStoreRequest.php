@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\CommonStatus;
 use App\Enums\DefaultOption;
-use App\Queries\TagsReadQuery;
+use App\Queries\TagsQuery;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -61,7 +61,7 @@ class TagsStoreRequest extends FormRequest
      */
     protected function checkTagsExist(\Illuminate\Contracts\Validation\Validator $validator): void
     {
-        $tags = app(TagsReadQuery::class)
+        $tags = app(TagsQuery::class)
             ->filterByProjectId($this->route('project')->id)
             ->filterByName($this->validator->safe()->name)
             ->isUnique();

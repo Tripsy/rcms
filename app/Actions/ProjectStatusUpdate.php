@@ -7,15 +7,15 @@ namespace App\Actions;
 use App\Actions\Traits\AsAction;
 use App\Commands\ProjectStatusUpdateCommand;
 use App\Exceptions\ActionException;
-use App\Queries\ProjectUpdateQuery;
+use App\Queries\ProjectQuery;
 
 class ProjectStatusUpdate
 {
     use AsAction;
 
-    private ProjectUpdateQuery $query;
+    private ProjectQuery $query;
 
-    public function __construct(ProjectUpdateQuery $query)
+    public function __construct(ProjectQuery $query)
     {
         $this->query = $query;
     }

@@ -7,15 +7,15 @@ namespace App\Actions;
 use App\Actions\Traits\AsAction;
 use App\Commands\TagsUpdateCommand;
 use App\Exceptions\ActionException;
-use App\Queries\TagsUpdateQuery;
+use App\Queries\TagsQuery;
 
 class TagsUpdate
 {
     use AsAction;
 
-    private TagsUpdateQuery $query;
+    private TagsQuery $query;
 
-    public function __construct(TagsUpdateQuery $query)
+    public function __construct(TagsQuery $query)
     {
         $this->query = $query;
     }

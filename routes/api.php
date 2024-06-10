@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\BlueprintComponent\ApiBlueprintComponentController;
 use App\Http\Controllers\BlueprintComponent\ApiBlueprintComponentStatusController;
+use App\Http\Controllers\Item\ApiItemController;
+use App\Http\Controllers\Item\ApiItemStatusController;
 use App\Http\Controllers\Project\ApiProjectController;
 use App\Http\Controllers\Project\ApiProjectStatusController;
 use App\Http\Controllers\ProjectBlueprint\ApiProjectBlueprintController;
@@ -167,5 +169,34 @@ Route::group([
         )
             ->where('project', '[0-9]+')
             ->where('tags', '[0-9]+');
+    });
+
+    Route::prefix('/item')->group(function () {
+        Route::controller(ApiItemController::class)->group(function () {
+            Route::get('/{projectBlueprint}', 'index')
+                ->where('projectBlueprint', '[0-9]+');
+
+            Route::get('/{projectBlueprint}/{item}', 'show')
+                ->where('projectBlueprint', '[0-9]+')
+                ->where('item', '[0-9]+');
+
+            Route::post('/{projectBlueprint}', 'store')
+                ->where('projectBlueprint', '[0-9]+');
+
+            Route::put('/{projectBlueprint}/{item}', 'update')
+                ->where('projectBlueprint', '[0-9]+')
+                ->where('item', '[0-9]+');
+
+            Route::delete('/{projectBlueprint}/{item}', 'destroy')
+                ->where('projectBlueprint', '[0-9]+')
+                ->where('item', '[0-9]+');
+        });
+
+        Route::patch(
+            '/{projectBlueprint}/{item}/{status}',
+            ApiItemStatusController::class
+        )
+            ->where('projectBlueprint', '[0-9]+')
+            ->where('item', '[0-9]+');
     });
 });

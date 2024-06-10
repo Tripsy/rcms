@@ -7,15 +7,15 @@ namespace App\Actions;
 use App\Actions\Traits\AsAction;
 use App\Commands\BlueprintComponentUpdateCommand;
 use App\Exceptions\ActionException;
-use App\Queries\BlueprintComponentUpdateQuery;
+use App\Queries\BlueprintComponentQuery;
 
 class BlueprintComponentUpdate
 {
     use AsAction;
 
-    private BlueprintComponentUpdateQuery $query;
+    private BlueprintComponentQuery $query;
 
-    public function __construct(BlueprintComponentUpdateQuery $query)
+    public function __construct(BlueprintComponentQuery $query)
     {
         $this->query = $query;
     }

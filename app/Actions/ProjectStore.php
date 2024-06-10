@@ -4,15 +4,15 @@ namespace App\Actions;
 
 use App\Actions\Traits\AsAction;
 use App\Commands\ProjectStoreCommand;
-use App\Queries\ProjectCreateQuery;
+use App\Queries\ProjectQuery;
 
 class ProjectStore
 {
     use AsAction;
 
-    private ProjectCreateQuery $query;
+    private ProjectQuery $query;
 
-    public function __construct(ProjectCreateQuery $query)
+    public function __construct(ProjectQuery $query)
     {
         $this->query = $query;
     }

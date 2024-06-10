@@ -17,7 +17,7 @@ use App\Http\Requests\ProjectPermissionStoreRequest;
 use App\Http\Requests\ProjectPermissionUpdateRequest;
 use App\Models\Project;
 use App\Models\ProjectPermission;
-use App\Queries\ProjectPermissionReadQuery;
+use App\Queries\ProjectPermissionQuery;
 use App\Repositories\ProjectPermissionRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -40,7 +40,7 @@ class ApiProjectPermissionController extends Controller
     public function index(
         ProjectPermissionIndexRequest $request,
         Project $project,
-        ProjectPermissionReadQuery $query
+        ProjectPermissionQuery $query
     ): JsonResponse {
         Gate::authorize('index', [ProjectPermission::class, $project]);
 
@@ -77,7 +77,7 @@ class ApiProjectPermissionController extends Controller
     public function store(
         ProjectPermissionStoreRequest $request,
         Project $project,
-        ProjectPermissionReadQuery $query
+        ProjectPermissionQuery $query
     ): JsonResponse {
         Gate::authorize('create', [ProjectPermission::class, $project]);
 
@@ -120,9 +120,9 @@ class ApiProjectPermissionController extends Controller
      * Display the specified resource.
      */
     public function show(
-        Project $project,
-        ProjectPermission $projectPermission,
-        ProjectPermissionReadQuery $query,
+        Project                     $project,
+        ProjectPermission           $projectPermission,
+        ProjectPermissionQuery      $query,
         ProjectPermissionRepository $repository
     ): JsonResponse {
         Gate::authorize('view', [ProjectPermission::class, $project]);

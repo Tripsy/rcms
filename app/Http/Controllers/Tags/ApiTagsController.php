@@ -17,7 +17,7 @@ use App\Http\Requests\TagsStoreRequest;
 use App\Http\Requests\TagsUpdateRequest;
 use App\Models\Project;
 use App\Models\Tags;
-use App\Queries\TagsReadQuery;
+use App\Queries\TagsQuery;
 use App\Repositories\TagsRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -40,7 +40,7 @@ class ApiTagsController extends Controller
     public function index(
         TagsIndexRequest $request,
         Project $project,
-        TagsReadQuery $query
+        TagsQuery $query
     ): JsonResponse {
         Gate::authorize('index', [Tags::class, $project]);
 
@@ -76,7 +76,7 @@ class ApiTagsController extends Controller
     public function store(
         TagsStoreRequest $request,
         Project $project,
-        TagsReadQuery $query
+        TagsQuery $query
     ): JsonResponse {
         Gate::authorize('create', [Tags::class, $project]);
 
@@ -120,9 +120,9 @@ class ApiTagsController extends Controller
      * Display the specified resource.
      */
     public function show(
-        Project $project,
-        Tags $tags,
-        TagsReadQuery $query,
+        Project        $project,
+        Tags           $tags,
+        TagsQuery      $query,
         TagsRepository $repository
     ): JsonResponse {
         Gate::authorize('view', [Tags::class, $project]);

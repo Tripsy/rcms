@@ -4,15 +4,15 @@ namespace App\Actions;
 
 use App\Actions\Traits\AsAction;
 use App\Commands\TagsStoreCommand;
-use App\Queries\TagsCreateQuery;
+use App\Queries\TagsQuery;
 
 class TagsStore
 {
     use AsAction;
 
-    private TagsCreateQuery $query;
+    private TagsQuery $query;
 
-    public function __construct(TagsCreateQuery $query)
+    public function __construct(TagsQuery $query)
     {
         $this->query = $query;
     }

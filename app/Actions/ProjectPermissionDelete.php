@@ -5,15 +5,15 @@ namespace App\Actions;
 use App\Actions\Traits\AsAction;
 use App\Commands\ProjectPermissionDeleteCommand;
 use App\Exceptions\ActionException;
-use App\Queries\ProjectPermissionDeleteQuery;
+use App\Queries\ProjectPermissionQuery;
 
 class ProjectPermissionDelete
 {
     use AsAction;
 
-    private ProjectPermissionDeleteQuery $query;
+    private ProjectPermissionQuery $query;
 
-    public function __construct(ProjectPermissionDeleteQuery $query)
+    public function __construct(ProjectPermissionQuery $query)
     {
         $this->query = $query;
     }

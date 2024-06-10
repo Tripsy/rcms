@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use App\Enums\BlueprintItemStatus;
+use App\Enums\ItemStatus;
+use App\Models\Traits\CreatedByRelationTrait;
 use App\Models\Traits\StatusScopeTrait;
+use App\Models\Traits\UpdatedByRelationTrait;
 use App\Models\Traits\UuidScopeTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -11,8 +13,10 @@ use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Item extends BaseModel
 {
-    use UuidScopeTrait;
+    use CreatedByRelationTrait;
     use StatusScopeTrait;
+    use UpdatedByRelationTrait;
+    use UuidScopeTrait;
 
     /**
      * The table associated with the model.
@@ -39,7 +43,7 @@ class Item extends BaseModel
      * @var array
      */
     protected $casts = [
-        'status' => BlueprintItemStatus::class,
+        'status' => ItemStatus::class,
     ];
 
     /**
@@ -55,7 +59,7 @@ class Item extends BaseModel
      */
     public function itemContent(): HasMany
     {
-        return $this->hasMany(ItemContent::class, 'uuid', 'uuid');
+        return $this->hasMany(ItemContent::class, 'item_id', 'id');
     }
 
     /**
