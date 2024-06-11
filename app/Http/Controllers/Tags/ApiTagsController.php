@@ -120,16 +120,17 @@ class ApiTagsController extends Controller
      * Display the specified resource.
      */
     public function show(
-        Project        $project,
-        Tags           $tags,
-        TagsQuery      $query,
+        Project $project,
+        Tags $tags,
+        TagsQuery $query,
         TagsRepository $repository
     ): JsonResponse {
         Gate::authorize('view', [Tags::class, $project]);
 
-        $data = $repository->getViewCache($tags->id, function () use ($query, $tags) {
+        $data = $repository->getViewCache($tags->id, function () use ($query, $project, $tags) {
             return $query
                 ->filterById($tags->id)
+                ->filterByProjectId($project->id)
                 ->withCreatedBy()
                 ->withUpdatedBy()
                 ->first();
@@ -145,6 +146,7 @@ class ApiTagsController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
      * @throws ControllerException
      */
     public function update(
@@ -159,6 +161,7 @@ class ApiTagsController extends Controller
         try {
             $command = new TagsUpdateCommand(
                 $tags->id,
+                $project->id,
                 $validated['name'],
                 $validated['description'],
                 $validated['is_category'],
@@ -187,7 +190,8 @@ class ApiTagsController extends Controller
         Gate::authorize('delete', [Tags::class, $project]);
 
         $command = new TagsDeleteCommand(
-            $tags->id
+            $tags->id,
+            $project->id
         );
 
         TagsDelete::run($command);

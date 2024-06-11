@@ -27,6 +27,7 @@ class ItemDelete
     {
         $this->query
             ->filterById($command->getId())
+            ->filterByProjectBlueprintId($command->getProjectBlueprintId())
             ->deleteFirst();
     }
 }

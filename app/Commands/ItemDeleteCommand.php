@@ -14,8 +14,16 @@ class ItemDeleteCommand
 
     private int $id;
 
-    public function __construct(int $id)
+    private int $project_blueprint_id;
+
+    public function __construct(int $id, int $project_blueprint_id)
     {
         $this->id = $id;
+        $this->project_blueprint_id = $project_blueprint_id;
+    }
+
+    public function getProjectBlueprintId(): int
+    {
+        return $this->project_blueprint_id;
     }
 }

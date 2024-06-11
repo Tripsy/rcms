@@ -98,16 +98,16 @@ class ApiItemController extends Controller
             $item = $query
                 ->filterByUuid($commandItem->getUuid())
                 ->firstOrFail();
-//
-//            foreach ($validated['contents'] as $itemContent) {
-//                $commandBlueprintComponent = new ItemContentStoreCommand(
-//                    $commandItem->id,
-//                    $itemContent['blueprint_component_id'],
-//                    $itemContent['content']
-//                );
-//
-//                ItemContentStore::run($commandBlueprintComponent);
-//            }
+
+            foreach ($validated['contents'] as $itemContent) {
+                $commandBlueprintComponent = new ItemContentStoreCommand(
+                    $commandItem->id,
+                    $itemContent['blueprint_component_id'],
+                    $itemContent['content']
+                );
+
+                ItemContentStore::run($commandBlueprintComponent);
+            }
 
             DB::commit();
         } catch (ModelNotFoundException) {
@@ -139,15 +139,16 @@ class ApiItemController extends Controller
      */
     public function show(
         ProjectBlueprint $projectBlueprint,
-        Item             $item,
-        ItemQuery        $query,
-        ItemRepository   $repository
+        Item $item,
+        ItemQuery $query,
+        ItemRepository $repository
     ): JsonResponse {
         Gate::authorize('view', [Item::class, $projectBlueprint->project()->first()]);
 
-        $data = $repository->getViewCache($item->id, function () use ($query, $item) {
+        $data = $repository->getViewCache($item->id, function () use ($query, $projectBlueprint, $item) {
             return $query
                 ->filterById($item->id)
+                ->filterByProjectBlueprintId($item->id)
                 ->withCreatedBy()
                 ->withUpdatedBy()
                 ->first();
@@ -178,6 +179,7 @@ class ApiItemController extends Controller
         try {
             $command = new ItemUpdateCommand(
                 $item->id,
+                $projectBlueprint->id,
                 $validated['description']
             );
 
@@ -204,7 +206,8 @@ class ApiItemController extends Controller
         Gate::authorize('delete', [Item::class, $projectBlueprint->project()->first()]);
 
         $command = new ItemDeleteCommand(
-            $item->id
+            $item->id,
+            $projectBlueprint->id
         );
 
         ItemDelete::run($command);

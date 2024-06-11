@@ -4,22 +4,20 @@ declare(strict_types=1);
 
 namespace App\Queries;
 
-use App\Enums\CommonStatus;
 use App\Enums\DefaultOption;
 use App\Models\ItemContent;
 use App\Queries\Traits\FilterByNameQueryTrait;
 use App\Queries\Traits\FilterByStatusQueryTrait;
-use Illuminate\Database\Eloquent\Builder;
 
-class ItemContentQuery  extends AbstractQuery
+class ItemContentQuery extends AbstractQuery
 {
-    use FilterByStatusQueryTrait;
     use FilterByNameQueryTrait;
+    use FilterByStatusQueryTrait;
 
-    public function __construct(ItemContent $model)
+    protected static string $model = ItemContent::class;
+
+    public function __construct()
     {
-        $this->model = $model;
-
         parent::__construct();
     }
 

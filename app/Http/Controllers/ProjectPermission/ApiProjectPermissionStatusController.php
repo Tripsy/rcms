@@ -28,6 +28,7 @@ class ApiProjectPermissionStatusController extends Controller
 
         $command = new ProjectPermissionStatusUpdateCommand(
             $projectPermission->id,
+            $project->id,
             $status->value
         );
 

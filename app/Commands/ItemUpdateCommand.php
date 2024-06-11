@@ -11,16 +11,24 @@ use App\Commands\Traits\GetIdCommandTrait;
 class ItemUpdateCommand
 {
     use AttributesCommandTrait;
-    use GetIdCommandTrait;
     use GetDescriptionCommandTrait;
+    use GetIdCommandTrait;
 
     private int $id;
 
+    private int $project_blueprint_id;
+
     private string $description;
 
-    public function __construct(int $id, string $description)
+    public function __construct(int $id, int $project_blueprint_id, string $description)
     {
         $this->id = $id;
+        $this->project_blueprint_id = $project_blueprint_id;
         $this->description = $description;
+    }
+
+    public function getProjectBlueprintId(): int
+    {
+        return $this->project_blueprint_id;
     }
 }

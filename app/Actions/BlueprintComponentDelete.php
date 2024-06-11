@@ -25,6 +25,7 @@ class BlueprintComponentDelete
     {
         $this->query
             ->filterById($command->getId())
+            ->filterByProjectBlueprintId($command->getProjectBlueprintId())
             ->deleteFirst();
     }
 }

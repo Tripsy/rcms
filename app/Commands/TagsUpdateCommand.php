@@ -7,6 +7,7 @@ namespace App\Commands;
 use App\Commands\Traits\AttributesCommandTrait;
 use App\Commands\Traits\GetIdCommandTrait;
 use App\Commands\Traits\GetNameCommandTrait;
+use App\Commands\Traits\GetProjectIdCommandTrait;
 use App\Enums\DefaultOption;
 
 class TagsUpdateCommand
@@ -14,8 +15,11 @@ class TagsUpdateCommand
     use AttributesCommandTrait;
     use GetIdCommandTrait;
     use GetNameCommandTrait;
+    use GetProjectIdCommandTrait;
 
     private int $id;
+    
+    private int $project_id;
 
     private string $name;
 
@@ -23,9 +27,10 @@ class TagsUpdateCommand
 
     private ?DefaultOption $is_category = null;
 
-    public function __construct(int $id, string $name, ?string $description, ?string $is_category)
+    public function __construct(int $id, int $project_id, string $name, ?string $description, ?string $is_category)
     {
         $this->id = $id;
+        $this->project_id = $project_id;
         $this->name = $name;
         $this->description = $description;
 

@@ -120,16 +120,17 @@ class ApiProjectPermissionController extends Controller
      * Display the specified resource.
      */
     public function show(
-        Project                     $project,
-        ProjectPermission           $projectPermission,
-        ProjectPermissionQuery      $query,
+        Project $project,
+        ProjectPermission $projectPermission,
+        ProjectPermissionQuery $query,
         ProjectPermissionRepository $repository
     ): JsonResponse {
         Gate::authorize('view', [ProjectPermission::class, $project]);
 
-        $data = $repository->getViewCache($projectPermission->id, function () use ($query, $projectPermission) {
+        $data = $repository->getViewCache($projectPermission->id, function () use ($query, $project, $projectPermission) {
             return $query
                 ->filterById($projectPermission->id)
+                ->filterByProjectId($project->id)
                 ->withCreatedBy()
                 ->withUpdatedBy()
                 ->first();
@@ -157,6 +158,7 @@ class ApiProjectPermissionController extends Controller
 
         $command = new ProjectPermissionUpdateCommand(
             $projectPermission->id,
+            $project->id,
             $validated['role']
         );
 
@@ -177,7 +179,8 @@ class ApiProjectPermissionController extends Controller
         Gate::authorize('delete', [$projectPermission, $project]);
 
         $command = new ProjectPermissionDeleteCommand(
-            $projectPermission->id
+            $projectPermission->id,
+            $project->id
         );
 
         ProjectPermissionDelete::run($command);

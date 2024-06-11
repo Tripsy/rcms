@@ -27,6 +27,7 @@ class ProjectPermissionUpdate
     {
         $this->query
             ->filterById($command->getId())
+            ->filterByProjectId($command->getProjectId())
             ->updateFirst([
                 'role' => $command->getRole(),
             ]);

@@ -28,6 +28,7 @@ class ApiItemStatusController extends Controller
 
         $command = new ItemStatusUpdateCommand(
             $item->id,
+            $projectBlueprint->id,
             $status->value
         );
 

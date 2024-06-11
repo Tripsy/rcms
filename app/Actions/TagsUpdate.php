@@ -39,6 +39,7 @@ class TagsUpdate
 
         $this->query
             ->filterById($command->getId())
+            ->filterByProjectId($command->getProjectId())
             ->updateFirst($updateData);
     }
 }

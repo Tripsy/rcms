@@ -148,16 +148,17 @@ class ApiProjectBlueprintController extends Controller
      * Display the specified resource.
      */
     public function show(
-        Project                    $project,
-        ProjectBlueprint           $projectBlueprint,
-        ProjectBlueprintQuery      $query,
+        Project $project,
+        ProjectBlueprint $projectBlueprint,
+        ProjectBlueprintQuery $query,
         ProjectBlueprintRepository $repository
     ): JsonResponse {
         Gate::authorize('view', [ProjectBlueprint::class, $project]);
 
-        $data = $repository->getViewCache($projectBlueprint->id, function () use ($query, $projectBlueprint) {
+        $data = $repository->getViewCache($projectBlueprint->id, function () use ($query, $project, $projectBlueprint) {
             $result = $query
                 ->filterById($projectBlueprint->id)
+                ->filterByProjectId($project->id)
                 ->withCreatedBy()
                 ->withUpdatedBy()
                 ->withComponents()
@@ -182,6 +183,7 @@ class ApiProjectBlueprintController extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
      * @throws ControllerException
      */
     public function update(
@@ -199,6 +201,7 @@ class ApiProjectBlueprintController extends Controller
 
             $command = new ProjectBlueprintUpdateCommand(
                 $projectBlueprint->id,
+                $project->id,
                 $validated['name'],
                 $validated['description'],
             );
@@ -242,7 +245,8 @@ class ApiProjectBlueprintController extends Controller
         Gate::authorize('delete', [ProjectBlueprint::class, $project]);
 
         $command = new ProjectBlueprintDeleteCommand(
-            $projectBlueprint->id
+            $projectBlueprint->id,
+            $project->id,
         );
 
         ProjectBlueprintDelete::run($command);

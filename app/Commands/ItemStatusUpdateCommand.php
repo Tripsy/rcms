@@ -17,11 +17,19 @@ class ItemStatusUpdateCommand
 
     private int $id;
 
+    private int $project_blueprint_id;
+
     private ItemStatus $status;
 
-    public function __construct(int $id, string $status)
+    public function __construct(int $id, int $project_blueprint_id, string $status)
     {
         $this->id = $id;
+        $this->project_blueprint_id = $project_blueprint_id;
         $this->status = ItemStatus::tryFrom($status) ?? ItemStatus::ACTIVE;
+    }
+
+    public function getProjectBlueprintId(): int
+    {
+        return $this->project_blueprint_id;
     }
 }

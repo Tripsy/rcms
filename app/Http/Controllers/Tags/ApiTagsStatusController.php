@@ -28,6 +28,7 @@ class ApiTagsStatusController extends Controller
 
         $command = new TagsStatusUpdateCommand(
             $tags->id,
+            $project->id,
             $status->value
         );
 

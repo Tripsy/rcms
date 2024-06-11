@@ -17,11 +17,22 @@ class BlueprintComponentStatusUpdateCommand
 
     private int $id;
 
+    private int $project_blueprint_id;
+
     private CommonStatus $status;
 
-    public function __construct(int $id, string $status)
+    public function __construct(int $id, int $project_blueprint_id, string $status)
     {
         $this->id = $id;
+        $this->project_blueprint_id = $project_blueprint_id;
         $this->status = CommonStatus::tryFrom($status) ?? CommonStatus::ACTIVE;
+    }
+
+    /**
+     * Return attribute `project_id`
+     */
+    public function getProjectBlueprintId(): int
+    {
+        return $this->project_blueprint_id;
     }
 }

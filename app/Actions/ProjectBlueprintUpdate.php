@@ -27,6 +27,7 @@ class ProjectBlueprintUpdate
     {
         $this->query
             ->filterById($command->getId())
+            ->filterByProjectId($command->getProjectId())
             ->updateFirst([
                 'name' => $command->getName(),
                 'description' => $command->getDescription(),

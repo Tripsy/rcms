@@ -118,18 +118,18 @@ abstract class AbstractQuery
         }
     }
 
-    /**
-     * @throws ActionException
-     */
-    public function updateBulk(array $data): void
-    {
-        if ($this->hasFilter === true) {
-
-            $this->getModelClass()->update($data);
-        } else {
-            throw new ActionException(__('message.exception.update_without_filter'), Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
+//    /**
+//     * @throws ActionException
+//     */
+//    public function updateBulk(array $data): void
+//    {
+//        if ($this->hasFilter === true) {
+//
+//            $this->getModelClass()->update($data);
+//        } else {
+//            throw new ActionException(__('message.exception.update_without_filter'), Response::HTTP_INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
     /**
      * @throws ActionException

@@ -27,6 +27,7 @@ class TagsStatusUpdate
     {
         $this->query
             ->filterById($command->getId())
+            ->filterByProjectId($command->getProjectId())
             ->updateFirst([
                 'status' => $command->getStatus(),
             ]);

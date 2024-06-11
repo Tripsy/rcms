@@ -28,6 +28,7 @@ class ApiBlueprintComponentStatusController extends Controller
 
         $command = new BlueprintComponentStatusUpdateCommand(
             $blueprintComponent->id,
+            $projectBlueprint->id,
             $status->value
         );
 

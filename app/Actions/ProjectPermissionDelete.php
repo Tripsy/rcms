@@ -25,6 +25,7 @@ class ProjectPermissionDelete
     {
         $this->query
             ->filterById($command->getId())
+            ->filterByProjectId($command->getProjectId())
             ->deleteFirst();
     }
 }

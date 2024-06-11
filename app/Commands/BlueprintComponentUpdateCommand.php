@@ -21,6 +21,8 @@ class BlueprintComponentUpdateCommand
 
     private int $id;
 
+    private int $project_blueprint_id;
+
     private string $name;
 
     private string $description;
@@ -37,6 +39,7 @@ class BlueprintComponentUpdateCommand
 
     public function __construct(
         int $id,
+        int $project_blueprint_id,
         string $name,
         string $description,
         string $info,
@@ -46,6 +49,7 @@ class BlueprintComponentUpdateCommand
         string $is_required
     ) {
         $this->id = $id;
+        $this->project_blueprint_id = $project_blueprint_id;
         $this->name = $name;
         $this->description = $description;
         $this->info = $info;
@@ -61,6 +65,11 @@ class BlueprintComponentUpdateCommand
         ])) {
             $this->component_format = BlueprintComponentFormat::OPTION;
         }
+    }
+
+    public function getProjectBlueprintId(): int
+    {
+        return $this->project_blueprint_id;
     }
 
     public function getInfo(): string
