@@ -16,8 +16,8 @@ use App\Http\Requests\TagsIndexRequest;
 use App\Http\Requests\TagsStoreRequest;
 use App\Http\Requests\TagsUpdateRequest;
 use App\Models\Project;
-use App\Models\Tags;
-use App\Queries\TagsQuery;
+use App\Models\Tag;
+use App\Queries\TagQuery;
 use App\Repositories\TagsRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -40,9 +40,9 @@ class ApiTagsController extends Controller
     public function index(
         TagsIndexRequest $request,
         Project $project,
-        TagsQuery $query
+        TagQuery $query
     ): JsonResponse {
-        Gate::authorize('index', [Tags::class, $project]);
+        Gate::authorize('index', [Tag::class, $project]);
 
         $validated = $request->validated();
 
@@ -60,6 +60,7 @@ class ApiTagsController extends Controller
         $this->apiWrapper->message(__('message.success'));
         $this->apiWrapper->data([
             'results' => $results,
+            'filter' => array_filter($validated['filter']),
             'count' => count($results),
             'limit' => $validated['limit'],
             'page' => $validated['page'],
@@ -76,9 +77,9 @@ class ApiTagsController extends Controller
     public function store(
         TagsStoreRequest $request,
         Project $project,
-        TagsQuery $query
+        TagQuery $query
     ): JsonResponse {
-        Gate::authorize('create', [Tags::class, $project]);
+        Gate::authorize('create', [Tag::class, $project]);
 
         $validated = $request->validated();
 
@@ -120,12 +121,12 @@ class ApiTagsController extends Controller
      * Display the specified resource.
      */
     public function show(
-        Project $project,
-        Tags $tags,
-        TagsQuery $query,
+        Project        $project,
+        Tag            $tags,
+        TagQuery       $query,
         TagsRepository $repository
     ): JsonResponse {
-        Gate::authorize('view', [Tags::class, $project]);
+        Gate::authorize('view', [Tag::class, $project]);
 
         $data = $repository->getViewCache($tags->id, function () use ($query, $project, $tags) {
             return $query
@@ -152,9 +153,9 @@ class ApiTagsController extends Controller
     public function update(
         TagsUpdateRequest $request,
         Project $project,
-        Tags $tags
+        Tag $tags
     ): JsonResponse {
-        Gate::authorize('update', [Tags::class, $project]);
+        Gate::authorize('update', [Tag::class, $project]);
 
         $validated = $request->validated();
 
@@ -185,9 +186,9 @@ class ApiTagsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Project $project, Tags $tags): JsonResponse
+    public function destroy(Project $project, Tag $tags): JsonResponse
     {
-        Gate::authorize('delete', [Tags::class, $project]);
+        Gate::authorize('delete', [Tag::class, $project]);
 
         $command = new TagsDeleteCommand(
             $tags->id,

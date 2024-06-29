@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\CommonStatus;
+use App\Models\BlueprintComponent;
 use App\Queries\ItemContentQuery;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -19,23 +20,13 @@ class ItemContentStoreRequest extends FormRequest
     }
 
     /**
-     * Prepare the data for validation.
-     */
-    protected function prepareForValidation(): void
-    {
-        $this->merge([
-            'status' => $this->status ?? '',
-        ]);
-    }
-
-    /**
      * Get the validation rules that apply to the request.
      */
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string'],
-            'status' => ['sometimes', Rule::enum(CommonStatus::class)],
+            'blueprint_component_id' => ['required', 'integer'],
+            'content' => ['required', 'string'],
         ];
     }
 
@@ -46,7 +37,7 @@ class ItemContentStoreRequest extends FormRequest
     {
         if ($validator->fails() === false) {
             $validator->after(function ($validator) {
-                $this->checkItemContentExist($validator);
+                $this->checkBlueprintComponent($validator);
             });
         }
     }
@@ -54,16 +45,20 @@ class ItemContentStoreRequest extends FormRequest
     /**
      * Custom verification logic.
      */
-    protected function checkItemContentExist(\Illuminate\Contracts\Validation\Validator $validator): void
+    protected function checkBlueprintComponent(\Illuminate\Contracts\Validation\Validator $validator): void
     {
-        $itemContent = app(ItemContentQuery::class)
-            ->filterByName($validator->safe()->name)
-            ->isUnique();
+        $exists = BlueprintComponent::where('id', $validator->safe()->blueprint_component_id)
+            ->whereHas('blueprint', function ($query) {
+                $query->whereHas('items', function ($query) {
+                    $query->where('id', $this->route('item')->id);
+                });
+            })
+            ->exists();
 
-        if ($itemContent === false) {
+        if ($exists === false) {
             $validator->errors()->add(
                 'other',
-                __('message.itemContent.already_exist')
+                __('validation.custom.components.invalid')
             );
         }
     }

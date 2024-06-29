@@ -3,16 +3,19 @@
 namespace App\Models;
 
 use App\Enums\DefaultOption;
-use App\Models\Traits\UuidScopeTrait;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Traits\CreatedByRelationTrait;
+use App\Models\Traits\UpdatedByRelationTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property-read Item $item
+ * @property-read BlueprintComponent $component
+ */
 class ItemContent extends Model
 {
-    use HasFactory;
-    use UuidScopeTrait;
+    use CreatedByRelationTrait;
+    use UpdatedByRelationTrait;
 
     /**
      * The table associated with the model.
@@ -56,13 +59,5 @@ class ItemContent extends Model
     public function component(): BelongsTo
     {
         return $this->belongsTo(BlueprintComponent::class, 'blueprint_component_id', 'id');
-    }
-
-    /**
-     * Scope a query to select content marked as active
-     */
-    public function scopeActive(Builder $query): void
-    {
-        $query->where('is_active', DefaultOption::YES->value);
     }
 }

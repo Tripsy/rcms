@@ -2,14 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property-read Item $item
+ * @property-read Tag $tag
+ */
 class ItemTags extends Model
 {
-    use HasFactory;
-
     /**
      * The table associated with the model.
      *
@@ -40,6 +41,6 @@ class ItemTags extends Model
      */
     public function tag(): BelongsTo
     {
-        return $this->belongsTo(Tags::class, 'tags_id', 'id');
+        return $this->belongsTo(Tag::class, 'tags_id', 'id');
     }
 }

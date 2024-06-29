@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Enums\DefaultOption;
-use App\Queries\TagsQuery;
+use App\Queries\TagQuery;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
@@ -58,7 +58,7 @@ class TagsUpdateRequest extends FormRequest
      */
     protected function checkTagsExist(\Illuminate\Contracts\Validation\Validator $validator): void
     {
-        $tags = app(TagsQuery::class)
+        $tags = app(TagQuery::class)
             ->filterByProjectId($this->route('project')->id)
             ->filterByName($this->validator->safe()->name)
             ->filterById($this->route('tags')->id, '<>') //ignore updated entry

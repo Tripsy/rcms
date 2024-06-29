@@ -11,11 +11,14 @@ use App\Models\Traits\StatusScopeTrait;
 use App\Models\Traits\UpdatedByRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property-read ProjectBlueprint $blueprint
+ */
 class BlueprintComponent extends BaseModel
 {
     use CreatedByRelationTrait;
-    use StatusScopeTrait;
     use UpdatedByRelationTrait;
+    use StatusScopeTrait;
 
     /**
      * The table associated with the model.
@@ -59,6 +62,6 @@ class BlueprintComponent extends BaseModel
      */
     public function blueprint(): BelongsTo
     {
-        return $this->belongsTo(ProjectBlueprint::class);
+        return $this->belongsTo(ProjectBlueprint::class, 'project_blueprint_id', 'id');
     }
 }

@@ -8,7 +8,7 @@ use App\Events\TagsCache;
 use App\Events\TagsCreated;
 use App\Events\TagsDeleting;
 use App\Events\TagsUpdated;
-use App\Models\Tags;
+use App\Models\Tag;
 use App\Observers\Traits\StandardCreating;
 use App\Observers\Traits\StandardUpdating;
 
@@ -20,7 +20,7 @@ class TagsObserver
     /**
      * Handle the Model "created" event.
      */
-    public function created(Tags $tags): void
+    public function created(Tag $tags): void
     {
         TagsCreated::dispatch($tags);
     }
@@ -32,7 +32,7 @@ class TagsObserver
      * will not be dispatched for the affected models. This is because the models are never actually retrieved when
      * performing mass updates or deletes.
      */
-    public function updated(Tags $tags): void
+    public function updated(Tag $tags): void
     {
         TagsUpdated::dispatch($tags);
         TagsCache::dispatch($tags);
@@ -41,7 +41,7 @@ class TagsObserver
     /**
      * Handle the Model "deleting" event.
      */
-    public function deleting(Tags $tags): void
+    public function deleting(Tag $tags): void
     {
         TagsDeleting::dispatch($tags);
         TagsCache::dispatch($tags);

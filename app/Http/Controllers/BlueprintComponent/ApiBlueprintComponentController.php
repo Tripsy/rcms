@@ -42,7 +42,7 @@ class ApiBlueprintComponentController extends Controller
         ProjectBlueprint $projectBlueprint,
         BlueprintComponentQuery $query
     ): JsonResponse {
-        Gate::authorize('index', [BlueprintComponent::class, $projectBlueprint->project()->first()]);
+        Gate::authorize('index', [BlueprintComponent::class, $projectBlueprint->project->first()]);
 
         $validated = $request->validated();
 
@@ -64,6 +64,7 @@ class ApiBlueprintComponentController extends Controller
         $this->apiWrapper->message(__('message.success'));
         $this->apiWrapper->data([
             'results' => $results,
+            'filter' => array_filter($validated['filter']),
             'count' => count($results),
             'limit' => $validated['limit'],
             'page' => $validated['page'],
@@ -82,7 +83,7 @@ class ApiBlueprintComponentController extends Controller
         ProjectBlueprint $projectBlueprint,
         BlueprintComponentQuery $query
     ): JsonResponse {
-        Gate::authorize('create', [BlueprintComponent::class, $projectBlueprint->project()->first()]);
+        Gate::authorize('create', [BlueprintComponent::class, $projectBlueprint->project->first()]);
 
         $validated = $request->validated();
 
@@ -133,7 +134,7 @@ class ApiBlueprintComponentController extends Controller
         BlueprintComponentQuery $query,
         BlueprintComponentRepository $repository
     ): JsonResponse {
-        Gate::authorize('view', [BlueprintComponent::class, $projectBlueprint->project()->first()]);
+        Gate::authorize('view', [BlueprintComponent::class, $projectBlueprint->project->first()]);
 
         $data = $repository->getViewCache($blueprintComponent->id, function () use ($query, $projectBlueprint, $blueprintComponent) {
             return $query
@@ -162,7 +163,7 @@ class ApiBlueprintComponentController extends Controller
         ProjectBlueprint $projectBlueprint,
         BlueprintComponent $blueprintComponent
     ): JsonResponse {
-        Gate::authorize('update', [BlueprintComponent::class, $projectBlueprint->project()->first()]);
+        Gate::authorize('update', [BlueprintComponent::class, $projectBlueprint->project->first()]);
 
         $validated = $request->validated();
 
@@ -199,7 +200,7 @@ class ApiBlueprintComponentController extends Controller
      */
     public function destroy(ProjectBlueprint $projectBlueprint, BlueprintComponent $blueprintComponent): JsonResponse
     {
-        Gate::authorize('delete', [BlueprintComponent::class, $projectBlueprint->project()->first()]);
+        Gate::authorize('delete', [BlueprintComponent::class, $projectBlueprint->project->first()]);
 
         $command = new BlueprintComponentDeleteCommand(
             $blueprintComponent->id,

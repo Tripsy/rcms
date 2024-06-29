@@ -13,7 +13,7 @@ use App\Models\Item;
 use App\Models\Project;
 use App\Models\ProjectBlueprint;
 use App\Models\ProjectPermission;
-use App\Models\Tags;
+use App\Models\Tag;
 use App\Observers\BlueprintComponentObserver;
 use App\Observers\ItemObserver;
 use App\Observers\ProjectBlueprintObserver;
@@ -81,7 +81,7 @@ class EventServiceProvider extends ServiceProvider
         BlueprintComponent::class => [
             BlueprintComponentObserver::class,
         ],
-        Tags::class => [
+        Tag::class => [
             TagsObserver::class,
         ],
         Item::class => [

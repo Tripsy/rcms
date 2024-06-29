@@ -10,7 +10,11 @@ use App\Models\Traits\UpdatedByRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Tags extends BaseModel
+/**
+ * @property-read Project $project
+ * @property-read \Illuminate\Database\Eloquent\Collection|Item[] $items
+ */
+class Tag extends BaseModel
 {
     use CreatedByRelationTrait;
     use UpdatedByRelationTrait;

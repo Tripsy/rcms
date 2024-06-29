@@ -63,7 +63,7 @@ class {{ $className }} extends FormRequest
         if (${{ $modelVariable }} === false) {
             $validator->errors()->add(
                 'other',
-                __('message.{{ $modelVariable }}.already_exist')
+                __('message.??.already_exist')
             );
         }
     }

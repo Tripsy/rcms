@@ -14,14 +14,7 @@ class {{ $className }}
 
     const CACHE_TIME = 86400;
 
-    public function baseCacheKey(): self
-    {
-        $this->cachePieces = [];
-
-        return $this;
-    }
-
-    public function getViewCache(int $id, callable $cacheContent)
+    public function getViewCache(int $id, callable $cacheContent): mixed
     {
         return $this
             ->initCacheKey()

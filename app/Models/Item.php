@@ -9,8 +9,14 @@ use App\Models\Traits\UpdatedByRelationTrait;
 use App\Models\Traits\UuidScopeTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
+
+/**
+ * @property-read ProjectBlueprint $blueprint
+ * @property-read \Illuminate\Database\Eloquent\Collection|BlueprintComponent[] $blueprintComponents
+ * @property-read \Illuminate\Database\Eloquent\Collection|ItemContent[] $itemContents
+ */
 class Item extends BaseModel
 {
     use CreatedByRelationTrait;
@@ -51,22 +57,22 @@ class Item extends BaseModel
      */
     public function blueprint(): BelongsTo
     {
-        return $this->belongsTo(ProjectBlueprint::class);
+        return $this->belongsTo(ProjectBlueprint::class, 'project_blueprint_id', 'id');
+    }
+
+    /**
+     * Get the blueprint components available for this item
+     */
+    public function blueprintComponents(): HasManyThrough
+    {
+        return $this->hasManyThrough(BlueprintComponent::class, ProjectBlueprint::class, 'id', 'project_blueprint_id', 'project_blueprint_id', 'id');
     }
 
     /**
      * Get the content for the item.
      */
-    public function itemContent(): HasMany
+    public function itemContents(): HasMany
     {
         return $this->hasMany(ItemContent::class, 'item_id', 'id');
-    }
-
-    /**
-     * Get the project that holds this item
-     */
-    public function project(): HasOneThrough
-    {
-        return $this->hasOneThrough(Project::class, ProjectBlueprint::class);
     }
 }

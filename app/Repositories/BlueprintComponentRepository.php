@@ -22,7 +22,7 @@ class BlueprintComponentRepository
 
     const CACHE_TIME = 86400;
 
-    public function getViewCache(int $id, callable $cacheContent)
+    public function getViewCache(int $id, callable $cacheContent): mixed
     {
         return $this
             ->initCacheKey()
@@ -87,7 +87,7 @@ class BlueprintComponentRepository
         $extraComponents = $queryBlueprintComponent->get();
 
         foreach ($extraComponents as $extraComponent) {
-            $this->deleteComponent($extraComponent->id);
+            $this->deleteComponent($extraComponent->id, $extraComponent->project_blueprint_id);
         }
 
         foreach ($validatedComponents as $validatedComponent) {
@@ -102,10 +102,11 @@ class BlueprintComponentRepository
      * Delete blueprint component from DB
      * Note: Is not for use outside repository - there are no permissions checks
      */
-    private function deleteComponent(int $id): void
+    private function deleteComponent(int $id, int $project_blueprint_id): void
     {
         $command = new BlueprintComponentDeleteCommand(
-            $id
+            $id,
+            $project_blueprint_id
         );
 
         BlueprintComponentDelete::run($command);
@@ -125,6 +126,7 @@ class BlueprintComponentRepository
         if ($blueprintComponent) {
             $commandBlueprintComponent = new BlueprintComponentUpdateCommand(
                 $blueprintComponent->id,
+                $blueprintComponent->project_blueprint_id,
                 $component['name'],
                 $component['description'],
                 $component['info'],

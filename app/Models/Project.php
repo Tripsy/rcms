@@ -12,6 +12,10 @@ use App\Models\Traits\UpdatedByRelationTrait;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property-read \Illuminate\Database\Eloquent\Collection|ProjectBlueprint[] $blueprints
+ * @property-read \Illuminate\Database\Eloquent\Collection|ProjectPermission[] $permissions
+ */
 class Project extends BaseModel
 {
     use StatusScopeTrait;
@@ -47,9 +51,9 @@ class Project extends BaseModel
     ];
 
     /**
-     * Get the item type for this project.
+     * Get the blueprints for this project
      */
-    public function itemTypes(): HasMany
+    public function blueprints(): HasMany
     {
         return $this->hasMany(ProjectBlueprint::class);
     }

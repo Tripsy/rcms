@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Events;
 
-use App\Models\Tags;
+use App\Models\Tag;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -13,12 +13,12 @@ class TagsCache
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public Tags $tags;
+    public Tag $tags;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(Tags $tags)
+    public function __construct(Tag $tags)
     {
         $this->tags = $tags;
     }

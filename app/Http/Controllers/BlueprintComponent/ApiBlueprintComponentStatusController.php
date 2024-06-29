@@ -24,7 +24,7 @@ class ApiBlueprintComponentStatusController extends Controller
         BlueprintComponent $blueprintComponent,
         CommonStatus $status
     ): JsonResponse {
-        Gate::authorize('update', [BlueprintComponent::class, $projectBlueprint->project()->first()]);
+        Gate::authorize('update', [BlueprintComponent::class, $projectBlueprint->project->first()]);
 
         $command = new BlueprintComponentStatusUpdateCommand(
             $blueprintComponent->id,

@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\CommonStatus;
+use App\Enums\DefaultOption;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -25,7 +25,8 @@ class ItemContentIndexRequest extends FormRequest
             'page' => (int) $this->page ?? 1,
             'limit' => (int) $this->limit ?? 5,
             'filter' => [
-                'status' => $this->filter['status'] ?? '',
+                'blueprint_component_id' => $this->filter['blueprint_component_id'] ?? null,
+                'is_active' => $this->filter['is_active'] ?? DefaultOption::YES->value,
             ],
         ]);
     }
@@ -38,7 +39,8 @@ class ItemContentIndexRequest extends FormRequest
         return [
             'page' => ['required', 'integer'],
             'limit' => ['required', 'integer', 'max:15'],
-            'filter.status' => ['sometimes', Rule::enum(CommonStatus::class)],
+            'filter.is_active' => ['sometimes', Rule::enum(DefaultOption::class)],
+            'filter.blueprint_component_id' => ['sometimes', 'nullable', 'integer'],
         ];
     }
 }

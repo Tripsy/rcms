@@ -24,7 +24,7 @@ class ApiItemStatusController extends Controller
         Item $item,
         ItemStatus $status
     ): JsonResponse {
-        Gate::authorize('update', [Item::class, $projectBlueprint->project()->first()]);
+        Gate::authorize('update', [Item::class, $projectBlueprint->project->first()]);
 
         $command = new ItemStatusUpdateCommand(
             $item->id,

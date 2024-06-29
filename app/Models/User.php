@@ -46,7 +46,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function isAdmin(): bool
+    public function isAdmin(): bool // TODO
     {
         if ($this->id === 444) {
             return true;

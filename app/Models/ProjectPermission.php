@@ -9,6 +9,10 @@ use App\Models\Traits\StatusScopeTrait;
 use App\Models\Traits\UpdatedByRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property-read Project $project
+ * @property-read User $user
+ */
 class ProjectPermission extends BaseModel
 {
     use CreatedByRelationTrait;

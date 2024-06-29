@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace App\Queries;
 
-use App\Models\Tags;
+use App\Models\Tag;
 use App\Queries\Traits\FilterByNameQueryTrait;
 use App\Queries\Traits\FilterByStatusQueryTrait;
 
-class TagsQuery extends AbstractQuery
+class TagQuery extends AbstractQuery
 {
     use FilterByNameQueryTrait;
     use FilterByStatusQueryTrait;
 
-    protected static string $model = Tags::class;
+    protected static string $model = Tag::class;
 
     public function __construct()
     {

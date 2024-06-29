@@ -26,6 +26,14 @@ abstract class AbstractQuery
 
     public function __construct()
     {
+        $this->getQuery();
+    }
+
+    /**
+     * This can be used as reset
+     */
+    public function getQuery(): void
+    {
         $this->query = $this->getModelClass()::query();
     }
 
@@ -107,6 +115,22 @@ abstract class AbstractQuery
     /**
      * @throws ActionException
      */
+    public function updateIfExist(array $data): void
+    {
+        if ($this->hasFilter === true) {
+            $model = $this->query->first();
+
+            if ($model) {
+                $model->update($data);
+            }
+        } else {
+            throw new ActionException(__('message.exception.update_without_filter'), Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    /**
+     * @throws ActionException
+     */
     public function updateFirst(array $data): void
     {
         if ($this->hasFilter === true) {
@@ -118,18 +142,18 @@ abstract class AbstractQuery
         }
     }
 
-//    /**
-//     * @throws ActionException
-//     */
-//    public function updateBulk(array $data): void
-//    {
-//        if ($this->hasFilter === true) {
-//
-//            $this->getModelClass()->update($data);
-//        } else {
-//            throw new ActionException(__('message.exception.update_without_filter'), Response::HTTP_INTERNAL_SERVER_ERROR);
-//        }
-//    }
+    //    /**
+    //     * @throws ActionException
+    //     */
+    //    public function updateBulk(array $data): void
+    //    {
+    //        if ($this->hasFilter === true) {
+    //
+    //            $this->getModelClass()->update($data);
+    //        } else {
+    //            throw new ActionException(__('message.exception.update_without_filter'), Response::HTTP_INTERNAL_SERVER_ERROR);
+    //        }
+    //    }
 
     /**
      * @throws ActionException

@@ -64,6 +64,7 @@ class ApiProjectBlueprintController extends Controller
         $this->apiWrapper->message(__('message.success'));
         $this->apiWrapper->data([
             'results' => $results,
+            'filter' => array_filter($validated['filter']),
             'count' => count($results),
             'limit' => $validated['limit'],
             'page' => $validated['page'],
@@ -192,7 +193,7 @@ class ApiProjectBlueprintController extends Controller
         ProjectBlueprint $projectBlueprint,
         BlueprintComponentRepository $blueprintComponentRepository
     ): JsonResponse {
-        Gate::authorize('update', [$projectBlueprint, $project]);
+        Gate::authorize('update', [ProjectBlueprint::class, $project]);
 
         $validated = $request->validated();
 

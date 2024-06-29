@@ -27,6 +27,7 @@ class ItemContentDelete
     {
         $this->query
             ->filterById($command->getId())
+            ->filterByItemId($command->getItemId())
             ->deleteFirst();
     }
 }

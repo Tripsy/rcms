@@ -9,11 +9,16 @@ use App\Models\Traits\UpdatedByRelationTrait;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property-read Project $project
+ * @property-read \Illuminate\Database\Eloquent\Collection|BlueprintComponent[] $components
+ * @property-read \Illuminate\Database\Eloquent\Collection|Item[] $items
+ */
 class ProjectBlueprint extends BaseModel
 {
     use CreatedByRelationTrait;
-    use UpdatedByRelationTrait;
     use StatusScopeTrait;
+    use UpdatedByRelationTrait;
 
     /**
      * The table associated with the model.
@@ -58,5 +63,13 @@ class ProjectBlueprint extends BaseModel
     public function components(): HasMany
     {
         return $this->hasMany(BlueprintComponent::class);
+    }
+
+    /**
+     * Get the items for this blueprint.
+     */
+    public function items(): HasMany
+    {
+        return $this->hasMany(Item::class);
     }
 }

@@ -14,7 +14,7 @@ class ProjectPermissionRepository
 
     const CACHE_TIME = 86400;
 
-    public function getViewCache(int $id, callable $cacheContent)
+    public function getViewCache(int $id, callable $cacheContent): mixed
     {
         return $this
             ->initCacheKey()

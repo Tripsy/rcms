@@ -64,4 +64,10 @@ return [
         'not_found' => 'Item #:id does not exist',
         'store_fail' => 'Failed to store item!',
     ],
+
+    'item_content' => [
+        'not_found' => 'Item content #:id does not exist',
+        'store_fail' => 'Failed to store item content!',
+        'no_change' => 'Item content exist with same data!',
+    ],
 ];

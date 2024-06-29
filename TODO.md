@@ -3,11 +3,8 @@
 
 ## TO DO
 
-
+- create command which purge item content(s) with is_active = YES and updated_at < defined period
 - Update stubs after AbstractQuery
-
-Item
-
 - postman documentation & tests
 
 # PACKAGES

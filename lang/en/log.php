@@ -47,4 +47,17 @@ return [
         'activated' => 'Project #:project_id tag #:tags_id activated by user #:action_by',
         'deleting' => 'Project #:project_id tag #:tags_id delete init by user #:action_by',
     ],
+
+    'item' => [
+        'created' => 'Item #:item_id created by user #:action_by for blueprint #:project_blueprint_id',
+        'updated' => 'Item #:item_id from blueprint #:project_blueprint_id updated by user #:action_by',
+        'activated' => 'Item #:item_id from blueprint #:project_blueprint_id activated by user #:action_by',
+        'deleting' => 'Item #:item_id from blueprint #:project_blueprint_id delete init by user #:action_by',
+    ],
+
+    'item_content' => [
+        'created' => 'Content #:item_content_id added for item #:item_id by user #:action_by ',
+        'updated' => 'Content #:item_content_id belonging to item #:item_id updated by user #:action_by',
+        'deleting' => 'Content #:item_content_id belonging to item #:item_id deleted by user #:action_by',
+    ],
 ];

@@ -45,7 +45,7 @@ class ApiItemController extends Controller
         ProjectBlueprint $projectBlueprint,
         ItemQuery $query
     ): JsonResponse {
-        Gate::authorize('index', [Item::class, $projectBlueprint->project()->first()]);
+        Gate::authorize('index', [Item::class, $projectBlueprint->project->first()]);
 
         $validated = $request->validated();
 
@@ -62,6 +62,7 @@ class ApiItemController extends Controller
         $this->apiWrapper->message(__('message.success'));
         $this->apiWrapper->data([
             'results' => $results,
+            'filter' => array_filter($validated['filter']),
             'count' => count($results),
             'limit' => $validated['limit'],
             'page' => $validated['page'],
@@ -80,7 +81,7 @@ class ApiItemController extends Controller
         ProjectBlueprint $projectBlueprint,
         ItemQuery $query
     ): JsonResponse {
-        Gate::authorize('create', [Item::class, $projectBlueprint->project()->first()]);
+        Gate::authorize('create', [Item::class, $projectBlueprint->project->first()]);
 
         $validated = $request->validated();
 
@@ -143,7 +144,7 @@ class ApiItemController extends Controller
         ItemQuery $query,
         ItemRepository $repository
     ): JsonResponse {
-        Gate::authorize('view', [Item::class, $projectBlueprint->project()->first()]);
+        Gate::authorize('view', [Item::class, $projectBlueprint->project->first()]);
 
         $data = $repository->getViewCache($item->id, function () use ($query, $projectBlueprint, $item) {
             return $query
@@ -172,7 +173,7 @@ class ApiItemController extends Controller
         ProjectBlueprint $projectBlueprint,
         Item $item
     ): JsonResponse {
-        Gate::authorize('update', [Item::class, $projectBlueprint->project()->first()]);
+        Gate::authorize('update', [Item::class, $projectBlueprint->project->first()]);
 
         $validated = $request->validated();
 
@@ -203,7 +204,7 @@ class ApiItemController extends Controller
      */
     public function destroy(ProjectBlueprint $projectBlueprint, Item $item): JsonResponse
     {
-        Gate::authorize('delete', [Item::class, $projectBlueprint->project()->first()]);
+        Gate::authorize('delete', [Item::class, $projectBlueprint->project->first()]);
 
         $command = new ItemDeleteCommand(
             $item->id,

@@ -3,9 +3,8 @@
 namespace App\Actions;
 
 use App\Actions\Traits\AsAction;
+use App\Commands\ItemContentDeactivateCommand;
 use App\Commands\ItemContentStoreCommand;
-use App\Enums\DefaultOption;
-use App\Exceptions\ActionException;
 use App\Queries\ItemContentQuery;
 
 class ItemContentStore
@@ -19,18 +18,14 @@ class ItemContentStore
         $this->query = $query;
     }
 
-    /**
-     * @throws ActionException
-     */
     public function handle(ItemContentStoreCommand $command): void
     {
-        $this->query
-            ->filterByItemId($command->getItemId())
-            ->isActive()
-            ->filterBlueprintComponentId($command->getBlueprintComponentId())
-            ->updateFirst([
-                'is_active' => DefaultOption::NO,
-            ]);
+        $deactivateCommand = new ItemContentDeactivateCommand(
+            $command->getItemId(),
+            $command->getBlueprintComponentId()
+        );
+
+        ItemContentDeactivate::run($deactivateCommand);
 
         $this->query->create([
             'item_id' => $command->getItemId(),

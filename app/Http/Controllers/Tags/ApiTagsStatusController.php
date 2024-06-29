@@ -9,7 +9,7 @@ use App\Commands\TagsStatusUpdateCommand;
 use App\Enums\CommonStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
-use App\Models\Tags;
+use App\Models\Tag;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,11 +20,11 @@ class ApiTagsStatusController extends Controller
      * Handle the incoming request.
      */
     public function __invoke(
-        Project $project,
-        Tags $tags,
+        Project      $project,
+        Tag          $tags,
         CommonStatus $status
     ): JsonResponse {
-        Gate::authorize('update', [Tags::class, $project]);
+        Gate::authorize('update', [Tag::class, $project]);
 
         $command = new TagsStatusUpdateCommand(
             $tags->id,

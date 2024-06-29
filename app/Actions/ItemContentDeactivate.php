@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Actions;
 
 use App\Actions\Traits\AsAction;
-use App\Commands\ItemContentUpdateCommand;
+use App\Commands\ItemContentDeactivateCommand;
 use App\Exceptions\ActionException;
 use App\Queries\ItemContentQuery;
 
-class ItemContentUpdate
+class ItemContentDeactivate
 {
     use AsAction;
 
@@ -23,12 +23,14 @@ class ItemContentUpdate
     /**
      * @throws ActionException
      */
-    public function handle(ItemContentUpdateCommand $command): void
+    public function handle(ItemContentDeactivateCommand $command): void
     {
         $this->query
-            ->filterById($command->getId())
-            ->updateFirst([
-                'name' => $command->getName(),
+            ->filterByItemId($command->getItemId())
+            ->filterByBlueprintComponentId($command->getBlueprintComponentId())
+            ->isActive()
+            ->updateIfExist([
+                'is_active' => $command->getIsActive(),
             ]);
     }
 }

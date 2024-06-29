@@ -4,6 +4,7 @@ use App\Http\Controllers\BlueprintComponent\ApiBlueprintComponentController;
 use App\Http\Controllers\BlueprintComponent\ApiBlueprintComponentStatusController;
 use App\Http\Controllers\Item\ApiItemController;
 use App\Http\Controllers\Item\ApiItemStatusController;
+use App\Http\Controllers\ItemContent\ApiItemContentController;
 use App\Http\Controllers\Project\ApiProjectController;
 use App\Http\Controllers\Project\ApiProjectStatusController;
 use App\Http\Controllers\ProjectBlueprint\ApiProjectBlueprintController;
@@ -198,5 +199,23 @@ Route::group([
         )
             ->where('projectBlueprint', '[0-9]+')
             ->where('item', '[0-9]+');
+    });
+
+    Route::prefix('/item-content')->group(function () {
+        Route::controller(ApiItemContentController::class)->group(function () {
+            Route::get('/{item}', 'index')
+                ->where('item', '[0-9]+');
+
+            Route::get('/{item}/{itemContent}', 'show')
+                ->where('item', '[0-9]+')
+                ->where('itemContent', '[0-9]+');
+
+            Route::post('/{item}', 'store')
+                ->where('item', '[0-9]+');
+
+            Route::delete('/{item}/{itemContent}', 'destroy')
+                ->where('item', '[0-9]+')
+                ->where('itemContent', '[0-9]+');
+        });
     });
 });

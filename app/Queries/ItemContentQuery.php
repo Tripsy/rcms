@@ -28,7 +28,7 @@ class ItemContentQuery extends AbstractQuery
         return $this->filterBy('item_id', $item_id);
     }
 
-    public function filterBlueprintComponentId(int $blueprint_component_id): self
+    public function filterByBlueprintComponentId(?int $blueprint_component_id): self
     {
         return $this->filterBy('blueprint_component_id', $blueprint_component_id);
     }
