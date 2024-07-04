@@ -150,5 +150,12 @@ return [
             'level' => env('LOG_LEVEL', 'error'),
             'replace_placeholders' => false,
         ],
+
+        'console' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/console.log'),
+            'level' => env('LOG_LEVEL', 'info'),
+            'replace_placeholders' => true,
+        ],
     ],
 ];

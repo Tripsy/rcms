@@ -5,18 +5,22 @@ declare(strict_types=1);
 namespace App\Http\Controllers\{{ $model }};
 
 use App\Actions\{{ $model }}Delete;
+use App\Actions\{{ $model }}PermissionStore;
 use App\Actions\{{ $model }}Store;
 use App\Actions\{{ $model }}Update;
 use App\Commands\{{ $model }}DeleteCommand;
+use App\Commands\{{ $model }}PermissionStoreCommand;
 use App\Commands\{{ $model }}StoreCommand;
 use App\Commands\{{ $model }}UpdateCommand;
+use App\Enums\CommonStatus;
+use App\Enums\{{ $model }}PermissionRole;
 use App\Exceptions\ControllerException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\{{ $model }}IndexRequest;
 use App\Http\Requests\{{ $model }}StoreRequest;
 use App\Http\Requests\{{ $model }}UpdateRequest;
 use App\Models\{{ $model }};
-use App\Queries\{{ $model }}ReadQuery;
+use App\Queries\{{ $model }}Query;
 use App\Repositories\{{ $model }}Repository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -48,14 +52,16 @@ class {{ $className }} extends Controller
      */
     public function index(
         {{ $model }}IndexRequest $request,
-        {{ $model }}ReadQuery $query
+        {{ $model }}Query $query
     ): JsonResponse {
         Gate::authorize('index', {{ $model }}::class);
 
         $validated = $request->validated();
 
         $results = $query
+            ->whereHasPermission()
             ->filterByName($validated['filter']['name'])
+            ->filterByAuthorityName($validated['filter']['authority_name'])
             ->filterByStatus($validated['filter']['status'])
             ->withCreatedBy()
             ->withUpdatedBy()
@@ -79,7 +85,7 @@ class {{ $className }} extends Controller
      *
      * @throws ControllerException
      */
-    public function store({{ $model }}StoreRequest $request, {{ $model }}ReadQuery $query): JsonResponse
+    public function store({{ $model }}StoreRequest $request, {{ $model }}Query $query): JsonResponse
     {
         Gate::authorize('create', {{ $model }}::class);
 
@@ -87,6 +93,8 @@ class {{ $className }} extends Controller
 
         $command = new {{ $model }}StoreCommand(
             $validated['name'],
+            $validated['authority_name'],
+            $validated['authority_key'],
             $validated['status']
         );
 
@@ -94,14 +102,21 @@ class {{ $className }} extends Controller
 
         try {
             ${{ $modelVariable }} = $query
+                ->filterByAuthorityName($command->getAuthorityName())
                 ->filterByName($command->getName())
                 ->firstOrFail();
         } catch (ModelNotFoundException) {
-            throw new ControllerException(
-                __('message.{{ $modelVariable }}.store_fail'),
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            throw new ControllerException(__('message.{{ $modelKey }}.store_fail'), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+        $commandPermission = new {{ $model }}PermissionStoreCommand(
+            ${{ $modelVariable }}->id,
+            auth()->id(),
+            {{ $model }}PermissionRole::MANAGER->value,
+            CommonStatus::ACTIVE->value,
+        );
+
+        {{ $model }}PermissionStore::run($commandPermission);
 
         $this->apiWrapper->success(true);
         $this->apiWrapper->message(__('message.success'));
@@ -118,7 +133,7 @@ class {{ $className }} extends Controller
     /**
      * Display the specified resource.
      */
-    public function show({{ $model }} ${{ $modelVariable }}, {{ $model }}ReadQuery $query, {{ $model }}Repository $repository): JsonResponse
+    public function show({{ $model }} ${{ $modelVariable }}, {{ $model }}Query $query, {{ $model }}Repository $repository): JsonResponse
     {
         Gate::authorize('view', ${{ $modelVariable }});
 
@@ -149,7 +164,9 @@ class {{ $className }} extends Controller
 
         $command = new {{ $model }}UpdateCommand(
             ${{ $modelVariable }}->id,
-            $validated['name']
+            $validated['name'],
+            $validated['authority_name'],
+            $validated['authority_key']
         );
 
         {{ $model }}Update::run($command);

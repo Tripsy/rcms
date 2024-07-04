@@ -4,15 +4,15 @@ namespace App\Actions;
 
 use App\Actions\Traits\AsAction;
 use App\Commands\{{ $model }}StoreCommand;
-use App\Queries\{{ $model }}CreateQuery;
+use App\Queries\{{ $model }}Query;
 
 class {{ $className }}
 {
     use AsAction;
 
-    private {{ $model }}CreateQuery $query;
+    private {{ $model }}Query $query;
 
-    public function __construct({{ $model }}CreateQuery $query)
+    public function __construct({{ $model }}Query $query)
     {
         $this->query = $query;
     }
@@ -21,6 +21,8 @@ class {{ $className }}
     {
         $this->query->create([
             'name' => $command->getName(),
+            'authority_name' => $command->getAuthorityName(),
+            'authority_key' => $command->getAuthorityKey(),
             'status' => $command->getStatus(),
         ]);
     }

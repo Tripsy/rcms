@@ -7,15 +7,15 @@ namespace App\Actions;
 use App\Actions\Traits\AsAction;
 use App\Commands\{{ $model }}UpdateCommand;
 use App\Exceptions\ActionException;
-use App\Queries\{{ $model }}UpdateQuery;
+use App\Queries\{{ $model }}Query;
 
 class {{ $className }}
 {
     use AsAction;
 
-    private {{ $model }}UpdateQuery $query;
+    private {{ $model }}Query $query;
 
-    public function __construct({{ $model }}UpdateQuery $query)
+    public function __construct({{ $model }}Query $query)
     {
         $this->query = $query;
     }
@@ -29,6 +29,8 @@ class {{ $className }}
             ->filterById($command->getId())
             ->updateFirst([
                 'name' => $command->getName(),
+                'authority_name' => $command->getAuthorityName(),
+                'authority_key' => $command->getAuthorityKey(),
             ]);
     }
 }

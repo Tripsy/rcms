@@ -15,9 +15,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\{{ $model }}IndexRequest;
 use App\Http\Requests\{{ $model }}StoreRequest;
 use App\Http\Requests\{{ $model }}UpdateRequest;
-use App\Models\{{ $parentModel }};
 use App\Models\{{ $model }};
-use App\Queries\{{ $model }}ReadQuery;
+use App\Models\{{ $parentModel }};
+use App\Queries\{{ $model }}Query;
 use App\Repositories\{{ $model }}Repository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
@@ -50,16 +50,21 @@ class {{ $className }} extends Controller
     public function index(
         {{ $model }}IndexRequest $request,
         {{ $parentModel }} ${{ $parentVariable }},
-        {{ $model }}ReadQuery $query
+        {{ $model }}Query $query
     ): JsonResponse {
-        Gate::authorize('index', [{{ $model }}::class, ${{ $parentVariable }}]);
+        Gate::authorize('index', [{{ $model }}::class, ${{ $parentVariable }}->project->first()]);
 
         $validated = $request->validated();
 
         $results = $query
             ->filterBy{{ $parentModel }}Id(${{ $parentVariable }}->id)
-            ->filterByName('%'.$validated['filter']['name'].'%', 'LIKE')
             ->filterByStatus($validated['filter']['status'])
+            ->filterByComponentType($validated['filter']['component_type'])
+            ->filterByComponentFormat($validated['filter']['component_format'])
+            ->isRequired($validated['filter']['is_required'])
+            ->filterByName('%'.$validated['filter']['name'].'%', 'LIKE')
+            ->filterByDescription('%'.$validated['filter']['description'].'%', 'LIKE')
+            ->filterByInfo('%'.$validated['filter']['info'].'%', 'LIKE')
             ->withCreatedBy()
             ->withUpdatedBy()
             ->get($validated['page'], $validated['limit'])
@@ -86,9 +91,9 @@ class {{ $className }} extends Controller
     public function store(
         {{ $model }}StoreRequest $request,
         {{ $parentModel }} ${{ $parentVariable }},
-        {{ $model }}ReadQuery $query
+        {{ $model }}Query $query
     ): JsonResponse {
-        Gate::authorize('create', [{{ $model }}::class, ${{ $parentVariable }}]);
+        Gate::authorize('create', [{{ $model }}::class, ${{ $parentVariable }}->project->first()]);
 
         $validated = $request->validated();
 
@@ -97,6 +102,11 @@ class {{ $className }} extends Controller
                 ${{ $parentVariable }}->id,
                 $validated['name'],
                 $validated['description'],
+                $validated['info'],
+                $validated['component_type'],
+                $validated['component_format'],
+                $validated['type_options'] ?? [], //is not a required field
+                $validated['is_required'],
                 $validated['status'],
             );
 
@@ -108,7 +118,7 @@ class {{ $className }} extends Controller
                 ->firstOrFail();
         } catch (ModelNotFoundException) {
             throw new ControllerException(
-                __('message.??.store_fail'),
+                __('message.{{ $modelKey }}.store_fail'),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -131,18 +141,18 @@ class {{ $className }} extends Controller
     public function show(
         {{ $parentModel }} ${{ $parentVariable }},
         {{ $model }} ${{ $modelVariable }},
-        {{ $model }}ReadQuery $query,
+        {{ $model }}Query $query,
         {{ $model }}Repository $repository
     ): JsonResponse {
-        Gate::authorize('view', [{{ $model }}::class, ${{ $parentVariable }}]);
+        Gate::authorize('view', [{{ $model }}::class, ${{ $parentVariable }}->project->first()]);
 
-        $data = $repository->getViewCache(${{ $modelVariable }}->id, function () use ($query, ${{ $modelVariable }}) {
+        $data = $repository->getViewCache(${{ $modelVariable }}->id, function () use ($query, ${{ $parentVariable }}, ${{ $modelVariable }}) {
             return $query
                 ->filterById(${{ $modelVariable }}->id)
+                ->filterBy{{ $parentModel }}Id(${{ $parentVariable }}->id)
                 ->withCreatedBy()
                 ->withUpdatedBy()
                 ->first();
-            }
         });
 
         $this->apiWrapper->success(true);
@@ -155,6 +165,7 @@ class {{ $className }} extends Controller
 
     /**
      * Update the specified resource in storage.
+     *
      * @throws ControllerException
      */
     public function update(
@@ -162,21 +173,27 @@ class {{ $className }} extends Controller
         {{ $parentModel }} ${{ $parentVariable }},
         {{ $model }} ${{ $modelVariable }}
     ): JsonResponse {
-        Gate::authorize('update', [${{ $modelVariable }}, ${{ $parentVariable }}]);
+        Gate::authorize('update', [{{ $model }}::class, ${{ $parentVariable }}->project->first()]);
 
         $validated = $request->validated();
 
         try {
             $command = new {{ $model }}UpdateCommand(
                 ${{ $modelVariable }}->id,
+                ${{ $parentVariable }}->id,
                 $validated['name'],
                 $validated['description'],
+                $validated['info'],
+                $validated['component_type'],
+                $validated['component_format'],
+                $validated['type_options'] ?? [],
+                $validated['is_required']
             );
 
             {{ $model }}Update::run($command);
         } catch (ModelNotFoundException) {
             throw new ControllerException(
-                __('message.???.store_fail'),
+                __('message.{{ $modelKey }}.store_fail'),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -193,10 +210,11 @@ class {{ $className }} extends Controller
      */
     public function destroy({{ $parentModel }} ${{ $parentVariable }}, {{ $model }} ${{ $modelVariable }}): JsonResponse
     {
-        Gate::authorize('delete', [{{ $model }}::class, ${{ $parentVariable }}]);
+        Gate::authorize('delete', [{{ $model }}::class, ${{ $parentVariable }}->project->first()]);
 
         $command = new {{ $model }}DeleteCommand(
-            ${{ $modelVariable }}->id
+            ${{ $modelVariable }}->id,
+            ${{ $parentVariable }}->id,
         );
 
         {{ $model }}Delete::run($command);

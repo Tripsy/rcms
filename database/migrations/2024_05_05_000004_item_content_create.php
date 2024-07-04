@@ -42,6 +42,7 @@ return new class extends Migration
                 ->onDelete('cascade');
 
             $table->index(['item_id', 'blueprint_component_id', 'is_active'], 'item_content_active');
+            //            $table->index(['is_active', 'updated_at'], 'item_content_updated');
 
             $table->foreign('created_by')
                 ->references('id')

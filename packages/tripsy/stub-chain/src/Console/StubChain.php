@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\PromptsForMissingInput;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\Support\Str;
 use Tripsy\StubChain\Helpers\StubBuilder;
 
 use function Laravel\Prompts\text;
@@ -95,6 +96,7 @@ class StubChain extends Command implements PromptsForMissingInput
             $builder->addStubData('className', $className);
             $builder->addStubData('model', $model);
             $builder->addStubData('modelVariable', lcfirst($model));
+            $builder->addStubData('modelKey', Str::snake($model));
 
             if (empty($parentModel) === false) {
                 $builder->addStubData('parentModel', $parentModel);

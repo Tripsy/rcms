@@ -1,11 +1,19 @@
-## BUGS
+# BUGS
 
 
-## TO DO
+# CONTINUE
 
-- create command which purge item content(s) with is_active = YES and updated_at < defined period
-- Update stubs after AbstractQuery
+- https://inertiajs.com/upgrade-guide
+- https://medium.com/@demian.kostelny/laravel-inertia-js-react-simple-crud-example-2e0d167365d
+
+# TEST
+
+- stubs
+
+# NICE TO HAVE
+
 - postman documentation & tests
+- unit tests
 
 # PACKAGES
 
@@ -14,7 +22,6 @@ Excel
 # IDEAS
 
 - https://github.com/spatie/laravel-responsecache
-- unit tests
 
 # READ
 

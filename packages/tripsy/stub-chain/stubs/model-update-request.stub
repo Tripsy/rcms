@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests;
 
-use App\Queries\{{ $model }}ReadQuery;
+use App\Queries\{{ $model }}Query;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -23,6 +23,8 @@ class {{ $className }} extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
+            'authority_name' => ['required', 'string'],
+            'authority_key' => ['required', 'string', 'size:32'],
         ];
     }
 
@@ -43,14 +45,16 @@ class {{ $className }} extends FormRequest
      */
     protected function check{{ $model }}Exist(\Illuminate\Contracts\Validation\Validator $validator): void
     {
-        ${{ $modelVariable }} = app({{ $model }}ReadQuery::class)
-            ->filterById($this->route('{{ $modelVariable }}')->id, '<>') //ignore updated entry
+        ${{ modelVariable }} = app({{ $model }}Query::class)
+            ->filterByAuthorityName($validator->safe()->authority_name)
+            ->filterByName($validator->safe()->name)
+            ->filterById($this->route('{{ $model }}')->id, '<>') //ignore updated entry
             ->isUnique();
 
-        if (${{ $modelVariable }} === false) {
+        if (${{ modelVariable }} === false) {
             $validator->errors()->add(
                 'other',
-                __('message.??.already_exist')
+                __('message.{{ $modelKey }}.already_exist')
             );
         }
     }
