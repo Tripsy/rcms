@@ -17,6 +17,15 @@ use Inertia\Inertia;
 |
 */
 
+Route::get('/test', function (Request $request) {
+
+
+    dd(route('home', [
+        'verified' => 1
+    ]));
+});
+
+
 Route::get('/tokens/create', function (Request $request) {
     $token = $request->user()->createToken('test');
 
@@ -30,7 +39,7 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->name('home');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
