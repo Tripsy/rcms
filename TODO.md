@@ -3,24 +3,15 @@
 
 # CONTINUE
 
-- unit test
-
-if ( ! function_exists('isValidHttpResponseCode')) {
-    function isValidHttpResponseCode(int $code): bool
-    {
-        return array_key_exists($code, Response::$statusTexts);
-    }
-}
-
-if ( ! function_exists('returnValidHttpResponseCode')) {
-    function returnValidHttpResponseCode(int $providedCode, int $fallbackCode): int
-    {
-        return isValidHttpResponseCode($providedCode) ? $providedCode : $fallbackCode;
-    }
-}
-
-- https://inertiajs.com/upgrade-guide
-- https://medium.com/@demian.kostelny/laravel-inertia-js-react-simple-crud-example-2e0d167365d
+- drop inertia
+- adjust response from index()  to match next.js
+  $this->apiWrapper->data([
+  'results' => $results,
+  'filter' => array_filter($validated['filter']),
+  'count' => count($results),
+  'limit' => $validated['limit'],
+  'page' => $validated['page'],
+  ]);
 
 # TEST
 

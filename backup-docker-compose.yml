@@ -14,10 +14,6 @@ services:
             FRONT_SERVER_NAME: rcms.test
         depends_on:
             - php
-        networks:
-            development:
-                aliases:
-                    - api.rcms.test
     php:
         container_name: rcms.php
         build:
@@ -26,12 +22,11 @@ services:
         volumes:
             - .:/var/www/html
             - ./docker/docker-php.ini:/usr/local/etc/php/conf.d/docker-php.ini
-        networks:
-            development:
     front:
         container_name: rcms.front
         ports:
             - "5173:5173"
+            - "3000:3000"
         build:
             context: .
             dockerfile: docker/dockerfile-front
@@ -40,5 +35,5 @@ services:
         depends_on:
             - php
 networks:
-    development:
-        external: true
+    default:
+        name: local-coding
