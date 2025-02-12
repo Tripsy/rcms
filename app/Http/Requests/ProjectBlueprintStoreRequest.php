@@ -28,7 +28,7 @@ class ProjectBlueprintStoreRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'status' => $this->status ?? '',
+            'status' => $this->input('status', ''),
         ]);
     }
 

@@ -23,13 +23,13 @@ class TagsIndexRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'page' => (int) $this->page ?? 1,
-            'limit' => (int) $this->limit ?? 5,
-            'filter' => [
-                'name' => $this->filter['name'] ?? '',
-                'is_category' => $this->filter['is_category'] ?? '',
-                'status' => $this->filter['status'] ?? '',
-            ],
+            'page' => ['required', 'integer', 'min:1'],
+            'limit' => ['required', 'integer', 'min:1', 'max:100'],
+            'filter' => array_merge([
+                'name' => '',
+                'is_category' => '',
+                'status' => '',
+            ], $this->input('filter', [])),
         ]);
     }
 
@@ -39,8 +39,8 @@ class TagsIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'page' => ['required', 'integer'],
-            'limit' => ['required', 'integer', 'max:15'],
+            'page' => ['required', 'integer', 'min:1'],
+            'limit' => ['required', 'integer', 'min:1', 'max:100'],
             'filter.name' => ['sometimes', 'nullable', 'string'],
             'filter.is_category' => ['sometimes', Rule::enum(DefaultOption::class)],
             'filter.status' => ['sometimes', Rule::enum(CommonStatus::class)],

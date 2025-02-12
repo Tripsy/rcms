@@ -25,9 +25,9 @@ class TagsStoreRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'description' => $this->description ?? '',
-            'is_category' => $this->is_category ?? '',
-            'status' => $this->status ?? '',
+            'description' => $this->input('description', ''),
+            'is_category' => $this->input('is_category', ''),
+            'status' => $this->input('status', ''),
         ]);
     }
 

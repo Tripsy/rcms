@@ -24,8 +24,8 @@ class TagsUpdateRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'description' => $this->description ?? null,
-            'is_category' => $this->is_category ?? null,
+            'description' => $this->input('description', ''),
+            'is_category' => $this->input('is_category', ''),
         ]);
     }
 

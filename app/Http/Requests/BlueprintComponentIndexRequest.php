@@ -24,17 +24,17 @@ class BlueprintComponentIndexRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'page' => (int) $this->page ?? 1,
-            'limit' => (int) $this->limit ?? 5,
-            'filter' => [
-                'status' => $this->filter['status'] ?? '',
-                'component_type' => $this->filter['component_type'] ?? '',
-                'component_format' => $this->filter['component_format'] ?? '',
-                'is_required' => $this->filter['is_required'] ?? '',
-                'name' => $this->filter['name'] ?? '',
-                'description' => $this->filter['description'] ?? '',
-                'info' => $this->filter['info'] ?? '',
-            ],
+            'page' => (int) $this->input('page', 1),
+            'limit' => (int) $this->input('limit', 20),
+            'filter' => array_merge([
+                'status' => '',
+                'component_type' => '',
+                'component_format' => '',
+                'is_required' => '',
+                'name' => '',
+                'description' => '',
+                'info' => '',
+            ], $this->input('filter', [])),
         ]);
     }
 
@@ -44,8 +44,8 @@ class BlueprintComponentIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'page' => ['required', 'integer'],
-            'limit' => ['required', 'integer', 'max:15'],
+            'page' => ['required', 'integer', 'min:1'],
+            'limit' => ['required', 'integer', 'min:1', 'max:100'],
             'filter.status' => ['sometimes', Rule::enum(CommonStatus::class)],
             'filter.component_type' => ['sometimes', Rule::enum(BlueprintComponentType::class)],
             'filter.component_format' => ['sometimes', Rule::enum(BlueprintComponentType::class)],

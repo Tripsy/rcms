@@ -22,12 +22,12 @@ class ItemContentIndexRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'page' => (int) $this->page ?? 1,
-            'limit' => (int) $this->limit ?? 5,
-            'filter' => [
-                'blueprint_component_id' => $this->filter['blueprint_component_id'] ?? null,
-                'is_active' => $this->filter['is_active'] ?? DefaultOption::YES->value,
-            ],
+            'page' => ['required', 'integer', 'min:1'],
+            'limit' => ['required', 'integer', 'min:1', 'max:100'],
+            'filter' => array_merge([
+                'blueprint_component_id' => null,
+                'is_active' => DefaultOption::YES->value,
+            ], $this->input('filter', [])),
         ]);
     }
 
@@ -37,8 +37,8 @@ class ItemContentIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'page' => ['required', 'integer'],
-            'limit' => ['required', 'integer', 'max:15'],
+            'page' => ['required', 'integer', 'min:1'],
+            'limit' => ['required', 'integer', 'min:1', 'max:100'],
             'filter.is_active' => ['sometimes', Rule::enum(DefaultOption::class)],
             'filter.blueprint_component_id' => ['sometimes', 'nullable', 'integer'],
         ];

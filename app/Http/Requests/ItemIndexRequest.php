@@ -22,12 +22,12 @@ class ItemIndexRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'page' => (int) $this->page ?? 1,
-            'limit' => (int) $this->limit ?? 5,
-            'filter' => [
-                'description' => $this->filter['description'] ?? '',
-                'status' => $this->filter['status'] ?? '',
-            ],
+            'page' => ['required', 'integer', 'min:1'],
+            'limit' => ['required', 'integer', 'min:1', 'max:100'],
+            'filter' => array_merge([
+                'description' => '',
+                'status' => '',
+            ], $this->input('filter', [])),
         ]);
     }
 
@@ -37,8 +37,8 @@ class ItemIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'page' => ['required', 'integer'],
-            'limit' => ['required', 'integer', 'max:15'],
+            'page' => ['required', 'integer', 'min:1'],
+            'limit' => ['required', 'integer', 'min:1', 'max:100'],
             'filter.description' => ['sometimes', 'nullable', 'string'],
             'filter.status' => ['sometimes', Rule::enum(CommonStatus::class)],
         ];

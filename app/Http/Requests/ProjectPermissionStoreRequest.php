@@ -25,8 +25,8 @@ class ProjectPermissionStoreRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'user_id' => (int) $this->user_id,
-            'status' => $this->status ?? '',
+            'user_id' => (int) $this->input('user_id'),
+            'status' => $this->input('status', ''),
         ]);
     }
 

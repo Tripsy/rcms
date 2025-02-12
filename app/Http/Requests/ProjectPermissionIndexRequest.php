@@ -23,13 +23,13 @@ class ProjectPermissionIndexRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'page' => (int) $this->page ?? 1,
-            'limit' => (int) $this->limit ?? 5,
-            'filter' => [
-                'user_name' => $this->filter['user_name'] ?? '',
-                'role' => $this->filter['role'] ?? '',
-                'status' => $this->filter['status'] ?? '',
-            ],
+            'page' => ['required', 'integer', 'min:1'],
+            'limit' => ['required', 'integer', 'min:1', 'max:100'],
+            'filter' => array_merge([
+                'user_name' => '',
+                'role' => '',
+                'status' => '',
+            ], $this->input('filter', [])),
         ]);
     }
 
@@ -39,8 +39,8 @@ class ProjectPermissionIndexRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'page' => ['required', 'integer'],
-            'limit' => ['required', 'integer', 'max:15'],
+            'page' => ['required', 'integer', 'min:1'],
+            'limit' => ['required', 'integer', 'min:1', 'max:100'],
             'filter.user_name' => ['sometimes', 'nullable', 'string'],
             'filter.role' => ['sometimes', Rule::enum(ProjectPermissionRole::class)],
             'filter.status' => ['sometimes', Rule::enum(CommonStatus::class)],
