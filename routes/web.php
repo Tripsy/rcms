@@ -18,13 +18,10 @@ use Inertia\Inertia;
 */
 
 Route::get('/test', function (Request $request) {
-
-
     dd(route('home', [
-        'verified' => 1
+        'verified' => 1,
     ]));
 });
-
 
 Route::get('/tokens/create', function (Request $request) {
     $token = $request->user()->createToken('test');
